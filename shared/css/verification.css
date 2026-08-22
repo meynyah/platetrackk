@@ -1,0 +1,497 @@
+/* =====================================================
+   PlateTrack
+   Email Verification
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow-y:auto;
+    background:#07111f;
+    color:#ffffff;
+    padding:20px 0;
+}
+
+/* ==========================================
+   Animated Background
+========================================== */
+
+.background-grid{
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(61,108,255,.25),transparent 35%),
+        radial-gradient(circle at 80% 70%,rgba(61,108,255,.18),transparent 35%),
+        linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px),
+        #07111f;
+    background-size:
+        100% 100%,
+        100% 100%,
+        45px 45px,
+        45px 45px;
+    animation:moveGrid 18s linear infinite;
+}
+
+@keyframes moveGrid{
+    from{
+        background-position:0 0,0 0,0 0,0 0;
+    }
+
+    to{
+        background-position:0 0,0 0,45px 45px,45px 45px;
+    }
+}
+
+/* ==========================================
+   Wrapper
+========================================== */
+
+.login-wrapper{
+    width:100%;
+    max-width:470px;
+    padding:25px;
+    position:relative;
+    z-index:5;
+    margin:auto;
+}
+
+/* ==========================================
+   Card
+========================================== */
+
+.login-card{
+    background:rgba(17,30,53,.84);
+    backdrop-filter:blur(22px);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:26px;
+    padding:40px;
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.45),
+        0 0 45px rgba(61,108,255,.18);
+    animation:fadeUp .55s ease;
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(25px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ==========================================
+   Logo
+========================================== */
+
+.logo-area{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.logo-box{
+    width:82px;
+    height:82px;
+    margin:0 auto 20px;
+    border-radius:22px;
+    background:linear-gradient(135deg,#4e7eff,#2c5fff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:38px;
+    color:#ffffff;
+    box-shadow:
+        0 0 30px rgba(61,108,255,.45),
+        inset 0 1px 0 rgba(255,255,255,.25);
+}
+
+.logo-area h1{
+    font-size:46px;
+    font-weight:900;
+    margin-bottom:8px;
+    letter-spacing:-1px;
+}
+
+.badge{
+    display:inline-block;
+    margin-top:12px;
+    background:rgba(44,95,255,.92);
+    color:#ffffff;
+    padding:8px 18px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+.portal{
+    margin-top:15px;
+    color:#a7b7d8;
+    font-size:15px;
+}
+
+/* ==========================================
+   Welcome
+========================================== */
+
+.welcome{
+    text-align:center;
+    margin-bottom:28px;
+}
+
+.welcome h2{
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+.welcome p{
+    color:#9fb2d8;
+    line-height:1.6;
+    font-size:15px;
+}
+
+.welcome strong{
+    color:#ffffff;
+}
+
+.masked-email{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-top:12px;
+    padding:10px 16px;
+
+    border-radius:30px;
+
+    background:rgba(61,108,255,.12);
+    border:1px solid rgba(61,108,255,.25);
+
+    color:#ffffff;
+    font-size:14px;
+    font-weight:700;
+
+    box-shadow:0 0 18px rgba(61,108,255,.12);
+}
+
+/* ==========================================
+   Verification Boxes
+========================================== */
+
+.verification-box{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:30px 0 18px;
+}
+
+.code-input{
+    width:55px;
+    height:60px;
+    border:1px solid rgba(255,255,255,.08);
+    outline:none;
+    border-radius:15px;
+    background:#1b2f4d;
+    color:#ffffff;
+    text-align:center;
+    font-size:24px;
+    font-weight:800;
+    transition:
+        box-shadow .3s,
+        transform .2s,
+        border-color .3s,
+        background .3s;
+    -webkit-text-fill-color:#ffffff;
+    caret-color:#ffffff;
+}
+
+.code-input:focus{
+    border-color:#3d6cff;
+    box-shadow:
+        0 0 0 2px #3d6cff,
+        0 0 18px rgba(61,108,255,.20);
+    transform:scale(1.05);
+}
+
+.code-input.filled{
+    border-color:rgba(34,197,94,.55);
+    background:#1d3b4a;
+}
+
+.code-input.success{
+    border-color:rgba(34,197,94,.75);
+    background:rgba(34,197,94,.14);
+    box-shadow:0 0 18px rgba(34,197,94,.22);
+    animation:successPop .25s ease;
+}
+
+@keyframes successPop{
+    0%{
+        transform:scale(1);
+    }
+
+    60%{
+        transform:scale(1.08);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+/* Error shake */
+
+.verification-box.shake{
+    animation:shakeBox .35s ease;
+}
+
+.code-input.error{
+    border-color:#ef4444;
+    box-shadow:0 0 0 2px rgba(239,68,68,.65);
+}
+
+@keyframes shakeBox{
+    0%,100%{
+        transform:translateX(0);
+    }
+
+    20%{
+        transform:translateX(-8px);
+    }
+
+    40%{
+        transform:translateX(8px);
+    }
+
+    60%{
+        transform:translateX(-6px);
+    }
+
+    80%{
+        transform:translateX(6px);
+    }
+}
+
+/* ==========================================
+   Resend
+========================================== */
+
+.resend{
+    text-align:center;
+    margin:10px 0 25px;
+    color:#9fb2d8;
+    font-size:14px;
+}
+
+.resend span{
+    color:#9fb2d8;
+}
+
+.resend button{
+    border:none;
+    background:none;
+    color:#82aaff;
+    font-size:14px;
+    font-weight:700;
+    margin-left:6px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.resend button:hover{
+    color:#ffffff;
+    text-shadow:0 0 10px rgba(61,108,255,.75);
+}
+
+.resend button:disabled{
+    cursor:not-allowed;
+    color:#64748b;
+    text-shadow:none;
+}
+
+/* ==========================================
+   Verify Button
+========================================== */
+
+.verify-btn{
+    position:relative;
+    overflow:hidden;
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:15px;
+    background:linear-gradient(135deg,#4e7eff,#2c5fff);
+    color:#ffffff;
+    font-size:17px;
+    font-weight:800;
+    letter-spacing:.3px;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    transition:
+        transform .3s,
+        box-shadow .3s,
+        filter .3s,
+        background .3s;
+}
+
+.verify-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 30px rgba(61,108,255,.45);
+    filter:brightness(1.05);
+}
+
+.verify-btn:active{
+    transform:translateY(-1px);
+}
+
+.verify-btn.loading{
+    pointer-events:none;
+    opacity:.95;
+    background:linear-gradient(135deg,#3d6cff,#2954db);
+    box-shadow:
+        0 0 18px rgba(61,108,255,.45),
+        0 0 35px rgba(61,108,255,.18);
+}
+
+.verify-btn.success{
+    pointer-events:none;
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    box-shadow:0 0 18px rgba(34,197,94,.40);
+}
+
+.verify-btn:disabled{
+    cursor:not-allowed;
+}
+
+.verify-btn i,
+.resend button i{
+    font-size:16px;
+}
+
+/* ==========================================
+   Back
+========================================== */
+
+.back-link{
+    margin-top:22px;
+    text-align:center;
+}
+
+.back-link a{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:#82aaff;
+    text-decoration:none;
+    font-size:14px;
+    transition:.25s;
+}
+
+.back-link a:hover{
+    color:#ffffff;
+}
+
+/* ==========================================
+   Footer
+========================================== */
+
+.footer{
+    margin-top:28px;
+    padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.08);
+    text-align:center;
+}
+
+.footer span{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+.footer small{
+    color:#8ea2ca;
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media(max-width:480px){
+
+    .login-wrapper{
+        padding:18px;
+    }
+
+    .login-card{
+        padding:28px;
+        border-radius:22px;
+    }
+
+    .logo-box{
+        width:70px;
+        height:70px;
+        font-size:32px;
+    }
+
+    .logo-area h1{
+        font-size:38px;
+    }
+
+    .welcome h2{
+        font-size:26px;
+    }
+
+    .welcome p{
+        font-size:14px;
+    }
+
+    .verification-box{
+        gap:7px;
+    }
+
+    .code-input{
+        width:43px;
+        height:54px;
+        font-size:20px;
+        border-radius:13px;
+    }
+
+    .verify-btn{
+        padding:15px;
+        font-size:16px;
+    }
+
+}
+
+@media(max-height:760px){
+
+    body{
+        align-items:flex-start;
+    }
+
+    .login-card{
+        margin-top:10px;
+        margin-bottom:30px;
+    }
+
+}

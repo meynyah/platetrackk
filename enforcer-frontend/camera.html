@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>PlateTrack | Plate Detection</title>
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet"
+href="../shared/css/modal.css">
+
+<link rel="stylesheet"
+href="css/camera.css">
+
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="camera-container">
+
+<!-- ==========================================
+TOP BAR
+========================================== -->
+
+<header class="topbar">
+
+    <button
+    class="back-btn"
+    type="button"
+    onclick="window.location.href='enforcer-dashboard.html'">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+    </button>
+
+    <div class="page-title">
+
+        <h2>
+
+            Plate Detection
+
+        </h2>
+
+        <p>
+
+            Mobile License Plate Recognition
+
+        </p>
+
+    </div>
+
+    <button
+    class="flash-btn"
+    id="flashBtn"
+    type="button">
+
+        <i class="fa-solid fa-bolt"></i>
+
+    </button>
+
+</header>
+
+<!-- ==========================================
+CAMERA PREVIEW
+========================================== -->
+
+<section class="camera-section">
+
+    <div class="camera-preview">
+
+        <video
+        id="camera"
+        autoplay
+        playsinline
+        muted>
+
+        </video>
+
+        <canvas
+        id="captureCanvas"
+        style="display:none;">
+
+        </canvas>
+
+        <div
+        class="camera-placeholder"
+        id="cameraPlaceholder">
+
+            <div class="camera-icon">
+
+                <i class="fa-solid fa-camera"></i>
+
+            </div>
+
+            <h3>
+
+                Camera Ready
+
+            </h3>
+
+            <p>
+
+                Tap Start Detection to activate the camera.
+
+            </p>
+
+        </div>
+
+        <div
+        class="processing-overlay"
+        id="processingOverlay">
+
+            <div class="processing-loader">
+
+                <i class="fa-solid fa-microchip"></i>
+
+            </div>
+
+            <h3>
+
+                Processing Plate...
+
+            </h3>
+
+            <p>
+
+                Please keep the plate inside the scanning frame.
+
+            </p>
+
+        </div>
+
+        <!-- Detection Frame -->
+
+        <div class="detection-frame">
+
+            <div class="corner top-left"></div>
+
+            <div class="corner top-right"></div>
+
+            <div class="corner bottom-left"></div>
+
+            <div class="corner bottom-right"></div>
+
+            <div
+            id="scanLine"
+            class="scan-line">
+
+            </div>
+
+            <span class="frame-label">
+
+                Align plate here
+
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+DETECTION STATUS
+========================================== -->
+
+<section class="status-section">
+
+    <div class="status-card">
+
+        <div class="status-header">
+
+            <i class="fa-solid fa-wave-square"></i>
+
+            <span>
+
+                Detection Status
+
+            </span>
+
+        </div>
+
+        <div
+        id="scanStatus"
+        class="status-value ready">
+
+            Ready to Scan
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+DETECTED PLATE
+========================================== -->
+
+<section class="plate-section">
+
+    <div class="plate-card">
+
+        <div class="plate-header">
+
+            <i class="fa-solid fa-id-card"></i>
+
+            <span>
+
+                Detection Result
+
+            </span>
+
+        </div>
+
+        <div
+        id="plateNumber"
+        class="plate-number">
+
+            --------
+
+        </div>
+
+        <div class="plate-info">
+
+            <div class="info-item">
+
+                <span class="label">
+
+                    Vehicle Type
+
+                </span>
+
+                <span id="vehicleType">
+
+                    Not Detected
+
+                </span>
+
+            </div>
+
+            <div class="info-item">
+
+                <span class="label">
+
+                    Vehicle Color
+
+                </span>
+
+                <span id="vehicleColor">
+
+                    Not Detected
+
+                </span>
+
+            </div>
+
+            <div class="info-item">
+
+                <span class="label">
+
+                    Detection Time
+
+                </span>
+
+                <span id="detectionTime">
+
+                    --:--:--
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+ACTION BUTTONS
+========================================== -->
+
+<section class="action-section">
+
+    <button
+    id="startDetectionBtn"
+    class="detect-btn"
+    type="button"
+    onclick="startDetection()">
+
+        <i class="fa-solid fa-camera"></i>
+
+        Start Detection
+
+    </button>
+
+    <button
+    id="captureBtn"
+    class="capture-btn"
+    type="button"
+    onclick="capturePlate()"
+    style="display:none;">
+
+        <i class="fa-solid fa-crosshairs"></i>
+
+        Capture Plate
+
+    </button>
+
+    <button
+    id="switchCameraBtn"
+    class="switch-btn"
+    type="button"
+    onclick="switchCamera()"
+    style="display:none;">
+
+        <i class="fa-solid fa-camera-rotate"></i>
+
+        Switch Camera
+
+    </button>
+
+    <button
+    id="stopDetectionBtn"
+    class="stop-btn"
+    type="button"
+    onclick="stopDetection()"
+    style="display:none;">
+
+        <i class="fa-solid fa-circle-stop"></i>
+
+        Stop Detection
+
+    </button>
+
+</section>
+
+<!-- ==========================================
+SYSTEM STATUS
+========================================== -->
+
+<section class="system-section">
+
+    <div class="system-card">
+
+        <div class="system-item">
+
+            <i class="fa-solid fa-camera"></i>
+
+            <span>
+
+                Camera
+
+            </span>
+
+            <strong id="cameraStatus">
+
+                Ready
+
+            </strong>
+
+        </div>
+
+        <div class="system-item">
+
+            <i class="fa-solid fa-microchip"></i>
+
+            <span>
+
+                AI Detection
+
+            </span>
+
+            <strong id="aiStatus">
+
+                Waiting
+
+            </strong>
+
+        </div>
+
+        <div class="system-item">
+
+            <i class="fa-solid fa-wifi"></i>
+
+            <span>
+
+                Connection
+
+            </span>
+
+            <strong>
+
+                Online
+
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+BOTTOM NAVIGATION
+========================================== -->
+
+<nav class="bottom-nav">
+
+    <a
+    href="enforcer-dashboard.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-house"></i>
+
+        <span>
+
+            Home
+
+        </span>
+
+    </a>
+
+    <a
+    href="camera.html"
+    class="nav-item active">
+
+        <i class="fa-solid fa-camera"></i>
+
+        <span>
+
+            Detect
+
+        </span>
+
+    </a>
+
+    <a
+    href="history.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-clock-rotate-left"></i>
+
+        <span>
+
+            History
+
+        </span>
+
+    </a>
+
+    <a
+    href="profile.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-user"></i>
+
+        <span>
+
+            Profile
+
+        </span>
+
+    </a>
+
+</nav>
+
+</div>
+
+<!-- ==========================================
+GLOBAL MODAL
+========================================== -->
+
+<div id="globalModal" class="modal">
+
+    <div class="modal-box">
+
+        <div
+        id="modalIcon"
+        class="modal-icon">
+
+            ✅
+
+        </div>
+
+        <div
+        id="modalTitle"
+        class="modal-title">
+
+            Success
+
+        </div>
+
+        <div
+        id="modalMessage"
+        class="modal-message">
+
+            Message
+
+        </div>
+
+        <div
+        id="modalButtons"
+        class="modal-buttons">
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="../shared/js/config.js"></script>
+<script src="../shared/js/modal.js"></script>
+<script src="../shared/js/theme.js"></script>
+<script src="js/camera.js?v=20260820-2"></script>
+
+</body>
+
+</html>

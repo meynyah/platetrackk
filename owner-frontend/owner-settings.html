@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>PlateTrack | Owner Settings</title>
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet"
+href="../shared/css/modal.css">
+
+<link rel="stylesheet"
+href="../shared/css/settings.css">
+
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="settings-container">
+
+<header class="topbar">
+
+    <button
+    class="back-btn"
+    type="button"
+    onclick="window.location.href='owner-dashboard.html'">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+    </button>
+
+    <div class="page-title">
+
+        <h2>
+
+            Settings
+
+        </h2>
+
+        <p>
+
+            Manage your PlateTrack preferences
+
+        </p>
+
+    </div>
+
+    <div class="top-space"></div>
+
+</header>
+
+<section class="settings-section">
+
+    <div class="settings-card">
+
+        <div class="settings-header">
+
+            <div class="settings-icon">
+
+                <i class="fa-solid fa-gear"></i>
+
+            </div>
+
+            <div>
+
+                <h3>
+
+                    App Settings
+
+                </h3>
+
+                <p>
+
+                    Customize your PlateTrack owner experience.
+
+                </p>
+
+            </div>
+
+        </div>
+
+<!-- APPEARANCE -->
+
+<div class="setting-title">
+
+    <i class="fa-solid fa-palette"></i>
+
+    <span>
+
+        Appearance
+
+    </span>
+
+</div>
+
+<div class="setting-item">
+
+    <div class="setting-info">
+
+        <h4>
+
+            Dark Mode
+
+        </h4>
+
+        <p id="themeDescription">
+
+            Enable dark mode for comfortable night-time use.
+
+        </p>
+
+    </div>
+
+    <label class="switch">
+
+        <input
+        type="checkbox"
+        id="themeToggle"
+        checked>
+
+        <span class="slider"></span>
+
+    </label>
+
+</div>
+
+<!-- NOTIFICATIONS -->
+
+<div class="setting-title">
+
+    <i class="fa-solid fa-bell"></i>
+
+    <span>
+
+        Notifications
+
+    </span>
+
+</div>
+
+<div class="setting-item">
+
+    <div class="setting-info">
+
+        <h4>
+
+            Violation Alerts
+
+        </h4>
+
+        <p>
+
+            Get notified when a new violation is recorded for your vehicles.
+
+        </p>
+
+    </div>
+
+    <label class="switch">
+
+        <input
+        type="checkbox"
+        id="notificationToggle"
+        checked>
+
+        <span class="slider"></span>
+
+    </label>
+
+</div>
+
+<div class="setting-item">
+
+    <div class="setting-info">
+
+        <h4>
+
+            Appeal Status Updates
+
+        </h4>
+
+        <p>
+
+            Get notified when your appeal status changes.
+
+        </p>
+
+    </div>
+
+    <label class="switch">
+
+        <input
+        type="checkbox"
+        id="appealUpdatesToggle"
+        checked>
+
+        <span class="slider"></span>
+
+    </label>
+
+</div>
+
+<!-- ABOUT -->
+
+<div class="setting-title">
+
+    <i class="fa-solid fa-circle-info"></i>
+
+    <span>
+
+        About PlateTrack
+
+    </span>
+
+</div>
+
+<div class="setting-item">
+
+    <div class="setting-info">
+
+        <h4>
+
+            App Version
+
+        </h4>
+
+        <p>
+
+            PlateTrack v1.0.0
+
+        </p>
+
+    </div>
+
+</div>
+
+<div class="setting-item">
+
+    <div class="setting-info">
+
+        <h4>
+
+            Developed For
+
+        </h4>
+
+        <p>
+
+            Traffic Violation Monitoring of Private 4-Wheels Vehicles in Antipolo City
+
+        </p>
+
+    </div>
+
+</div>
+
+<div class="setting-item">
+
+    <div class="setting-info">
+
+        <h4>
+
+            Data Privacy
+
+        </h4>
+
+        <p>
+
+            PlateTrack stores your account and vehicle records securely and is designed to comply with the Data Privacy Act of 2012 (RA 10173).
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ACTION BUTTONS -->
+
+<div class="button-group">
+
+    <button
+    class="save-btn"
+    type="button"
+    onclick="saveSettings()">
+
+        <i class="fa-solid fa-floppy-disk"></i>
+
+        Save Settings
+
+    </button>
+
+</div>
+
+    </div>
+
+</section>
+
+</div>
+
+<!-- GLOBAL MODAL -->
+
+<div id="globalModal" class="modal">
+
+    <div class="modal-box">
+
+        <div
+        id="modalIcon"
+        class="modal-icon">
+
+            ✅
+
+        </div>
+
+        <div
+        id="modalTitle"
+        class="modal-title">
+
+            Success
+
+        </div>
+
+        <div
+        id="modalMessage"
+        class="modal-message">
+
+            Message
+
+        </div>
+
+        <div
+        id="modalButtons"
+        class="modal-buttons">
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="../shared/js/modal.js"></script>
+<script src="../shared/js/theme.js"></script>
+<script src="js/owner-settings.js"></script>
+
+</body>
+</html>

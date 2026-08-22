@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PlateTrack | Traffic Enforcer Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="../shared/css/login.css">
+    <link rel="stylesheet" href="../shared/css/modal.css">
+
+</head>
+
+<body>
+
+    <div class="background-grid"></div>
+
+    <main class="login-wrapper">
+
+        <section class="login-card">
+
+            <!-- LOGO AREA -->
+
+            <div class="logo-area">
+
+                <div class="logo-box">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <h1>PlateTrack</h1>
+
+                <span class="badge">
+                    ANTIPOLO CITY LGU
+                </span>
+
+                <p class="portal">
+                    Traffic Enforcer Portal
+                </p>
+
+            </div>
+
+            <!-- WELCOME TEXT -->
+
+            <div class="welcome">
+
+                <h2>Welcome Back</h2>
+
+                <p>
+                    Log in to continue to your enforcement dashboard.
+                </p>
+
+            </div>
+
+            <!-- LOGIN FORM -->
+
+            <form id="loginForm" autocomplete="off">
+
+                <div class="input-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-envelope input-icon"></i>
+
+                        <input
+                            id="email"
+                            type="email"
+                            maxlength="100"
+                            autocomplete="off"
+                            placeholder="Enter your email address"
+                            required>
+
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-box password-box">
+
+                        <i class="fa-solid fa-lock input-icon"></i>
+
+                        <input
+                            id="password"
+                            type="password"
+                            maxlength="50"
+                            autocomplete="off"
+                            placeholder="Enter your password"
+                            required>
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="toggle-password"
+                            aria-label="Show Password">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="form-options">
+
+                    <label class="remember">
+
+                        <input
+                            type="checkbox"
+                            id="remember">
+
+                        <span>
+                            Remember this device
+                        </span>
+
+                    </label>
+
+                    <a
+                        href="forgot-password.html"
+                        class="forgot-link">
+
+                        Forgot Password?
+
+                    </a>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="login-btn"
+                    id="loginButton">
+
+                    Sign in to System
+
+                </button>
+
+            </form>
+
+            <!-- CREATE ACCOUNT -->
+
+            <div class="create-account">
+
+                <span>
+                    New traffic enforcer?
+                </span>
+
+                <a href="enforcer-register.html">
+                    Create Account
+                </a>
+
+            </div>
+
+            <!-- BACK LINK -->
+
+            <div class="back-link">
+
+                <a href="../index.html">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to Portal Selection
+                </a>
+
+            </div>
+
+            <!-- FOOTER -->
+
+            <div class="footer">
+
+                <span>
+                    <i class="fa-solid fa-lock"></i>
+                    Secure Login
+                </span>
+
+                <small>
+                    Developed for Antipolo City LGU
+                </small>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- GLOBAL MODAL -->
+
+    <div id="globalModal" class="modal">
+
+        <div class="modal-box">
+
+            <div
+                id="modalIcon"
+                class="modal-icon">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+            </div>
+
+            <div
+                id="modalTitle"
+                class="modal-title">
+
+                Success
+
+            </div>
+
+            <div
+                id="modalMessage"
+                class="modal-message">
+
+                Message
+
+            </div>
+
+            <div
+                id="modalButtons"
+                class="modal-buttons">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="../shared/js/config.js"></script>
+    <script src="../shared/js/modal.js"></script>
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>

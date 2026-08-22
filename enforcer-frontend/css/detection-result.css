@@ -1,0 +1,960 @@
+/* ==========================================
+   PLATETRACK DETECTION RESULT
+========================================== */
+
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+}
+
+body{
+
+    font-family:'Inter',sans-serif;
+
+    background:#07111f;
+
+    color:#ffffff;
+
+    overflow-x:hidden;
+
+}
+
+/* ==========================================
+   BACKGROUND
+========================================== */
+
+.background-grid{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:-2;
+
+    background:
+        radial-gradient(circle at 20% 20%,rgba(61,108,255,.18),transparent 35%),
+        radial-gradient(circle at 80% 70%,rgba(61,108,255,.12),transparent 35%),
+        linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px),
+        #07111f;
+
+    background-size:
+        100% 100%,
+        100% 100%,
+        45px 45px,
+        45px 45px;
+
+}
+
+/* ==========================================
+   CONTAINER
+========================================== */
+
+.result-container{
+
+    max-width:500px;
+
+    margin:auto;
+
+    padding:20px 18px 120px;
+
+}
+
+/* ==========================================
+   TOP BAR
+========================================== */
+
+.topbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.back-btn{
+
+    width:48px;
+
+    height:48px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,.08);
+
+    color:#ffffff;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    transition:.30s;
+
+}
+
+.back-btn:hover{
+
+    background:#3d6cff;
+
+}
+
+.top-space{
+
+    width:48px;
+
+}
+
+.page-title{
+
+    flex:1;
+
+    text-align:center;
+
+}
+
+.page-title h2{
+
+    font-size:22px;
+
+    font-weight:800;
+
+}
+
+.page-title p{
+
+    margin-top:4px;
+
+    font-size:13px;
+
+    color:#9fb2d8;
+
+}
+
+/* ==========================================
+   CAPTURE CARD
+========================================== */
+
+.capture-section{
+
+    margin-bottom:22px;
+
+}
+
+.capture-card{
+
+    background:rgba(17,30,53,.82);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:24px;
+
+    padding:20px;
+
+    box-shadow:0 18px 40px rgba(0,0,0,.30);
+
+}
+
+.capture-image{
+
+    height:220px;
+
+    border-radius:18px;
+
+    border:2px dashed rgba(61,108,255,.45);
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:15px;
+
+    background:#0e1a2e;
+
+}
+
+.capture-image i{
+
+    font-size:50px;
+
+    color:#6fa8ff;
+
+}
+
+.capture-image p{
+
+    color:#c7d5ef;
+
+}
+
+/* ==========================================
+   PLATE RESULT
+========================================== */
+
+.plate-section{
+
+    margin-bottom:22px;
+
+}
+
+.plate-card{
+
+    background:rgba(17,30,53,.82);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:24px;
+
+    padding:25px;
+
+    text-align:center;
+
+    box-shadow:0 18px 40px rgba(0,0,0,.30);
+
+}
+
+.plate-label{
+
+    color:#9fb2d8;
+
+    font-size:14px;
+
+    margin-bottom:12px;
+
+}
+
+.plate-card h1,
+.plate-number-input{
+
+    font-size:42px;
+
+    font-weight:900;
+
+    letter-spacing:5px;
+
+    color:#ffffff;
+
+    margin-bottom:25px;
+
+}
+
+.plate-number-input{
+
+    display:block;
+    width:100%;
+
+    font-family:inherit;
+    text-align:center;
+    text-transform:uppercase;
+
+    background:transparent;
+    border:none;
+    border-bottom:2px dashed rgba(255,255,255,.25);
+
+    padding-bottom:8px;
+
+    transition:.2s ease;
+}
+
+.plate-number-input:focus{
+
+    outline:none;
+    border-bottom-color:#3d6cff;
+
+}
+
+/* ==========================================
+   DETECTION SUMMARY
+========================================== */
+
+.summary{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+.summary-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:12px 15px;
+
+    border-radius:14px;
+
+    background:rgba(61,108,255,.08);
+
+    color:#dce7ff;
+
+    font-size:15px;
+
+}
+
+.summary-item i{
+
+    color:#22c55e;
+
+    font-size:18px;
+
+}
+
+/* ==========================================
+   VEHICLE INFORMATION
+========================================== */
+
+.vehicle-section{
+
+    margin-bottom:22px;
+
+}
+
+.info-card{
+
+    background:rgba(17,30,53,.82);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:24px;
+
+    padding:24px;
+
+    box-shadow:0 18px 40px rgba(0,0,0,.30);
+
+}
+
+.info-card h3{
+
+    margin-bottom:18px;
+
+    font-size:20px;
+
+    color:#ffffff;
+
+    font-weight:700;
+
+}
+
+.owner-match-card{
+
+    border-color:rgba(34,197,94,.35);
+    background:rgba(17,30,53,.9);
+
+}
+
+.owner-match-card h3{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#4ade80;
+
+}
+
+.owner-match-card h3 i{
+
+    font-size:17px;
+
+}
+
+.info-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:15px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+
+.info-row:last-child{
+
+    border-bottom:none;
+
+}
+
+.info-row span{
+
+    color:#9fb2d8;
+
+    font-size:15px;
+
+}
+
+.info-row strong,
+.info-row-input{
+
+    color:#ffffff;
+
+    font-weight:700;
+
+    text-align:right;
+
+}
+
+.info-row-input{
+
+    font-family:inherit;
+    font-size:15px;
+
+    background:transparent;
+    border:none;
+    border-bottom:1px dashed rgba(255,255,255,.25);
+
+    max-width:180px;
+
+    transition:.2s ease;
+}
+
+.info-row-input::placeholder{
+    color:rgba(255,255,255,.35);
+    font-weight:500;
+}
+
+.info-row-input:focus{
+
+    outline:none;
+    border-bottom-color:#3d6cff;
+
+}
+
+/* ==========================================
+   VIOLATION FORM
+========================================== */
+
+.violation-section{
+
+    margin-bottom:22px;
+
+}
+
+.input-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    margin-bottom:20px;
+
+}
+
+.input-group label{
+
+    margin-bottom:10px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#dce7ff;
+
+}
+.input-group input,
+
+.input-group select,
+
+.input-group textarea{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:16px;
+
+    padding:15px 16px;
+
+    font-size:15px;
+
+    font-family:'Inter',sans-serif;
+
+    background:#0f1d33;
+
+    color:#ffffff;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.30s;
+
+}
+
+.input-group input:focus,
+
+.input-group select:focus,
+
+.input-group textarea:focus{
+
+    border-color:#3d6cff;
+
+    box-shadow:0 0 0 3px rgba(61,108,255,.20);
+
+}
+
+.input-group textarea{
+
+    resize:vertical;
+
+    min-height:120px;
+
+}
+
+.input-group select option{
+
+    background:#0f1d33;
+
+    color:#ffffff;
+
+}
+
+.input-group input{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:16px;
+
+    padding:15px 16px;
+
+    font-size:15px;
+
+    font-family:'Inter',sans-serif;
+
+    background:#0f1d33;
+
+    color:#ffffff;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.30s;
+
+}
+
+/* ==========================================
+   LOCATION
+========================================== */
+
+.location-section{
+
+    margin-bottom:24px;
+
+}
+
+/* ==========================================
+   ACTION BUTTONS
+========================================== */
+
+.button-section{
+
+    display:flex;
+
+    gap:15px;
+
+}
+
+.cancel-btn,
+
+.save-btn{
+
+    flex:1;
+
+    border:none;
+
+    border-radius:18px;
+
+    padding:16px;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    transition:.30s;
+
+}
+
+.cancel-btn{
+
+    background:#2b364b;
+
+    color:#ffffff;
+
+}
+
+.cancel-btn:hover{
+
+    background:#3c4b67;
+
+    transform:translateY(-3px);
+
+}
+
+.save-btn{
+
+    background:linear-gradient(135deg,#3d6cff,#5b8cff);
+
+    color:#ffffff;
+
+    box-shadow:0 18px 40px rgba(61,108,255,.30);
+
+}
+
+.save-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 22px 45px rgba(61,108,255,.45);
+
+}
+
+/* ==========================================
+   PAGE ANIMATIONS
+========================================== */
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.capture-section{
+
+    animation:fadeUp .35s ease;
+
+}
+
+.plate-section{
+
+    animation:fadeUp .45s ease;
+
+}
+
+.vehicle-section{
+
+    animation:fadeUp .55s ease;
+
+}
+
+.violation-section{
+
+    animation:fadeUp .65s ease;
+
+}
+
+.location-section{
+
+    animation:fadeUp .75s ease;
+
+}
+
+.button-section{
+
+    animation:fadeUp .85s ease;
+
+}
+
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#07111f;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#3d6cff;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#5b8cff;
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:768px){
+
+.result-container{
+
+    padding:18px 16px 100px;
+
+}
+
+.page-title h2{
+
+    font-size:20px;
+
+}
+
+.page-title p{
+
+    font-size:12px;
+
+}
+
+.capture-image{
+
+    height:190px;
+
+}
+
+.plate-card h1,
+.plate-number-input{
+
+    font-size:34px;
+
+    letter-spacing:3px;
+
+}
+
+.info-row{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:6px;
+
+}
+
+.info-row strong,
+.info-row-input{
+
+    text-align:left;
+
+}
+
+.button-section{
+
+    flex-direction:column;
+
+}
+
+.cancel-btn,
+
+.save-btn{
+
+    width:100%;
+
+}
+
+}
+
+@media(max-width:480px){
+
+.capture-image{
+
+    height:170px;
+
+}
+
+.capture-image i{
+
+    font-size:42px;
+
+}
+
+.plate-card{
+
+    padding:20px;
+
+}
+
+.plate-card h1,
+.plate-number-input{
+
+    font-size:30px;
+
+    letter-spacing:2px;
+
+}
+
+.summary-item{
+
+    font-size:14px;
+
+}
+
+.info-card{
+
+    padding:20px;
+
+}
+
+.input-group select,
+
+.input-group textarea{
+
+    font-size:14px;
+
+    padding:14px;
+
+}
+
+.cancel-btn,
+
+.save-btn{
+
+    font-size:15px;
+
+    padding:15px;
+
+}
+
+}
+
+.captured-photo{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:18px;
+}
+
+/* LIGHT MODE - DETECTION RESULT */
+body.light-mode{
+    background:#eef3fb;
+    color:#132033;
+}
+
+body.light-mode .background-grid{
+    background:
+        radial-gradient(circle at 20% 20%,rgba(61,108,255,.13),transparent 35%),
+        radial-gradient(circle at 82% 68%,rgba(17,122,101,.12),transparent 36%),
+        linear-gradient(rgba(19,32,51,.055) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(19,32,51,.055) 1px,transparent 1px),
+        #eef3fb;
+}
+
+body.light-mode .page-title h2,
+body.light-mode .plate-card h1,
+body.light-mode .plate-number-input,
+body.light-mode .info-card h3,
+body.light-mode .info-row strong,
+body.light-mode .info-row-input{
+    color:#132033;
+}
+
+body.light-mode .plate-number-input,
+body.light-mode .info-row-input{
+    border-bottom-color:rgba(19,32,51,.2);
+}
+
+body.light-mode .page-title p,
+body.light-mode .plate-label,
+body.light-mode .info-row span,
+body.light-mode .capture-image p{
+    color:#52627a;
+}
+
+body.light-mode .capture-card,
+body.light-mode .plate-card,
+body.light-mode .info-card{
+    background:rgba(255,255,255,.9);
+    border-color:rgba(36,58,88,.10);
+    box-shadow:0 18px 36px rgba(36,58,88,.12);
+}
+
+body.light-mode .capture-image{
+    background:#f7f9fc;
+    border-color:rgba(61,108,255,.35);
+}
+
+body.light-mode .back-btn,
+body.light-mode .cancel-btn{
+    background:#ffffff;
+    color:#132033;
+    box-shadow:0 12px 28px rgba(36,58,88,.12);
+}
+
+body.light-mode .summary-item{
+    background:rgba(61,108,255,.10);
+    color:#334155;
+}
+
+body.light-mode .input-group label{
+    color:#334155;
+}
+
+body.light-mode .input-group input,
+body.light-mode .input-group select,
+body.light-mode .input-group textarea{
+    background:#f7f9fc;
+    color:#132033;
+    border-color:rgba(36,58,88,.12);
+}
+
+body.light-mode .input-group select option{
+    background:#ffffff;
+    color:#132033;
+}

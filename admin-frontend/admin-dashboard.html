@@ -1,0 +1,3760 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="PlateTrack Administrator Command Center"
+    >
+
+    <title>PlateTrack | Administrator Command Center</title>
+
+    <link rel="icon" href="data:,">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <link 
+    rel="stylesheet"
+    href="css/admin.css?v=20260816-4">
+
+</head>
+
+<body class="admin-dashboard-page">
+
+<div class="dashboard-background">
+
+    <div class="dashboard-grid"></div>
+    <div class="dashboard-glow dashboard-glow-one"></div>
+    <div class="dashboard-glow dashboard-glow-two"></div>
+
+</div>
+
+<div class="app-shell admin-command-shell">
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside class="sidebar admin-sidebar" id="adminSidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-brand-icon">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+            </div>
+
+            <div class="sidebar-brand-text">
+
+                <strong>PlateTrack</strong>
+
+                <span>Command Center</span>
+
+            </div>
+
+            <button
+                type="button"
+                class="sidebar-collapse-button"
+                id="sidebarCollapseButton"
+                aria-label="Collapse sidebar"
+                title="Collapse sidebar"
+            >
+
+                <i class="fa-solid fa-angles-left"></i>
+
+            </button>
+
+            <button
+                type="button"
+                class="sidebar-close-button"
+                id="sidebarCloseButton"
+                aria-label="Close sidebar"
+                title="Close sidebar"
+            >
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div class="sidebar-system-status">
+
+            <span class="sidebar-status-dot"></span>
+
+            <div>
+
+                <strong>System Online</strong>
+
+                <span>Administrator access</span>
+
+            </div>
+
+        </div>
+
+        <nav class="admin-navigation">
+
+            <!-- OVERVIEW -->
+
+            <div class="nav-group">
+
+                <div class="nav-label">
+                    Overview
+                </div>
+
+                <button
+                    type="button"
+                    class="nav-item active"
+                    data-view="overview"
+                >
+
+                    <span class="nav-item-icon">
+
+                        <i class="fa-solid fa-grid-2"></i>
+
+                    </span>
+
+                    <span class="nav-item-text">
+                        Dashboard
+                    </span>
+
+                </button>
+
+            </div>
+
+            <!-- ENFORCEMENT -->
+
+            <div class="nav-group">
+
+                <div class="nav-label">
+                    Enforcement
+                </div>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-view="violations"
+                >
+
+                    <span class="nav-item-icon">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    </span>
+
+                    <span class="nav-item-text">
+                        Violation Reports
+                    </span>
+
+                </button>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-view="appeals"
+                >
+
+                    <span class="nav-item-icon">
+
+                        <i class="fa-solid fa-scale-balanced"></i>
+
+                    </span>
+
+                    <span class="nav-item-text">
+                        Appeals
+                    </span>
+
+                    <span
+                        class="badge-count badge-danger"
+                        id="countAppealsPending"
+                        style="display:none"
+                    ></span>
+
+                </button>
+
+            </div>
+
+            <!-- ACCOUNTS -->
+
+            <div class="nav-group">
+
+                <div class="nav-label">
+                    Accounts
+                </div>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-view="account-approvals"
+                >
+
+                    <span class="nav-item-icon">
+
+                        <i class="fa-solid fa-user-check"></i>
+
+                    </span>
+
+                    <span class="nav-item-text">
+                        Account Approvals
+                    </span>
+
+                    <span
+                        class="badge-count badge-danger"
+                        id="countAccountPending"
+                        style="display:none"
+                    ></span>
+
+                </button>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-view="enforcer-monitor"
+                >
+
+                    <span class="nav-item-icon">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                    </span>
+
+                    <span class="nav-item-text">
+                        Enforcer Accounts
+                    </span>
+
+                </button>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-view="owner-monitor"
+                >
+
+                    <span class="nav-item-icon">
+
+                        <i class="fa-solid fa-users"></i>
+
+                    </span>
+
+                    <span class="nav-item-text">
+                        Vehicle Owners
+                    </span>
+
+                </button>
+
+            </div>
+
+            <!-- COMMUNICATION -->
+
+            <div class="nav-group">
+
+                <div class="nav-label">
+                    Communication
+                </div>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-view="announcements"
+                >
+
+                    <span class="nav-item-icon">
+
+                        <i class="fa-solid fa-bullhorn"></i>
+
+                    </span>
+
+                    <span class="nav-item-text">
+                        Announcements
+                    </span>
+
+                </button>
+
+            </div>
+
+            <!-- INSIGHTS -->
+
+            <div class="nav-group">
+
+                <div class="nav-label">
+                    Insights
+                </div>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-view="overview"
+                >
+
+                    <span class="nav-item-icon">
+
+                        <i class="fa-solid fa-chart-column"></i>
+
+                    </span>
+
+                    <span class="nav-item-text">
+                        Enforcer Performance
+                    </span>
+
+                    <span class="admin-only-chip">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        Admin
+
+                    </span>
+
+                </button>
+
+            </div>
+
+        </nav>
+
+        <div class="sidebar-foot">
+
+            <div class="admin-chip">
+
+                <div
+                    class="admin-avatar"
+                    id="adminInitial"
+                >
+                    A
+                </div>
+
+                <div class="admin-chip-details">
+
+                    <div
+                        class="name"
+                        id="adminName"
+                    >
+                        Administrator
+                    </div>
+
+                    <div class="role">
+
+                        <i class="fa-solid fa-shield-check"></i>
+
+                        Verified Admin
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                class="sidebar-logout-button"
+                id="logoutBtn"
+            >
+
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                <span>
+                    Sign Out
+                </span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <main class="main admin-main">
+
+        <!-- GLOBAL HEADER -->
+
+        <header class="admin-global-header">
+
+            <div class="global-header-left">
+
+                <button
+                    type="button"
+                    class="mobile-sidebar-button"
+                    id="mobileSidebarButton"
+                    aria-label="Open sidebar"
+                >
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+                <!-- BACK BUTTON -->
+
+                <button
+                    type="button"
+                    class="back-button"
+                    id="dashboardBackButton"
+                    style="display:none">
+                
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    <span>Back</span>
+
+                </button>
+
+                <div>
+
+                    <span class="global-header-eyebrow">
+
+                        Antipolo City LGU
+
+                    </span>
+
+                    <strong class="global-header-title">
+
+                        Traffic Enforcement Command Center
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+            <div class="global-header-actions">
+
+                <div class="header-clock">
+
+                    <strong id="headerLiveTime">
+                        --:--
+                    </strong>
+
+                    <span id="headerLiveDate">
+                        Loading date...
+                    </span>
+
+                </div>
+
+                <div class="header-notification-wrapper">
+
+                    <button
+                        type="button"
+                        class="header-action-button"
+                        id="notificationButton"
+                        title="Notifications"
+                        aria-label="Open notifications"
+                        aria-expanded="false"
+                    >
+
+                        <i class="fa-solid fa-bell"></i>
+
+                        <span
+                            class="header-notification-count"
+                            id="headerNotificationCount"
+                            style="display:none;"
+                        >
+                            0
+                        </span>
+
+                    </button>
+
+                    <div
+                        class="notification-dropdown"
+                        id="notificationDropdown"
+                    >
+
+                        <div class="notification-dropdown-header">
+
+                            <div>
+
+                                <span class="panel-eyebrow">
+                                    Administrator Alerts
+                                </span>
+
+                                <h3>
+                                    Notifications
+                                </h3>
+
+                            </div>
+
+                            <button
+                                type="button"
+                                class="notification-close-button"
+                                id="notificationCloseButton"
+                                aria-label="Close notifications"
+                            >
+
+                                <i class="fa-solid fa-xmark"></i>
+
+                            </button>
+
+                        </div>
+
+                        <div
+                            class="notification-list"
+                            id="adminNotificationList"
+                        >
+
+                            <div class="notification-empty-state">
+
+                                <i class="fa-regular fa-bell"></i>
+
+                                <span>
+                                    No pending administrator alerts.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="header-admin-profile">
+
+                    <div class="header-admin-avatar">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong id="headerAdminName">
+                            Administrator
+                        </strong>
+
+                        <span>
+                            System Administrator
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- =========================================
+             OVERVIEW
+        ========================================== -->
+
+        <!-- =========================================
+     EXECUTIVE OVERVIEW
+========================================== -->
+
+<section
+    class="view active"
+    id="view-overview"
+>
+
+    <!-- PAGE HEADER -->
+
+    <div class="topbar command-topbar">
+
+        <div>
+
+            <div class="page-label">
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                Executive Overview
+
+            </div>
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p class="desc">
+
+                Monitor enforcement activity, account reviews,
+                appeals, system performance, and administrator
+                action items.
+
+            </p>
+
+        </div>
+
+        <div class="topbar-actions">
+
+            <button
+                type="button"
+                class="btn btn-outline btn-sm refresh-button"
+                id="refreshOverview"
+            >
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh Dashboard
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- EXECUTIVE HERO -->
+
+    <section class="executive-hero-panel">
+
+        <div class="executive-hero-content">
+
+            <span class="executive-live-badge">
+
+                <span class="executive-live-dot"></span>
+
+                Live Command Center
+
+            </span>
+
+            <h2 id="executiveGreeting">
+
+                Good day, Administrator.
+
+            </h2>
+
+            <p>
+
+                Here is the latest operational overview of the
+                PlateTrack traffic enforcement network in Antipolo City.
+
+            </p>
+
+            <div class="executive-hero-meta">
+
+                <span>
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    Secure administrator session
+
+                </span>
+
+                <span>
+
+                    <i class="fa-solid fa-database"></i>
+
+                    MongoDB synchronized
+
+                </span>
+
+                <span>
+
+                    <i class="fa-solid fa-envelope-circle-check"></i>
+
+                    Email service active
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="executive-hero-visual">
+
+            <div class="executive-shield-ring">
+
+                <div class="executive-shield-core">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                </div>
+
+                <span class="orbit-dot orbit-dot-one"></span>
+                <span class="orbit-dot orbit-dot-two"></span>
+                <span class="orbit-dot orbit-dot-three"></span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- STATISTICS -->
+
+    <div
+        class="stat-grid command-stat-grid"
+        id="statGrid"
+    >
+
+        <!-- Filled by JavaScript -->
+
+    </div>      
+
+    <!-- CHARTS AND TODAY SUMMARY -->
+
+    <div class="executive-primary-grid">
+
+        <!-- MONTHLY VIOLATIONS CHART -->
+
+        <section class="panel executive-chart-panel">
+
+            <div class="panel-head command-panel-head">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        Enforcement Analytics
+                    </span>
+
+                    <h2>
+                        Monthly Violation Activity
+                    </h2>
+
+                </div>
+
+                <div class="chart-period-selector">
+
+                    <button
+                        type="button"
+                        class="chart-period-button active"
+                        data-chart-period="6"
+                    >
+                        6 Months
+                    </button>
+
+                    <button
+                        type="button"
+                        class="chart-period-button"
+                        data-chart-period="12"
+                    >
+                        12 Months
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="executive-chart-body">
+
+                <div class="chart-summary-row">
+
+                    <div>
+
+                        <span>
+                            Total Reports
+                        </span>
+
+                        <strong id="chartTotalReports">
+                            0
+                        </strong>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Highest Month
+                        </span>
+
+                        <strong id="chartHighestMonth">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Monthly Average
+                        </span>
+
+                        <strong id="chartMonthlyAverage">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+                <div class="chart-canvas-wrapper">
+
+                    <canvas
+                        id="monthlyViolationsChart"
+                        aria-label="Monthly violations chart"
+                    ></canvas>
+
+                    <div
+                        class="chart-empty-overlay"
+                        id="monthlyChartEmpty"
+                        style="display:none;"
+                    >
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        <strong>
+                            No chart data available
+                        </strong>
+
+                        <span>
+                            Monthly analytics will appear after
+                            violation records are submitted.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- TODAY SUMMARY -->
+
+        <!-- =========================================
+        LIVE ACTIVITY FEED
+        ========================================== -->
+
+        <aside class="panel live-activity-panel">
+
+            <div class="panel-head live-activity-head">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        Command Timeline
+                    </span>
+
+                    <h2>
+                        Live Activity Feed
+                    </h2>
+
+                    <p>
+                        Latest activity across the PlateTrack system.
+                    </p>
+
+                </div>
+
+                <span class="live-activity-chip">
+
+                    <span></span>
+
+                    Live
+
+                </span>
+
+            </div>
+
+            <!-- ACTIVITY LIST -->
+
+            <div
+                class="live-activity-list"
+                id="executiveActivityList"
+            >
+
+                <div class="live-activity-loading">
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    <strong>
+                        Loading latest activity...
+                    </strong>
+
+                    <span>
+                        Retrieving current system records
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+
+            <div class="live-activity-footer">
+
+                <div>
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    <span id="liveActivityUpdated">
+                        Waiting for dashboard refresh...
+                    </span>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="refreshLiveActivity"
+                    class="refresh-live-activity"
+                >
+
+                    <i class="fa-solid fa-rotate"></i>
+
+                    Refresh
+
+                </button>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- =========================================
+     QUICK ACTIONS + ENFORCER PERFORMANCE
+========================================== -->
+
+<div class="quick-performance-grid">
+
+    <!-- QUICK ACTIONS -->
+
+    <section class="panel executive-actions-panel">
+
+        <div class="panel-head">
+
+            <div>
+
+                <span class="panel-eyebrow">
+                    Administrator Shortcuts
+                </span>
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div class="executive-action-grid">
+
+            <button
+                type="button"
+                class="executive-action-card action-approvals"
+                data-target-view="enforcer-approvals"
+            >
+
+                <span class="executive-action-icon">
+                    <i class="fa-solid fa-user-check"></i>
+                </span>
+
+                <span class="executive-action-content">
+
+                    <strong>
+                        Review Accounts
+                    </strong>
+
+                    <small>
+                        Process pending applications
+                    </small>
+
+                </span>
+
+                <span
+                    class="executive-action-count"
+                    id="quickPendingApprovals"
+                >
+                    0
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="executive-action-card action-appeals"
+                data-target-view="appeals"
+            >
+
+                <span class="executive-action-icon">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </span>
+
+                <span class="executive-action-content">
+
+                    <strong>
+                        Review Appeals
+                    </strong>
+
+                    <small>
+                        Send feedback and decisions
+                    </small>
+
+                </span>
+
+                <span
+                    class="executive-action-count"
+                    id="quickPendingAppeals"
+                >
+                    0
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="executive-action-card action-announcement"
+                data-target-view="announcements"
+            >
+
+                <span class="executive-action-icon">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </span>
+
+                <span class="executive-action-content">
+
+                    <strong>
+                        Send Announcement
+                    </strong>
+
+                    <small>
+                        Broadcast operational updates
+                    </small>
+
+                </span>
+
+                <i class="fa-solid fa-chevron-right"></i>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="executive-action-card action-violations"
+                data-target-view="violations"
+            >
+
+                <span class="executive-action-icon">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </span>
+
+                <span class="executive-action-content">
+
+                    <strong>
+                        View Violations
+                    </strong>
+
+                    <small>
+                        Inspect enforcement records
+                    </small>
+
+                </span>
+
+                <i class="fa-solid fa-chevron-right"></i>
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ENFORCER PERFORMANCE -->
+
+    <section class="panel command-panel executive-performance-panel">
+
+        <div class="panel-head command-panel-head">
+
+            <div>
+
+                <span class="panel-eyebrow">
+                    Protected Administrative Insight
+                </span>
+
+                <h2>
+                    Enforcer Performance
+                </h2>
+
+            </div>
+
+            <span class="locked-label">
+
+                <i class="fa-solid fa-lock"></i>
+
+                Admin-only
+
+            </span>
+
+        </div>
+
+        <div class="panel-body table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Rank</th>
+                        <th>Enforcer</th>
+                        <th>Badge No.</th>
+                        <th>Station</th>
+                        <th>Status</th>
+                        <th>Total Reports</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="leaderboardBody">
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="empty-state"
+                        >
+                            Loading enforcer performance records…
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+</section>
+
+        <!-- =========================================
+     ACCOUNT APPROVALS V2
+========================================== -->
+
+<section
+    class="view"
+    id="view-account-approvals"
+>
+
+    <div class="topbar command-topbar">
+
+        <div>
+
+            <div class="page-label">
+
+                <i class="fa-solid fa-user-check"></i>
+
+                Account Verification
+
+            </div>
+
+            <h1>
+                Account Approvals
+            </h1>
+
+            <p class="desc">
+
+                Review Traffic Enforcer and Vehicle Owner applications
+                before granting access to PlateTrack.
+
+            </p>
+
+        </div>
+
+        <div class="approval-total-chip">
+
+            <i class="fa-solid fa-clock"></i>
+
+            <span id="accountApprovalTotal">
+                0 pending
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="approval-security-banner">
+
+        <div class="approval-banner-icon">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+        </div>
+
+        <div>
+
+            <strong>
+                Administrator verification required
+            </strong>
+
+            <span>
+
+                Applicants cannot sign in until their registration is
+                reviewed and approved by an administrator.
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <section class="panel account-approvals-panel">
+
+        <div class="account-approval-tabs">
+
+            <button
+                type="button"
+                class="account-approval-tab active"
+                data-approval-tab="enforcers"
+            >
+
+                <span class="approval-tab-icon">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                </span>
+
+                <span class="approval-tab-content">
+
+                    <strong>
+                        Traffic Enforcers
+                    </strong>
+
+                    <small>
+                        Badge and email verification
+                    </small>
+
+                </span>
+
+                <span
+                    class="approval-tab-count"
+                    id="enforcerApprovalTabCount"
+                >
+                    0
+                </span>
+
+            </button>
+
+            <button
+                type="button"
+                class="account-approval-tab"
+                data-approval-tab="owners"
+            >
+
+                <span class="approval-tab-icon owner-tab-icon">
+
+                    <i class="fa-solid fa-car-side"></i>
+
+                </span>
+
+                <span class="approval-tab-content">
+
+                    <strong>
+                        Vehicle Owners
+                    </strong>
+
+                    <small>
+                        Identity and plate verification
+                    </small>
+
+                </span>
+
+                <span
+                    class="approval-tab-count"
+                    id="ownerApprovalTabCount"
+                >
+                    0
+                </span>
+
+            </button>
+
+        </div>
+
+        <!-- ENFORCER TAB -->
+
+        <div
+            class="account-approval-tab-panel active"
+            id="approvalPanelEnforcers"
+        >
+
+            <div class="approval-panel-toolbar">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        Pending Applications
+                    </span>
+
+                    <h2>
+                        Traffic Enforcer Registrations
+                    </h2>
+
+                </div>
+
+                <div class="approval-toolbar-actions">
+
+                    <div class="approval-search-box">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            type="search"
+                            id="enforcerApprovalSearch"
+                            placeholder="Search name, email, or badge..."
+                        >
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="approval-refresh-button"
+                        id="refreshEnforcerApprovals"
+                    >
+
+                        <i class="fa-solid fa-rotate"></i>
+
+                        Refresh
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div
+                class="approval-card-grid"
+                id="enforcerApprovalCards"
+            >
+
+                <div class="approval-loading-state">
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    <strong>
+                        Loading enforcer applications...
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- OWNER TAB -->
+
+        <div
+            class="account-approval-tab-panel"
+            id="approvalPanelOwners"
+        >
+
+            <div class="approval-panel-toolbar">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        Pending Applications
+                    </span>
+
+                    <h2>
+                        Vehicle Owner Registrations
+                    </h2>
+
+                </div>
+
+                <div class="approval-toolbar-actions">
+
+                    <div class="approval-search-box">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            type="search"
+                            id="ownerApprovalSearch"
+                            placeholder="Search name, email, or plate..."
+                        >
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="approval-refresh-button"
+                        id="refreshOwnerApprovals"
+                    >
+
+                        <i class="fa-solid fa-rotate"></i>
+
+                        Refresh
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div
+                class="approval-card-grid"
+                id="ownerApprovalCards"
+            >
+
+                <div class="approval-loading-state">
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    <strong>
+                        Loading vehicle-owner applications...
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</section>
+
+        <!-- =========================================
+             ENFORCER APPROVALS
+        ========================================== -->
+
+        <section
+            class="view"
+            id="view-enforcer-approvals"
+        >
+
+            <div class="topbar command-topbar">
+
+                <div>
+
+                    <div class="page-label">
+
+                        <i class="fa-solid fa-user-check"></i>
+
+                        Account Approvals
+
+                    </div>
+
+                    <h1>
+                        Traffic Enforcer Applications
+                    </h1>
+
+                    <p class="desc">
+
+                        Review new enforcer registrations before allowing access
+                        to the enforcement portal.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="section-information-banner">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <div>
+
+                    <strong>
+                        Approval is required before sign-in.
+                    </strong>
+
+                    <span>
+
+                        Approved applicants receive an automatic email
+                        notification.
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="panel command-panel">
+
+                <div class="panel-head command-panel-head">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            Pending Review
+                        </span>
+
+                        <h2>
+                            Enforcer Applications
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <div class="panel-body table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Name</th>
+                                <th>Email Address</th>
+                                <th>Badge No.</th>
+                                <th>Station</th>
+                                <th>Submitted</th>
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="enforcerApprovalsBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="empty-state"
+                                >
+
+                                    Loading enforcer applications…
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =========================================
+             OWNER APPROVALS
+        ========================================== -->
+
+        <section
+            class="view"
+            id="view-owner-approvals"
+        >
+
+            <div class="topbar command-topbar">
+
+                <div>
+
+                    <div class="page-label">
+
+                        <i class="fa-solid fa-car-side"></i>
+
+                        Account Approvals
+
+                    </div>
+
+                    <h1>
+                        Vehicle Owner Applications
+                    </h1>
+
+                    <p class="desc">
+
+                        Review newly registered vehicle-owner accounts before
+                        granting portal access.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="panel command-panel">
+
+                <div class="panel-head command-panel-head">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            Pending Review
+                        </span>
+
+                        <h2>
+                            Vehicle Owner Applications
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <div class="panel-body table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Name</th>
+                                <th>Email Address</th>
+                                <th>Plate No.</th>
+                                <th>Submitted</th>
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="ownerApprovalsBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="empty-state"
+                                >
+
+                                    Loading vehicle-owner applications…
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =========================================
+             ENFORCER MONITORING
+        ========================================== -->
+
+        <section
+            class="view"
+            id="view-enforcer-monitor"
+        >
+
+            <div class="topbar command-topbar">
+
+                <div>
+
+                    <div class="page-label">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                        Account Monitoring
+
+                    </div>
+
+                    <h1>
+                        Enforcer Accounts
+                    </h1>
+
+                    <p class="desc">
+
+                        Monitor registered traffic enforcers, credentials,
+                        stations, and account status.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="panel command-panel">
+
+                <div class="panel-head command-panel-head">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            Verified Credentials
+                        </span>
+
+                        <h2>
+                            Traffic Enforcers
+                        </h2>
+
+                    </div>
+
+                    <span class="verified-credential-chip">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        Credential Monitoring
+
+                    </span>
+
+                </div>
+
+                <div class="violation-search-box enforcer-monitor-search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="enforcerMonitorSearch"
+                        placeholder="Search by name, email, badge no., or station..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <div class="panel-body table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Name</th>
+                                <th>Email Address</th>
+                                <th>Badge No.</th>
+                                <th>Station</th>
+                                <th>Status</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="enforcerMonitorBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="empty-state"
+                                >
+
+                                    Loading enforcer accounts…
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =========================================
+             OWNER MONITORING
+        ========================================== -->
+
+        <section
+            class="view"
+            id="view-owner-monitor"
+        >
+
+            <div class="topbar command-topbar">
+
+                <div>
+
+                    <div class="page-label">
+
+                        <i class="fa-solid fa-users"></i>
+
+                        Account Monitoring
+
+                    </div>
+
+                    <h1>
+                        Vehicle Owner Accounts
+                    </h1>
+
+                    <p class="desc">
+
+                        Monitor owner credentials, registered plates, account
+                        status, and suspicious activity flags.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="panel command-panel">
+
+                <div class="panel-head command-panel-head">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            Verified Credentials
+                        </span>
+
+                        <h2>
+                            Vehicle Owners
+                        </h2>
+
+                    </div>
+
+                    <span class="verified-credential-chip">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        Credential Monitoring
+
+                    </span>
+
+                </div>
+
+                <div class="violation-search-box owner-monitor-search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="ownerMonitorSearch"
+                        placeholder="Search by name, email, or plate number..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <div class="panel-body table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Name</th>
+                                <th>Email Address</th>
+                                <th>Plate No.</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="ownerMonitorBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="empty-state"
+                                >
+
+                                    Loading vehicle-owner accounts…
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =========================================
+             VIOLATIONS
+        ========================================== -->
+
+        <section
+            class="view"
+            id="view-violations"
+        >
+
+            <div class="topbar command-topbar">
+
+                <div>
+
+                    <div class="page-label">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        Enforcement Records
+
+                    </div>
+
+                    <h1>
+                        Violation Reports
+                    </h1>
+
+                    <p class="desc">
+
+                        View all violations submitted by authorized traffic
+                        enforcers.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        
+
+                <!-- =========================================
+     VIOLATION REPORTS TOOLBAR
+========================================== -->
+
+<section class="panel violation-toolbar-panel">
+
+    <div class="violation-toolbar">
+
+        <!-- SEARCH -->
+
+        <div class="violation-search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="search"
+                id="violationSearchInput"
+                placeholder="Search plate, violation, enforcer, or location..."
+                autocomplete="off"
+            >
+
+        </div>
+
+        <!-- FILTERS -->
+
+        <div class="violation-toolbar-filters">
+
+            <div class="violation-filter-field">
+
+                <label for="violationTypeFilter">
+                    Violation
+                </label>
+
+                <select id="violationTypeFilter">
+
+                    <option value="">
+                        All Violation Types
+                    </option>
+
+                    <option value="Illegal Parking">
+                        Illegal Parking
+                    </option>
+
+                    <option value="Obstruction">
+                        Obstruction
+                    </option>
+
+                    <option value="No Seatbelt">
+                        No Seatbelt
+                    </option>
+
+                    <option value="Overspeeding">
+                        Overspeeding
+                    </option>
+
+                    <option value="Reckless Driving">
+                        Reckless Driving
+                    </option>
+
+                    <option value="Counterflow">
+                        Counterflow
+                    </option>
+
+                    <option value="Expired Registration">
+                        Expired Registration
+                    </option>
+
+                    <option value="Driving Without a Valid License">
+                        Driving Without a Valid License
+                    </option>
+
+                    <option value="No Loading / Unloading">
+                        No Loading / Unloading
+                    </option>
+
+                    <option value="Others">
+                        Others
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="violation-filter-field">
+
+                <label for="violationStatusFilter">
+                    Status
+                </label>
+
+                <select id="violationStatusFilter">
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option value="pending">
+                        Pending
+                    </option>
+
+                    <option value="appealed">
+                        Appealed
+                    </option>
+
+                    <option value="resolved">
+                        Resolved
+                    </option>
+
+                    <option value="approved">
+                        Approved
+                    </option>
+
+                    <option value="denied">
+                        Denied
+                    </option>
+
+                    <option value="under_review">
+                        Under Review
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="violation-filter-field violation-date-field">
+
+    <label for="violationDateText">
+        Date
+    </label>
+
+    <div class="violation-date-control">
+
+        <input
+            type="text"
+            id="violationDateText"
+            placeholder="DD/MM/YYYY"
+            inputmode="numeric"
+            maxlength="10"
+            autocomplete="off"
+            aria-label="Filter reports by date using DD/MM/YYYY"
+        >
+
+        <button
+            type="button"
+            id="openViolationDatePicker"
+            class="violation-date-picker-button"
+            aria-label="Open date picker"
+            title="Open calendar"
+        >
+            <i class="fa-regular fa-calendar"></i>
+        </button>
+
+        <input
+            type="date"
+            id="violationDateFilter"
+            class="violation-native-date"
+            tabindex="-1"
+            aria-hidden="true"
+        >
+
+    </div>
+
+    <small
+        class="violation-date-error"
+        id="violationDateError"
+    ></small>
+
+</div>
+
+        </div>
+
+        <!-- ACTIONS -->
+
+        <div class="violation-toolbar-actions">
+
+            <button
+                type="button"
+                class="violation-toolbar-button secondary"
+                id="clearViolationFilters"
+            >
+
+                <i class="fa-solid fa-filter-circle-xmark"></i>
+
+                Clear
+
+            </button>
+
+            <button
+                type="button"
+                class="violation-toolbar-button secondary"
+                id="refreshViolationReports"
+            >
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+            </button>
+
+            <button
+                type="button"
+                class="violation-toolbar-button export"
+                id="exportViolationReports"
+            >
+
+                <i class="fa-solid fa-file-arrow-down"></i>
+
+                Export CSV
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+            <div class="panel command-panel">
+
+                <div class="panel-head command-panel-head violation-table-header">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        Live Records
+                    </span>
+
+                    <h2>
+                        Submitted Violations
+                    </h2>
+
+                    <p
+                        class="violation-results-summary"
+                        id="violationResultsSummary"
+                    >
+                        Loading violation reports...
+                    </p>
+
+                </div>
+
+                <div class="records-counter">
+
+                    <i class="fa-solid fa-database"></i>
+
+                    <span id="violationRecordCount">
+                        0 Records
+                    </span>
+
+                </div>
+
+            </div>
+
+                <div class="panel-body table-container">
+
+                    <table>
+
+                        <thead>
+
+    <tr>
+
+        <th>
+            <button
+                type="button"
+                class="violation-sort-button"
+                data-violation-sort="plateNumber"
+            >
+                Plate No.
+                <i class="fa-solid fa-sort"></i>
+            </button>
+        </th>
+
+        <th>
+            <button
+                type="button"
+                class="violation-sort-button"
+                data-violation-sort="violationType"
+            >
+                Violation
+                <i class="fa-solid fa-sort"></i>
+            </button>
+        </th>
+
+        <th>
+            <button
+                type="button"
+                class="violation-sort-button"
+                data-violation-sort="enforcer"
+            >
+                Enforcer
+                <i class="fa-solid fa-sort"></i>
+            </button>
+        </th>
+
+        <th>
+            <button
+                type="button"
+                class="violation-sort-button"
+                data-violation-sort="location"
+            >
+                Location
+                <i class="fa-solid fa-sort"></i>
+            </button>
+        </th>
+
+        <th>
+            <button
+                type="button"
+                class="violation-sort-button active"
+                data-violation-sort="date"
+            >
+                Date / Time
+                <i class="fa-solid fa-arrow-down"></i>
+            </button>
+        </th>
+
+        <th>
+            <button
+                type="button"
+                class="violation-sort-button"
+                data-violation-sort="status"
+            >
+                Status
+                <i class="fa-solid fa-sort"></i>
+            </button>
+        </th>
+
+        <th>Actions</th>
+
+    </tr>
+
+</thead>
+
+                        <tbody id="violationsBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="empty-state"
+                                >
+
+                                    Loading violation reports…
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="violation-pagination">
+                    <label class="violation-page-size" for="violationPageSize">
+                        Rows per page
+                        <select id="violationPageSize">
+                            <option value="10" selected>10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </label>
+
+                    <div
+                        class="violation-pagination-info"
+                        id="violationPaginationInfo"
+                    >
+                        Page 1 of 1
+                    </div>
+
+                    <div class="violation-pagination-controls">
+                        <button
+                            type="button"
+                            id="violationPreviousPage"
+                            class="violation-page-button"
+                            disabled
+                        >
+                            <i class="fa-solid fa-chevron-left"></i>
+                            Previous
+                        </button>
+
+                        <div
+                            class="violation-page-numbers"
+                            id="violationPageNumbers"
+                        ></div>
+
+                        <button
+                            type="button"
+                            id="violationNextPage"
+                            class="violation-page-button"
+                            disabled
+                        >
+                            Next
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =========================================
+     APPEALS V2
+========================================== -->
+
+<section
+    class="view"
+    id="view-appeals"
+>
+
+    <!-- PAGE HEADER -->
+
+    <div class="topbar command-topbar">
+
+        <div>
+
+            <div class="page-label">
+
+                <i class="fa-solid fa-scale-balanced"></i>
+
+                Appeals Management
+
+            </div>
+
+            <h1>
+                Vehicle Owner Appeals
+            </h1>
+
+            <p class="desc">
+
+                Review submitted appeals, send editable feedback,
+                and issue final decisions through the owner portal
+                notification center and registered email address.
+
+            </p>
+
+        </div>
+
+        <div class="appeals-header-actions">
+
+            <div class="appeals-pending-chip">
+
+                <i class="fa-solid fa-clock"></i>
+
+                <span id="appealsPendingTotal">
+                    0 pending
+                </span>
+
+            </div>
+
+            <button
+                type="button"
+                class="appeals-refresh-button"
+                id="refreshAppealsV2"
+            >
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- DELIVERY BANNER -->
+
+    <div class="appeals-delivery-banner">
+
+        <div class="appeals-banner-icon">
+
+            <i class="fa-solid fa-paper-plane"></i>
+
+        </div>
+
+        <div>
+
+            <strong>
+                Owner notification and email delivery enabled
+            </strong>
+
+            <span>
+
+                Feedback sent from this module is delivered to the
+                vehicle owner's PlateTrack notification center and
+                registered email address.
+
+            </span>
+
+        </div>
+
+        <div class="appeals-delivery-status">
+
+            <span>
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Portal Notification
+
+            </span>
+
+            <span>
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Gmail Delivery
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- FILTERS -->
+
+    <section class="panel appeals-toolbar-panel">
+
+        <div class="appeals-toolbar">
+
+            <div class="appeals-search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="search"
+                    id="appealsSearchInput"
+                    placeholder="Search owner, plate, violation, or appeal reason..."
+                >
+
+            </div>
+
+            <div class="appeals-filter-group">
+
+                <button
+                    type="button"
+                    class="appeals-filter-button active"
+                    data-appeal-filter="all"
+                >
+                    All
+                </button>
+
+                <button
+                    type="button"
+                    class="appeals-filter-button"
+                    data-appeal-filter="submitted"
+                >
+                    Submitted
+                </button>
+
+                <button
+                    type="button"
+                    class="appeals-filter-button"
+                    data-appeal-filter="under_review"
+                >
+                    Under Review
+                </button>
+
+                <button
+                    type="button"
+                    class="appeals-filter-button"
+                    data-appeal-filter="approved"
+                >
+                    Approved
+                </button>
+
+                <button
+                    type="button"
+                    class="appeals-filter-button"
+                    data-appeal-filter="denied"
+                >
+                    Denied
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- APPEALS GRID -->
+
+    <div
+        class="appeals-card-grid"
+        id="appealsCardGrid"
+    >
+
+        <div class="appeals-loading-state">
+
+            <i class="fa-solid fa-spinner fa-spin"></i>
+
+            <strong>
+                Loading vehicle-owner appeals...
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+       
+
+        <!-- =========================================
+             ANNOUNCEMENTS
+        ========================================== -->
+
+        <section
+            class="view"
+            id="view-announcements"
+        >
+
+            <div class="topbar command-topbar">
+
+                <div>
+
+                    <div class="page-label">
+
+                        <i class="fa-solid fa-bullhorn"></i>
+
+                        Communication Center
+
+                    </div>
+
+                    <h1>
+                        Announcements
+                    </h1>
+
+                    <p class="desc">
+
+                        Publish important system notices and operational updates
+                        to PlateTrack users.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="announcement-layout">
+
+                <div class="panel command-panel announcement-composer-panel">
+
+                    <div class="panel-head command-panel-head">
+
+                        <div>
+
+                            <span class="panel-eyebrow">
+                                Compose Message
+                            </span>
+
+                            <h2>
+                                New Announcement
+                            </h2>
+
+                        </div>
+
+                        <span class="delivery-chip">
+
+                            <i class="fa-solid fa-bell"></i>
+
+                            Portal Notification
+
+                        </span>
+
+                    </div>
+
+                    <div class="panel-body pad">
+
+                       <form id="announcementForm">
+
+                            <!-- ANNOUNCEMENT TITLE -->
+                            <div class="field">
+                                <label for="annTitle">
+                                    Announcement Title
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="annTitle"
+                                    placeholder="Example: Updated checkpoint procedure"
+                                    maxlength="120"
+                                    required
+                                >
+                            </div>
+
+
+                            <!-- ANNOUNCEMENT MESSAGE -->
+                            <div class="field">
+                                <label for="annMessage">
+                                    Message
+                                </label>
+
+                                <textarea
+                                    id="annMessage"
+                                    rows="7"
+                                    placeholder="Write the announcement message..."
+                                    maxlength="2000"
+                                    required
+                                ></textarea>
+                            </div>
+
+
+                            <!-- RECIPIENT -->
+                            <div class="announcement-recipient-section">
+
+                                <div class="announcement-field-heading">
+
+                                    <div>
+                                        <span class="announcement-field-eyebrow">
+                                            <i class="fa-solid fa-users"></i>
+                                            Recipient Audience
+                                        </span>
+
+                                        <strong>
+                                            Who should receive this announcement?
+                                        </strong>
+                                    </div>
+
+                                    <span class="announcement-required-chip">
+                                        Required
+                                    </span>
+
+                                </div>
+
+
+                                <div class="announcement-recipient-grid">
+
+                                    <!-- ALL ENFORCERS -->
+                                    <label
+                                        class="announcement-recipient-option active"
+                                        for="audienceEnforcers"
+                                    >
+
+                                        <input
+                                            type="radio"
+                                            name="announcementAudience"
+                                            id="audienceEnforcers"
+                                            value="enforcers"
+                                            checked
+                                        >
+
+                                        <span class="announcement-recipient-icon enforcer">
+                                            <i class="fa-solid fa-user-shield"></i>
+                                        </span>
+
+                                        <span class="announcement-recipient-content">
+
+                                            <strong>
+                                                All Enforcers
+                                            </strong>
+
+                                            <small>
+                                                Send to all approved traffic enforcers
+                                            </small>
+
+                                        </span>
+
+                                        <span class="announcement-radio-check">
+                                            <i class="fa-solid fa-check"></i>
+                                        </span>
+
+                                    </label>
+
+
+                                    <!-- ALL VEHICLE OWNERS -->
+                                    <label
+                                        class="announcement-recipient-option"
+                                        for="audienceOwners"
+                                    >
+
+                                        <input
+                                            type="radio"
+                                            name="announcementAudience"
+                                            id="audienceOwners"
+                                            value="owners"
+                                        >
+
+                                        <span class="announcement-recipient-icon owner">
+                                            <i class="fa-solid fa-car-side"></i>
+                                        </span>
+
+                                        <span class="announcement-recipient-content">
+
+                                            <strong>
+                                                All Vehicle Owners
+                                            </strong>
+
+                                            <small>
+                                                Send to all approved vehicle owners
+                                            </small>
+
+                                        </span>
+
+                                        <span class="announcement-radio-check">
+                                            <i class="fa-solid fa-check"></i>
+                                        </span>
+
+                                    </label>
+
+
+                                    <!-- BOTH -->
+                                    <label
+                                        class="announcement-recipient-option"
+                                        for="audienceBoth"
+                                    >
+
+                                        <input
+                                            type="radio"
+                                            name="announcementAudience"
+                                            id="audienceBoth"
+                                            value="both"
+                                        >
+
+                                        <span class="announcement-recipient-icon both">
+                                            <i class="fa-solid fa-bullhorn"></i>
+                                        </span>
+
+                                        <span class="announcement-recipient-content">
+
+                                            <strong>
+                                                Enforcers &amp; Vehicle Owners
+                                            </strong>
+
+                                            <small>
+                                                Send to all approved users from both groups
+                                            </small>
+
+                                        </span>
+
+                                        <span class="announcement-radio-check">
+                                            <i class="fa-solid fa-check"></i>
+                                        </span>
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+
+    <!-- SEND BUTTON -->
+    <button
+        type="submit"
+        class="btn btn-amber announcement-submit-button"
+        id="annSubmitBtn"
+    >
+        <i class="fa-solid fa-paper-plane"></i>
+
+        <span id="annSubmitText">
+            Send to All Enforcers
+        </span>
+    </button>
+
+</form>
+
+
+                    </div>
+
+                </div>
+
+                <div class="announcement-delivery-card">
+
+                    <div class="delivery-card-icon">
+
+                        <i class="fa-solid fa-tower-broadcast"></i>
+
+                    </div>
+
+                    <h3>
+                        Delivery Channels
+                    </h3>
+
+                    <p>
+
+                        Announcements are currently delivered to approved
+                        enforcers through the PlateTrack notification system.
+
+                    </p>
+
+                    <div class="delivery-channel-list">
+
+                        <div>
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            In-app notification
+
+                        </div>
+
+                        <div>
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            Saved announcement history
+
+                        </div>
+
+                        <div>
+
+                            <i class="fa-solid fa-clock"></i>
+
+                            Email audience support — next phase
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="panel command-panel">
+
+                <div class="panel-head command-panel-head">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            Communication History
+                        </span>
+
+                        <h2>
+                            Sent Announcements
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <div class="panel-body table-container">
+
+                    <table class= "announcement-history-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Title</th>
+                                <th>Message</th>
+                                <th>Audience</th>
+                                <th>Sent</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="announcementsBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="empty-state"
+                                >
+
+                                    Loading announcement history…
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- =========================================
+     MOBILE SIDEBAR OVERLAY
+========================================== -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay"
+></div>
+
+<!-- =========================================
+     ANNOUNCEMENT CONFIRMATION MODAL
+========================================== -->
+
+<div
+    class="modal-backdrop"
+    id="announcementConfirmModal"
+>
+    <div class="modal-box admin-modal-box announcement-confirm-modal">
+
+        <div class="modal-header-icon announcement-confirm-icon">
+            <i class="fa-solid fa-bullhorn"></i>
+        </div>
+
+        <h3 id="announcementConfirmTitle">
+            Send Announcement
+        </h3>
+
+        <p
+            class="modal-sub"
+            id="announcementConfirmSub"
+        >
+            Are you sure you want to send this announcement?
+        </p>
+
+
+        <div class="announcement-confirm-preview">
+
+            <div class="announcement-confirm-preview-row">
+
+                <span class="announcement-confirm-preview-label">
+                    <i class="fa-solid fa-heading"></i>
+                    Title
+                </span>
+
+                <strong id="announcementConfirmMessageTitle">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="announcement-confirm-preview-row">
+
+                <span class="announcement-confirm-preview-label">
+                    <i class="fa-solid fa-users"></i>
+                    Audience
+                </span>
+
+                <strong id="announcementConfirmAudience">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                id="announcementConfirmCancel"
+            >
+                <i class="fa-solid fa-xmark"></i>
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-amber btn-sm"
+                id="announcementConfirmSend"
+            >
+                <i class="fa-solid fa-paper-plane"></i>
+                Send Announcement
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================================
+     REASON MODAL
+========================================== -->
+
+<div
+    class="modal-backdrop"
+    id="reasonModal"
+>
+
+    <div class="modal-box admin-modal-box">
+
+        <div class="modal-header-icon danger-modal-icon">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+        </div>
+
+        <h3 id="reasonModalTitle">
+            Provide a reason
+        </h3>
+
+        <p
+            class="modal-sub"
+            id="reasonModalSub"
+        ></p>
+
+        <textarea
+            id="reasonModalInput"
+            placeholder="Enter a reason..."
+        ></textarea>
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                id="reasonModalCancel"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                id="reasonModalConfirm"
+            >
+                Confirm
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     APPEAL FEEDBACK MODAL
+========================================== -->
+
+<div
+    class="modal-backdrop"
+    id="appealModal"
+>
+
+    <div class="modal-box admin-modal-box">
+
+        <div class="modal-header-icon feedback-modal-icon">
+
+            <i class="fa-solid fa-paper-plane"></i>
+
+        </div>
+
+        <h3>
+            Send Appeal Feedback
+        </h3>
+
+        <p class="modal-sub">
+
+            This message will be delivered to the owner's portal notification
+            center and registered email address.
+
+        </p>
+
+        <label
+            class="modal-field-label"
+            for="appealModalInput"
+        >
+            Editable Feedback
+        </label>
+
+        <textarea id="appealModalInput"></textarea>
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                id="appealModalCancel"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-amber btn-sm"
+                id="appealModalConfirm"
+            >
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+                Ipadala ang Feedback
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     APPEAL RESOLUTION MODAL
+========================================== -->
+
+<div
+    class="modal-backdrop"
+    id="resolveModal"
+>
+
+    <div class="modal-box admin-modal-box">
+
+        <div class="modal-header-icon resolution-modal-icon">
+
+            <i class="fa-solid fa-gavel"></i>
+
+        </div>
+
+        <h3 id="resolveModalTitle">
+            Resolve Appeal
+        </h3>
+
+        <p class="modal-sub">
+
+            The final decision and feedback will be sent to the vehicle owner.
+
+        </p>
+
+        <textarea id="resolveModalInput"></textarea>
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                id="resolveModalCancel"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-primary btn-sm modal-primary-button"
+                id="resolveModalConfirm"
+            >
+                Confirm Decision
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     TOASTS
+========================================== -->
+
+<div
+    class="toast-stack"
+    id="toastStack"
+></div>
+
+<!-- =========================================
+     VIOLATION DETAILS MODAL
+========================================== -->
+
+<!-- =========================================
+     PREMIUM VIOLATION DETAILS MODAL
+========================================== -->
+
+<div
+    class="modal-backdrop premium-violation-backdrop"
+    id="adminViolationDetailsModal"
+>
+    <div class="premium-violation-modal">
+
+        <!-- HEADER -->
+
+        <header class="premium-violation-header">
+
+            <div class="premium-header-main">
+
+                <div class="premium-header-icon">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="premium-eyebrow">
+                        Enforcement Record
+                    </span>
+
+                    <h2>
+                        Violation Details
+                    </h2>
+
+                    <p>
+                        Comprehensive violation information and
+                        captured vehicle evidence.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="premium-header-record">
+
+                <div>
+
+                    <span>
+                        Record ID
+                    </span>
+
+                    <strong id="adminViolationRecordId">
+                        —
+                    </strong>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="premium-modal-close"
+                    onclick="closeAdminViolationDetails()"
+                    aria-label="Close violation details"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+        </header>
+
+        <!-- MAIN CONTENT -->
+
+        <div class="premium-violation-body">
+
+            <div class="premium-top-grid">
+
+                <!-- EVIDENCE -->
+
+                <section class="premium-evidence-card">
+
+                    <div class="premium-section-title">
+
+                        <span class="premium-section-icon blue">
+
+                            <i class="fa-solid fa-camera"></i>
+
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Captured Vehicle Evidence
+                            </strong>
+
+                            <small>
+                                Image submitted by the reporting enforcer
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="premium-evidence-image"
+                        id="adminViolationImage"
+                    >
+
+                        <div class="premium-no-image">
+
+                            <i class="fa-solid fa-camera"></i>
+
+                            <strong>
+                                No captured image
+                            </strong>
+
+                            <span>
+                                No evidence photo was attached.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="premium-evidence-footer">
+
+                        <span>
+
+                            <i class="fa-solid fa-shield-circle-check"></i>
+
+                            PlateTrack evidence record
+
+                        </span>
+
+                        <span id="adminEvidenceDate">
+
+                            <i class="fa-regular fa-clock"></i>
+
+                            —
+
+                        </span>
+
+                    </div>
+
+                </section>
+
+                <!-- PRIMARY DETAILS -->
+
+                <section class="premium-details-grid">
+
+                    <article class="premium-info-card">
+
+                        <span class="premium-info-icon blue">
+
+                            <i class="fa-solid fa-id-card"></i>
+
+                        </span>
+
+                        <div>
+
+                            <span>
+                                Plate Number
+                            </span>
+
+                            <strong id="adminViolationPlate">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                    <article class="premium-info-card warning">
+
+                        <span class="premium-info-icon amber">
+
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        </span>
+
+                        <div>
+
+                            <span>
+                                Violation
+                            </span>
+
+                            <strong id="adminViolationType">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                    <article class="premium-info-card">
+
+                        <span class="premium-info-icon cyan">
+
+                            <i class="fa-solid fa-car-side"></i>
+
+                        </span>
+
+                        <div>
+
+                            <span>
+                                Vehicle Type
+                            </span>
+
+                            <strong id="adminViolationVehicle">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                    <article class="premium-info-card">
+
+                        <span class="premium-info-icon cyan">
+
+                            <i class="fa-solid fa-droplet"></i>
+
+                        </span>
+
+                        <div>
+
+                            <span>
+                                Vehicle Color
+                            </span>
+
+                            <strong id="adminViolationColor">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                    <article class="premium-info-card">
+
+                        <span class="premium-info-icon violet">
+
+                            <i class="fa-solid fa-file-circle-question"></i>
+
+                        </span>
+
+                        <div>
+
+                            <span>
+                                Status
+                            </span>
+
+                            <strong
+                                class="premium-status-badge status-pending"
+                                id="adminViolationStatus"
+                            >
+                                <i
+                                    class="fa-solid fa-clock"
+                                    id="adminViolationStatusIcon"
+                                ></i>
+
+                                <span id="adminViolationStatusText">
+                                    Pending
+                                </span>
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                    <article class="premium-info-card">
+
+                        <span class="premium-info-icon lime">
+
+                            <i class="fa-solid fa-location-dot"></i>
+
+                        </span>
+
+                        <div>
+
+                            <span>
+                                Location
+                            </span>
+
+                            <strong id="adminViolationLocation">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                    <article class="premium-info-card premium-info-wide">
+
+                        <span class="premium-info-icon violet">
+
+                            <i class="fa-solid fa-calendar-days"></i>
+
+                        </span>
+
+                        <div>
+
+                            <span>
+                                Date & Time
+                            </span>
+
+                            <strong id="adminViolationDate">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+            </div>
+
+            <!-- PEOPLE INFORMATION -->
+
+            <div class="premium-people-grid">
+
+                <!-- ENFORCER -->
+
+                <section class="premium-person-card enforcer">
+
+                    <div class="premium-person-title">
+
+                        <span></span>
+
+                        Reporting Enforcer
+
+                    </div>
+
+                    <div class="premium-person-profile">
+
+                        <div
+                            class="premium-person-avatar enforcer-avatar"
+                            id="adminViolationEnforcerInitial"
+                        >
+                            E
+                        </div>
+
+                        <div>
+
+                            <strong id="adminViolationEnforcer">
+                                Unknown Enforcer
+                            </strong>
+
+                            <span>
+                                Authorized Traffic Enforcer
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="premium-person-meta">
+
+                        <div>
+
+                            <span class="premium-meta-icon">
+
+                                <i class="fa-solid fa-id-badge"></i>
+
+                            </span>
+
+                            <div>
+
+                                <small>
+                                    Badge Number
+                                </small>
+
+                                <strong id="adminViolationBadge">
+                                    —
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- OWNER -->
+
+                <section class="premium-person-card owner">
+
+                    <div class="premium-person-title">
+
+                        <span></span>
+
+                        Registered Owner
+
+                    </div>
+
+                    <div class="premium-person-profile">
+
+                        <div
+                            class="premium-person-avatar owner-avatar"
+                            id="adminViolationOwnerInitial"
+                        >
+                            O
+                        </div>
+
+                        <div>
+
+                            <strong id="adminViolationOwner">
+                                No registered owner
+                            </strong>
+
+                            <span>
+                                Registered Vehicle Owner
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="premium-person-meta">
+
+                        <div>
+
+                            <span class="premium-meta-icon">
+
+                                <i class="fa-solid fa-envelope"></i>
+
+                            </span>
+
+                            <div>
+
+                                <small>
+                                    Email Address
+                                </small>
+
+                                <strong id="adminViolationOwnerEmail">
+                                    —
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <!-- OFFICER NOTES -->
+
+            <section class="premium-notes-card">
+
+                <div class="premium-section-title">
+
+                    <span class="premium-section-icon blue">
+
+                        <i class="fa-solid fa-pen-to-square"></i>
+
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Officer Notes
+                        </strong>
+
+                        <small>
+                            Additional remarks from the reporting enforcer
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <p id="adminViolationNotes">
+                    No additional remarks.
+                </p>
+
+            </section>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <footer class="premium-violation-footer">
+
+            <button
+                type="button"
+                class="premium-primary-button"
+                id="adminViewAppealButton"
+                onclick="openViolationAppeals()"
+                style="display:none;"
+            >
+
+                <i class="fa-solid fa-scale-balanced"></i>
+
+                View Appeal Details
+
+            </button>
+
+        </footer>
+
+    </div>
+</div>
+
+<!-- =========================================
+     FULLSCREEN EVIDENCE VIEWER
+========================================== -->
+
+<div
+    class="evidence-lightbox"
+    id="evidenceLightbox"
+    aria-hidden="true"
+>
+    <div class="evidence-lightbox-header">
+
+        <div class="evidence-lightbox-title">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <div>
+                <strong>Vehicle Evidence</strong>
+                <span id="evidenceLightboxPlate">PlateTrack Record</span>
+            </div>
+
+        </div>
+
+        <button
+            type="button"
+            class="evidence-lightbox-close"
+            id="evidenceLightboxClose"
+            aria-label="Close evidence viewer"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+    </div>
+
+    <div
+        class="evidence-lightbox-stage"
+        id="evidenceLightboxStage"
+    >
+        <img
+            id="evidenceLightboxImage"
+            src=""
+            alt="Fullscreen vehicle evidence"
+            draggable="false"
+        >
+    </div>
+
+    <div class="evidence-lightbox-controls">
+
+        <button
+            type="button"
+            id="evidenceZoomOut"
+            aria-label="Zoom out"
+        >
+            <i class="fa-solid fa-minus"></i>
+        </button>
+
+        <span id="evidenceZoomLevel">
+            100%
+        </span>
+
+        <button
+            type="button"
+            id="evidenceZoomIn"
+            aria-label="Zoom in"
+        >
+            <i class="fa-solid fa-plus"></i>
+        </button>
+
+        <button
+            type="button"
+            id="evidenceZoomReset"
+            aria-label="Reset zoom"
+        >
+            <i class="fa-solid fa-rotate-left"></i>
+            Reset
+        </button>
+
+    </div>
+</div>
+
+<script src="js/admin-api.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="js/admin-dashboard.js?v=20260816-6"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>PlateTrack | Violation Form</title>
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet"
+href="../shared/css/modal.css">
+
+<link rel="stylesheet"
+href="../shared/css/violation.css">
+
+<link rel="stylesheet"
+href="css/evidence-capture.css">
+
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="violation-container">
+
+<!-- TOP BAR -->
+
+<header class="topbar">
+
+    <button
+    class="back-btn"
+    type="button"
+    onclick="goBack()">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+    </button>
+
+    <div class="page-title">
+
+        <h2 id="formTitle">
+
+            Violation Form
+
+        </h2>
+
+        <p id="formSubtitle">
+
+            Record traffic violation details
+
+        </p>
+
+    </div>
+
+    <div class="top-space"></div>
+
+</header>
+
+<!-- FORM CARD -->
+
+<section class="form-section">
+
+    <div class="form-card">
+
+        <div class="form-header">
+
+            <div class="form-icon">
+
+                <i class="fa-solid fa-file-pen"></i>
+
+            </div>
+
+            <div>
+
+                <h3>
+
+                    Violation Information
+
+                </h3>
+
+                <p id="formModeText">
+
+                    Fill out the required violation details below.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+VEHICLE INFORMATION
+========================================== -->
+
+<div class="card-title">
+
+    <i class="fa-solid fa-car-side"></i>
+
+    <span>
+
+        Vehicle Information
+
+    </span>
+
+</div>
+
+<div class="input-group">
+
+    <label>
+
+        Plate Number
+
+    </label>
+
+    <input
+    type="text"
+    id="plateNumber"
+    placeholder="ABC 1234"
+    autocomplete="off">
+
+</div>
+
+<div class="input-row">
+
+    <div class="input-group">
+
+        <label>
+
+            Vehicle Type
+
+        </label>
+
+        <input
+        type="text"
+        id="vehicleType"
+        placeholder="Toyota Vios">
+
+    </div>
+
+    <div class="input-group">
+
+        <label>
+
+            Vehicle Color
+
+        </label>
+
+        <input
+        type="text"
+        id="vehicleColor"
+        placeholder="White">
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+VEHICLE EVIDENCE (OPTIONAL PHOTO CAPTURE)
+========================================== -->
+
+<div class="card-title">
+
+    <i class="fa-solid fa-camera"></i>
+
+    <span>
+
+        Vehicle Evidence (Optional)
+
+    </span>
+
+</div>
+
+<div class="evidence-card">
+
+    <div class="evidence-preview" id="evidencePreview">
+
+        <video id="evidenceVideo" autoplay playsinline muted></video>
+
+        <canvas id="evidenceCanvas" style="display:none;"></canvas>
+
+        <img id="evidencePhoto" alt="Captured vehicle evidence">
+
+        <div class="evidence-placeholder" id="evidencePlaceholder">
+
+            <i class="fa-solid fa-camera"></i>
+            <p>No photo captured yet</p>
+            <small>Attach a photo if you're recording this violation manually.</small>
+
+        </div>
+
+    </div>
+
+    <div class="evidence-buttons">
+
+        <button
+        type="button"
+        id="openCameraBtn"
+        class="evidence-btn primary"
+        onclick="openEvidenceCamera()">
+
+            <i class="fa-solid fa-camera"></i>
+            Open Camera
+
+        </button>
+
+        <button
+        type="button"
+        id="captureEvidenceBtn"
+        class="evidence-btn primary"
+        style="display:none;"
+        onclick="captureEvidencePhoto()">
+
+            <i class="fa-solid fa-crosshairs"></i>
+            Capture Photo
+
+        </button>
+
+        <button
+        type="button"
+        id="retakeEvidenceBtn"
+        class="evidence-btn secondary"
+        style="display:none;"
+        onclick="retakeEvidencePhoto()">
+
+            <i class="fa-solid fa-rotate"></i>
+            Retake Photo
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+VIOLATION INFORMATION
+========================================== -->
+
+<div class="card-title">
+
+    <i class="fa-solid fa-triangle-exclamation"></i>
+
+    <span>
+
+        Violation Information
+
+    </span>
+
+</div>
+
+<div class="input-group">
+
+    <label>
+
+        Violation Type
+
+    </label>
+
+    <select id="violationType">
+
+        <option value="">
+
+            -- Select Violation --
+
+        </option>
+
+        <option>Illegal Parking</option>
+
+        <option>Obstruction</option>
+
+        <option>No Seatbelt</option>
+
+        <option>Overspeeding</option>
+
+        <option>Reckless Driving</option>
+
+        <option>No Loading / Unloading</option>
+
+        <option>Counterflow</option>
+
+        <option>Expired Registration</option>
+
+        <option>Driving Without a Valid License</option>
+
+        <option>Others</option>
+
+    </select>
+
+</div>
+
+<div
+id="otherViolationGroup"
+class="input-group"
+style="display:none;">
+
+    <label>
+
+        Specify Violation
+
+    </label>
+
+    <input
+    type="text"
+    id="otherViolation"
+    placeholder="Enter specific traffic violation">
+
+</div>
+
+<div class="input-group">
+
+    <label>
+
+        Officer Notes (Optional)
+
+    </label>
+
+    <textarea
+    id="officerNotes"
+    rows="5"
+    placeholder="Enter additional remarks..."></textarea>
+
+</div>
+
+<!-- ==========================================
+LOCATION / OFFICER / DATE
+========================================== -->
+
+<div class="card-title">
+
+    <i class="fa-solid fa-location-dot"></i>
+
+    <span>Record Information</span>
+
+</div>
+
+<div class="input-group">
+
+    <label>Location</label>
+
+    <input
+    type="text"
+    id="location"
+    value="Antipolo City"
+    readonly>
+
+</div>
+
+<div class="input-row">
+
+    <div class="input-group">
+
+        <label>Officer</label>
+
+        <input
+        type="text"
+        id="officerName"
+        value=""
+        placeholder="Loading..."
+        readonly>
+
+    </div>
+
+    <div class="input-group">
+
+        <label>Badge No.</label>
+
+        <input
+        type="text"
+        id="badgeNumber"
+        value=""
+        placeholder="Loading..."
+        readonly>
+
+    </div>
+
+</div>
+
+<div class="input-group">
+
+    <label>Date & Time</label>
+
+    <input
+    type="text"
+    id="recordDateTime"
+    readonly>
+
+</div>
+
+<div class="button-group">
+
+    <button
+    type="button"
+    class="cancel-btn"
+    onclick="goBack()">
+
+        <i class="fa-solid fa-xmark"></i>
+
+        Cancel
+
+    </button>
+
+    <button
+    type="button"
+    class="save-btn"
+    onclick="saveViolation()">
+
+        <i class="fa-solid fa-floppy-disk"></i>
+
+        Save Violation
+
+    </button>
+
+</div>
+
+</div>
+
+<!-- ==========================================
+GLOBAL MODAL
+========================================== -->
+
+<div id="globalModal" class="modal">
+
+    <div class="modal-box">
+
+        <div id="modalIcon" class="modal-icon">✅</div>
+        <div id="modalTitle" class="modal-title">Success</div>
+        <div id="modalMessage" class="modal-message">Message</div>
+        <div id="modalButtons" class="modal-buttons"></div>
+
+    </div>
+
+</div>
+
+<script src="../shared/js/config.js"></script>
+<script src="../shared/js/modal.js"></script>
+<script src="../shared/js/theme.js"></script>
+<script src="js/violation-form.js?v=20260819-1"></script>
+
+</body>
+</html>

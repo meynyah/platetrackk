@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>PlateTrack | File an Appeal</title>
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet"
+href="../shared/css/modal.css">
+
+<link rel="stylesheet"
+href="../shared/css/violation.css">
+
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="violation-container">
+
+<!-- TOP BAR -->
+
+<header class="topbar">
+
+    <button
+    class="back-btn"
+    type="button"
+    onclick="window.location.href='owner-violations.html'">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+    </button>
+
+    <div class="page-title">
+
+        <h2>
+
+            File an Appeal
+
+        </h2>
+
+        <p>
+
+            Contest a recorded traffic violation
+
+        </p>
+
+    </div>
+
+    <div class="top-space"></div>
+
+</header>
+
+<!-- FORM CARD -->
+
+<section class="form-section">
+
+    <div class="form-card">
+
+        <div class="form-header">
+
+            <div class="form-icon">
+
+                <i class="fa-solid fa-file-pen"></i>
+
+            </div>
+
+            <div>
+
+                <h3>
+
+                    Appeal Information
+
+                </h3>
+
+                <p>
+
+                    Review the violation details and explain your appeal below.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+VIOLATION BEING APPEALED
+========================================== -->
+
+<div class="card-title">
+
+    <i class="fa-solid fa-car-side"></i>
+
+    <span>
+
+        Violation Being Appealed
+
+    </span>
+
+</div>
+
+<div class="input-row">
+
+    <div class="input-group">
+
+        <label>
+
+            Plate Number
+
+        </label>
+
+        <input
+        type="text"
+        id="plateNumber"
+        readonly>
+
+    </div>
+
+    <div class="input-group">
+
+        <label>
+
+            Record ID
+
+        </label>
+
+        <input
+        type="text"
+        id="recordId"
+        readonly>
+
+    </div>
+
+</div>
+
+<div class="input-row">
+
+    <div class="input-group">
+
+        <label>
+
+            Violation
+
+        </label>
+
+        <input
+        type="text"
+        id="violationType"
+        readonly>
+
+    </div>
+
+    <div class="input-group">
+
+        <label>
+
+            Date & Time
+
+        </label>
+
+        <input
+        type="text"
+        id="violationDate"
+        readonly>
+
+    </div>
+
+</div>
+
+<div class="input-group">
+
+    <label>
+
+        Location
+
+    </label>
+
+    <input
+    type="text"
+    id="violationLocation"
+    readonly>
+
+</div>
+
+<!-- ==========================================
+APPEAL DETAILS
+========================================== -->
+
+<div class="card-title">
+
+    <i class="fa-solid fa-scale-balanced"></i>
+
+    <span>
+
+        Appeal Details
+
+    </span>
+
+</div>
+
+<div class="input-group">
+
+    <label>
+
+        Reason for Appeal
+
+    </label>
+
+    <select id="appealReason">
+
+        <option value="">
+
+            -- Select Reason --
+
+        </option>
+
+        <option>I am not the vehicle owner at the time of the violation</option>
+
+        <option>The plate number was misread or incorrect</option>
+
+        <option>The violation did not occur as recorded</option>
+
+        <option>The fine has already been paid or settled</option>
+
+        <option>Others</option>
+
+    </select>
+
+</div>
+
+<div
+id="otherReasonGroup"
+class="input-group"
+style="display:none;">
+
+    <label>
+
+        Specify Reason
+
+    </label>
+
+    <input
+    type="text"
+    id="otherReason"
+    placeholder="Enter your specific reason">
+
+</div>
+
+<div class="input-group">
+
+    <label>
+
+        Explanation
+
+    </label>
+
+    <textarea
+    id="explanation"
+    rows="5"
+    placeholder="Explain your appeal in detail..."></textarea>
+
+</div>
+
+<div class="button-group">
+
+    <button
+    type="button"
+    class="cancel-btn"
+    onclick="window.location.href='owner-violations.html'">
+
+        <i class="fa-solid fa-xmark"></i>
+
+        Cancel
+
+    </button>
+
+    <button
+    type="button"
+    class="save-btn"
+    id="submitAppealBtn"
+    onclick="submitAppeal()">
+
+        <i class="fa-solid fa-paper-plane"></i>
+
+        Submit Appeal
+
+    </button>
+
+</div>
+
+</div>
+
+<!-- ==========================================
+GLOBAL MODAL
+========================================== -->
+
+<div id="globalModal" class="modal">
+
+    <div class="modal-box">
+
+        <div id="modalIcon" class="modal-icon">✅</div>
+
+        <div id="modalTitle" class="modal-title">Success</div>
+
+        <div id="modalMessage" class="modal-message">Message</div>
+
+        <div id="modalButtons" class="modal-buttons"></div>
+
+    </div>
+
+</div>
+
+<script src="../shared/js/config.js"></script>
+<script src="../shared/js/modal.js"></script>
+<script src="../shared/js/theme.js"></script>
+<script src="js/appeal-form.js"></script>
+
+</body>
+</html>

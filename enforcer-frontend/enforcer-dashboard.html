@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>PlateTrack | Enforcer Dashboard</title>
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet"
+href="../shared/css/modal.css?v=20260816-1">
+
+<link rel="stylesheet"
+href="../shared/css/dashboard.css?v=20260820-1">
+
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="container">
+
+<!-- ===========================
+TOP BAR
+=========================== -->
+
+<header class="topbar">
+
+    <div class="logo">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <span>
+
+            PlateTrack
+
+        </span>
+
+    </div>
+
+    <div class="top-actions">
+
+        <button
+        class="notification-btn"
+        type="button"
+        onclick="openNotificationModal()"
+        aria-label="Open notifications">
+
+            <i class="fa-solid fa-bell"></i>
+
+            <span
+            id="notificationCount"
+            class="notification-count">
+
+                0
+
+            </span>
+
+        </button>
+
+        <div class="menu-wrapper">
+
+            <button
+            class="menu-btn"
+            type="button"
+            onclick="toggleMenu()"
+            aria-label="Open menu">
+
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+
+            </button>
+
+            <div
+            id="headerMenu"
+            class="header-menu">
+
+                <a href="settings.html">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    Settings
+
+                </a>
+
+                <a
+                href="#"
+                onclick="confirmLogout(); return false;">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Logout
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+<!-- ===========================
+WELCOME CARD
+=========================== -->
+
+<section class="welcome-card">
+
+    <div class="avatar">
+
+        <i class="fa-solid fa-user-shield"></i>
+
+    </div>
+
+    <div class="welcome-content">
+
+        <p
+        id="greeting"
+        class="greeting">
+
+            Good Morning ☀️
+
+        </p>
+
+        <h1 id="enforcerName">
+
+            Loading...
+
+        </h1>
+
+        <p class="badge-number">
+
+            Badge No. <span id="badgeNumber">Loading...</span>
+
+        </p>
+
+        <div class="info-row">
+
+            <span class="status">
+
+                <i class="fa-solid fa-circle"></i>
+
+                On Duty
+
+            </span>
+
+            <span class="date-time">
+
+                <i class="fa-solid fa-calendar-days"></i>
+
+                <span id="todayDate"></span>
+
+                <span class="dot-separator">•</span>
+
+                <i class="fa-solid fa-clock"></i>
+
+                <span id="liveTime"></span>
+
+            </span>
+
+        </div>
+
+        <p class="welcome-message">
+
+            Ready for today's patrol? Stay alert and keep Antipolo roads safe.
+
+        </p>
+
+    </div>
+
+</section>
+
+<!-- ===========================
+SCAN HERO
+=========================== -->
+
+<section class="scan-section">
+
+    <button
+    class="scan-btn"
+    type="button"
+    onclick="startDetection()">
+
+        <div class="scan-circle">
+
+            <i class="fa-solid fa-camera"></i>
+
+        </div>
+
+        <h2>
+
+            START LICENSE PLATE DETECTION
+
+        </h2>
+
+        <p>
+
+            Tap here to open the camera and detect a vehicle's license plate.
+
+        </p>
+
+    </button>
+
+</section>
+
+<!-- ===========================
+TODAY'S SUMMARY
+=========================== -->
+
+<section class="summary-section">
+
+    <div class="section-header">
+
+        <h2>
+
+            Today's Summary
+
+        </h2>
+
+    </div>
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+
+                <i class="fa-solid fa-car"></i>
+
+            </div>
+
+            <h2 id="vehicleCount" class="is-loading">
+
+                &ndash;
+
+            </h2>
+
+            <p>
+
+                Plates Detected
+
+            </p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+            </div>
+
+            <h2 id="violationCount" class="is-loading">
+
+                &ndash;
+
+            </h2>
+
+            <p>
+
+                Violations
+
+            </p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+
+                <i class="fa-solid fa-file-circle-check"></i>
+
+            </div>
+
+            <h2 id="pendingReports" class="is-loading">
+
+                &ndash;
+
+            </h2>
+
+            <p>
+
+                Pending Reports
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ===========================
+QUICK ACTIONS
+=========================== -->
+
+<section class="quick-actions">
+
+    <div class="section-header">
+
+        <h2>
+
+            Quick Actions
+
+        </h2>
+
+    </div>
+
+    <div class="action-grid">
+
+        <button
+        class="action-card"
+        type="button"
+        onclick="startDetection()">
+
+            <div class="action-icon">
+
+                <i class="fa-solid fa-camera"></i>
+
+            </div>
+
+            <span>
+
+                Start Detection
+
+            </span>
+
+        </button>
+
+        <button
+        class="action-card"
+        type="button"
+        onclick="window.location.href='violation-form.html'">
+
+            <div class="action-icon">
+
+                <i class="fa-solid fa-file-pen"></i>
+
+            </div>
+
+            <span>
+
+                Manual Violation
+
+            </span>
+
+        </button>
+
+        <button
+        class="action-card"
+        type="button"
+        onclick="window.location.href='history.html'">
+
+            <div class="action-icon">
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+            </div>
+
+            <span>
+
+                Violation History
+
+            </span>
+
+        </button>
+
+        <button
+        class="action-card"
+        type="button"
+        onclick="window.location.href='detection-result.html'">
+
+            <div class="action-icon">
+
+                <i class="fa-solid fa-square-poll-vertical"></i>
+
+            </div>
+
+            <span>
+
+                Detection Result
+
+            </span>
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ===========================
+RECENT DETECTIONS
+=========================== -->
+
+<section class="recent-section">
+
+    <div class="section-header">
+
+        <h2>
+
+            Recent Detection
+
+        </h2>
+
+        <a href="history.html">
+
+            View All
+
+            <i class="fa-solid fa-angle-right"></i>
+
+        </a>
+
+    </div>
+
+    <div id="recentDetection">
+
+        <div class="recent-loading-state">
+
+            <div class="recent-loading-spinner">
+                <i class="fa-solid fa-car"></i>
+            </div>
+
+            <p>Loading recent detections...</p>
+
+            <div class="recent-skeleton-card"></div>
+            <div class="recent-skeleton-card"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ===========================
+NOTIFICATION MODAL
+=========================== -->
+
+<div
+id="notificationModal"
+class="modal">
+
+    <div class="modal-box notification-modal-box">
+
+        <div class="notification-modal-header">
+
+            <div class="notification-modal-heading">
+
+                <i class="fa-solid fa-bell"></i>
+
+                <span>Notifications</span>
+
+            </div>
+
+            <button
+            type="button"
+            class="notification-modal-close"
+            onclick="closeNotificationModal()"
+            aria-label="Close notifications">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div
+        id="notificationList"
+        class="notification-modal-list">
+
+            <div class="notification-item simple">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <span>
+
+                    No new notifications.
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+GLOBAL MODAL
+=========================== -->
+
+<div
+id="globalModal"
+class="modal">
+
+    <div class="modal-box">
+
+        <div
+        id="modalIcon"
+        class="modal-icon">
+
+            ✅
+
+        </div>
+
+        <div
+        id="modalTitle"
+        class="modal-title">
+
+            Success
+
+        </div>
+
+        <div
+        id="modalMessage"
+        class="modal-message">
+
+            Message
+
+        </div>
+
+        <div
+        id="modalButtons"
+        class="modal-buttons">
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+BOTTOM NAVIGATION
+=========================== -->
+
+<nav class="bottom-nav">
+
+    <a
+    href="enforcer-dashboard.html"
+    class="nav-item active">
+
+        <i class="fa-solid fa-house"></i>
+
+        <span>
+
+            Home
+
+        </span>
+
+    </a>
+
+    <a
+    href="camera.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-camera"></i>
+
+        <span>
+
+            Detect
+
+        </span>
+
+    </a>
+
+    <a
+    href="history.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-clock-rotate-left"></i>
+
+        <span>
+
+            History
+
+        </span>
+
+    </a>
+
+    <a
+    href="profile.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-user"></i>
+
+        <span>
+
+            Profile
+
+        </span>
+
+    </a>
+
+</nav>
+
+</div>
+
+<script src="../shared/js/config.js"></script>
+<script src="../shared/js/modal.js?v=20260816-1"></script>
+<script src="../shared/js/theme.js"></script>
+<script src="js/dashboard.js?v=20260820-1"></script>
+
+</body>
+
+</html>

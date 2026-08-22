@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>PlateTrack | My Violations</title>
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet"
+href="../shared/css/modal.css">
+
+<link rel="stylesheet"
+href="../shared/css/history.css?v=20260819-1">
+
+<link rel="stylesheet"
+href="css/owner-portal.css">
+
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="history-container">
+
+<!-- ==========================================
+TOP BAR
+========================================== -->
+
+<header class="topbar">
+
+    <button
+    class="back-btn"
+    onclick="window.location.href='owner-dashboard.html'">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+    </button>
+
+    <div class="page-title">
+
+        <h2>
+
+            My Violations
+
+        </h2>
+
+        <p>
+
+            Violations recorded for your registered plates
+
+        </p>
+
+    </div>
+
+    <div class="top-space"></div>
+
+</header>
+
+<!-- ==========================================
+SEARCH
+========================================== -->
+
+<section class="search-section">
+
+    <div class="search-box">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+        type="text"
+        id="searchInput"
+        placeholder="Search Plate Number..."
+        onkeyup="applyFilters()">
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+FILTER
+========================================== -->
+
+<section class="filter-section">
+
+    <select
+    id="appealFilter"
+    onchange="applyFilters()">
+
+        <option value="">
+
+            All Violations
+
+        </option>
+
+        <option value="none">
+
+            No Appeal Filed
+
+        </option>
+
+        <option value="Pending">
+
+            Appeal Pending
+
+        </option>
+
+        <option value="Approved">
+
+            Appeal Approved
+
+        </option>
+
+        <option value="Denied">
+
+            Appeal Denied
+
+        </option>
+
+    </select>
+
+</section>
+
+<!-- ==========================================
+VIOLATIONS LIST
+========================================== -->
+
+<section
+id="historyList"
+class="history-list">
+
+    <!-- Violation cards will appear here -->
+
+</section>
+
+<!-- ==========================================
+EMPTY STATE
+========================================== -->
+
+<div
+id="emptyState"
+class="empty-state">
+
+    <div class="empty-icon">
+
+        <i class="fa-solid fa-circle-check"></i>
+
+    </div>
+
+    <h3>
+
+        No Violations Found
+
+    </h3>
+
+    <p>
+
+        Your registered plate number(s) have no recorded violations.
+
+    </p>
+
+</div>
+
+</div>
+
+<!-- ==========================================
+BOTTOM NAVIGATION
+========================================== -->
+
+<nav class="bottom-nav">
+
+    <a
+    href="owner-dashboard.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-house"></i>
+
+        <span>Home</span>
+
+    </a>
+
+    <a
+    href="owner-violations.html"
+    class="nav-item active">
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+
+        <span>Violations</span>
+
+    </a>
+
+    <a
+    href="owner-profile.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-user"></i>
+
+        <span>Profile</span>
+
+    </a>
+
+</nav>
+
+<!-- ==========================================
+VIOLATION DETAILS MODAL
+========================================== -->
+
+<div
+id="detailsModal"
+class="details-modal">
+
+    <div class="details-box">
+
+        <div class="details-header">
+
+            <h2>
+
+                <i class="fa-solid fa-file-lines"></i>
+
+                Violation Details
+
+            </h2>
+
+            <button
+            class="close-details"
+            type="button"
+            onclick="closeDetailsModal()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div class="details-content">
+
+            <div class="evidence-section">
+
+                <div class="evidence-title">
+
+                    <i class="fa-solid fa-camera"></i>
+
+                    Captured Vehicle Evidence
+
+                </div>
+
+                <div
+                class="captured-detail-image"
+                id="capturedDetailImage">
+
+                    <div class="no-image-box">
+
+                        <i class="fa-solid fa-camera"></i>
+
+                        <p>No captured image available</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span>Record ID</span>
+
+                <strong id="detailRecordId"></strong>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span>Plate Number</span>
+
+                <strong id="detailPlate"></strong>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span>Vehicle</span>
+
+                <strong id="detailVehicle"></strong>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span>Color</span>
+
+                <strong id="detailColor"></strong>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span>Violation</span>
+
+                <strong id="detailViolation"></strong>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span>Location</span>
+
+                <strong id="detailLocation"></strong>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span>Date & Time</span>
+
+                <strong id="detailDate"></strong>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span>Officer Notes</span>
+
+                <strong id="detailNotes"></strong>
+
+            </div>
+
+            <div id="detailAppealSection"></div>
+
+        </div>
+
+        <div class="details-footer">
+
+            <button
+            class="close-modal-btn"
+            type="button"
+            onclick="closeDetailsModal()">
+
+                Close
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+GLOBAL MODAL
+========================================== -->
+
+<div
+id="globalModal"
+class="modal">
+
+    <div class="modal-box">
+
+        <div id="modalIcon" class="modal-icon">✅</div>
+
+        <div id="modalTitle" class="modal-title">Success</div>
+
+        <div id="modalMessage" class="modal-message">Message</div>
+
+        <div id="modalButtons" class="modal-buttons"></div>
+
+    </div>
+
+</div>
+
+<script src="../shared/js/config.js"></script>
+<script src="../shared/js/modal.js"></script>
+<script src="../shared/js/theme.js"></script>
+<script src="js/owner-violations.js"></script>
+
+</body>
+
+</html>

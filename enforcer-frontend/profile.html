@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>PlateTrack | Officer Profile</title>
+
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link
+rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link
+rel="stylesheet"
+href="../shared/css/modal.css">
+
+<link
+rel="stylesheet"
+href="../shared/css/profile.css?v=20260819-1">
+
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="container">
+
+<!-- ==========================
+TOP BAR
+========================== -->
+
+<header class="topbar">
+
+<button
+class="menu-btn"
+onclick="window.location.href='enforcer-dashboard.html'">
+
+<i class="fa-solid fa-arrow-left"></i>
+
+</button>
+
+<div class="logo">
+
+Profile
+
+</div>
+
+<div class="topbar-space"></div>
+
+</header>
+
+<!-- ==========================
+PROFILE HEADER
+========================== -->
+
+<section class="profile-header">
+
+<div class="avatar" id="avatarWrapper">
+
+<img id="avatarImage" alt="Profile picture">
+<i class="fa-solid fa-user-shield" id="avatarIcon"></i>
+<label class="avatar-upload-btn" for="avatarUploadInput" aria-label="Upload profile picture"><i class="fa-solid fa-camera"></i></label>
+<input id="avatarUploadInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+
+</div>
+
+<div class="profile-info">
+
+<h1
+id="officerName">
+
+Loading...
+
+</h1>
+
+<p class="officer-role">
+
+Traffic Enforcer
+
+</p>
+
+<div
+class="badge-number"
+id="badgeNumber">
+
+Loading...
+
+</div>
+
+<div class="profile-status">
+
+<span class="status">
+
+🟢 Active Duty
+
+</span>
+
+<span
+class="joined-date"
+id="joinedDate">
+
+Joined 2026
+
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ==========================
+PERSONAL INFORMATION
+========================== -->
+
+<section class="profile-card">
+
+<div class="section-header">
+
+<h2>
+
+Personal Information
+
+</h2>
+
+</div>
+
+<div class="info-list">
+
+<div class="info-item">
+
+<div class="info-icon">
+
+<i class="fa-solid fa-envelope"></i>
+
+</div>
+
+<div class="info-content">
+
+<span>
+
+Email Address
+
+</span>
+
+<strong
+id="emailText">
+
+Loading...
+
+</strong>
+
+</div>
+
+</div>
+
+<div class="info-item">
+
+<div class="info-icon">
+
+<i class="fa-solid fa-phone"></i>
+
+</div>
+
+<div class="info-content">
+
+<span>
+
+Contact Number
+
+</span>
+
+<strong
+id="contactText">
+
+Loading...
+
+</strong>
+
+</div>
+
+</div>
+
+<div class="info-item">
+
+<div class="info-icon">
+
+<i class="fa-solid fa-location-dot"></i>
+
+</div>
+
+<div class="info-content">
+
+<span>
+
+Assigned Area
+
+</span>
+
+<strong
+id="areaText">
+
+Antipolo City
+
+</strong>
+
+</div>
+
+</div>
+
+<div class="info-item">
+
+<div class="info-icon">
+
+<i class="fa-solid fa-building"></i>
+
+</div>
+
+<div class="info-content">
+
+<span>
+
+Station
+
+</span>
+
+<strong>
+
+Antipolo Traffic Management Office
+
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ==========================
+ACCOUNT
+========================== -->
+
+<section class="profile-card">
+
+<div class="section-header">
+
+<h2>
+
+Account
+
+</h2>
+
+</div>
+
+<div class="settings-list">
+
+<button
+class="setting-item"
+onclick="openEditModal()">
+
+<div class="setting-left">
+
+<div class="setting-icon">
+
+<i class="fa-solid fa-user-pen"></i>
+
+</div>
+
+<div>
+
+<h3>
+
+Edit Profile
+
+</h3>
+
+<p>
+
+Update your email, contact number and assigned area.
+
+</p>
+
+</div>
+
+</div>
+
+<i class="fa-solid fa-chevron-right"></i>
+
+</button>
+
+<button
+class="setting-item"
+onclick="openPasswordModal()">
+
+<div class="setting-left">
+
+<div class="setting-icon">
+
+<i class="fa-solid fa-lock"></i>
+
+</div>
+
+<div>
+
+<h3>
+
+Change Password
+
+</h3>
+
+<p>
+
+Secure your PlateTrack account.
+
+</p>
+
+</div>
+
+</div>
+
+<i class="fa-solid fa-chevron-right"></i>
+
+</button>
+
+<button
+class="setting-item"
+onclick="aboutPlateTrack()">
+
+<div class="setting-left">
+
+<div class="setting-icon">
+
+<i class="fa-solid fa-circle-info"></i>
+
+</div>
+
+<div>
+
+<h3>
+
+About PlateTrack
+
+</h3>
+
+<p>
+
+Application information and version.
+
+</p>
+
+</div>
+
+</div>
+
+<i class="fa-solid fa-chevron-right"></i>
+
+</button>
+
+</div>
+
+</section>
+
+<!-- ==========================
+EDIT PROFILE MODAL
+========================== -->
+
+<div
+id="editModal"
+class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
+
+                Edit Profile
+
+            </h2>
+
+            <button
+            class="close-btn"
+            onclick="closeEditModal()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-content">
+
+            <div class="input-group">
+
+                <label>
+
+                    Email Address
+
+                </label>
+
+                <input
+                type="email"
+                id="editEmail">
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+
+                    Contact Number
+
+                </label>
+
+                <input
+                type="text"
+                id="editContact">
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+
+                    Assigned Area
+
+                </label>
+
+                <input
+                type="text"
+                id="editArea">
+
+            </div>
+
+        </div>
+
+        <div class="modal-buttons">
+
+            <button
+            class="cancel-btn"
+            onclick="closeEditModal()">
+
+                Cancel
+
+            </button>
+
+            <button
+            class="save-btn"
+            onclick="saveProfile()">
+
+                Save Changes
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ==========================
+CHANGE PASSWORD MODAL
+========================== -->
+
+<div
+id="passwordModal"
+class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
+
+                Change Password
+
+            </h2>
+
+            <button
+            class="close-btn"
+            onclick="closePasswordModal()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-content">
+
+            <div class="input-group">
+
+                <label>
+
+                    Current Password
+
+                </label>
+
+                <input
+                type="password"
+                id="currentPassword"
+                placeholder="Enter current password">
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+
+                    New Password
+
+                </label>
+
+                <input
+                type="password"
+                id="newPassword"
+                placeholder="Enter new password">
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+
+                    Confirm Password
+
+                </label>
+
+                <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm new password">
+
+            </div>
+
+        </div>
+
+        <div class="modal-buttons">
+
+            <button
+            class="cancel-btn"
+            onclick="closePasswordModal()">
+
+                Cancel
+
+            </button>
+
+            <button
+            class="save-btn"
+            onclick="savePassword()">
+
+                Update Password
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ==========================
+GLOBAL MODAL
+========================== -->
+
+<div
+id="globalModal"
+class="modal">
+
+    <div class="modal-box">
+
+        <div
+        id="modalIcon"
+        class="modal-icon">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+        </div>
+
+        <div
+        id="modalTitle"
+        class="modal-title">
+
+            Success
+
+        </div>
+
+        <div
+        id="modalMessage"
+        class="modal-message">
+
+            Message
+
+        </div>
+
+        <div
+        id="modalButtons"
+        class="modal-buttons">
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ==========================
+BOTTOM NAVIGATION
+========================== -->
+
+<nav class="bottom-nav">
+
+    <a
+    href="enforcer-dashboard.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-house"></i>
+
+        <span>
+
+            Home
+
+        </span>
+
+    </a>
+
+    <a
+    href="camera.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-camera"></i>
+
+        <span>
+
+            Detect
+
+        </span>
+
+    </a>
+
+    <a
+    href="history.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-clock-rotate-left"></i>
+
+        <span>
+
+            History
+
+        </span>
+
+    </a>
+
+    <a
+    href="profile.html"
+    class="nav-item active">
+
+        <i class="fa-solid fa-user"></i>
+
+        <span>
+
+            Profile
+
+        </span>
+
+    </a>
+
+</nav>
+
+</div>
+
+<script src="../shared/js/modal.js"></script>
+<script src="../shared/js/theme.js"></script>
+<script src="js/profile.js?v=20260819-1"></script>
+
+</body>
+</html>

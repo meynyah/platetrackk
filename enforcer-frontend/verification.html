@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PlateTrack | Email Verification</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="../shared/css/verification.css">
+    <link rel="stylesheet" href="../shared/css/modal.css">
+
+</head>
+
+<body>
+
+    <div class="background-grid"></div>
+
+    <main class="login-wrapper">
+
+        <section class="login-card">
+
+            <!-- LOGO AREA -->
+
+            <div class="logo-area">
+
+                <div class="logo-box">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <h1>PlateTrack</h1>
+
+                <span class="badge">
+                    ANTIPOLO CITY LGU
+                </span>
+
+                <p class="portal">
+                    Email Verification
+                </p>
+
+            </div>
+
+            <!-- WELCOME TEXT -->
+
+            <div class="welcome">
+
+                <h2>Verify Your Identity</h2>
+
+                <p>
+                    We sent a <strong>6-digit verification code</strong> to
+                </p>
+
+                <div class="masked-email" id="maskedEmail">
+                    officer@platetrack.gov.ph
+                </div>
+
+            </div>
+
+            <!-- VERIFICATION FORM -->
+
+            <form id="verificationForm" autocomplete="off">
+
+                <div class="verification-box" id="verificationBox">
+
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="1"
+                        class="code-input"
+                        aria-label="Digit 1">
+
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="1"
+                        class="code-input"
+                        aria-label="Digit 2">
+
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="1"
+                        class="code-input"
+                        aria-label="Digit 3">
+
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="1"
+                        class="code-input"
+                        aria-label="Digit 4">
+
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="1"
+                        class="code-input"
+                        aria-label="Digit 5">
+
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="1"
+                        class="code-input"
+                        aria-label="Digit 6">
+
+                </div>
+
+                <div class="resend">
+
+                    <span>
+                        Didn't receive the code?
+                    </span>
+
+                    <button
+                        type="button"
+                        id="resendCode">
+
+                        Resend Code
+
+                    </button>
+
+                </div>
+
+                <button
+                    type="submit"
+                    id="verifyBtn"
+                    class="verify-btn">
+
+                    Verify Code
+
+                </button>
+
+            </form>
+
+            <!-- BACK LINK -->
+
+            <div class="back-link">
+
+                <a href="forgot-password.html">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to Forgot Password
+                </a>
+
+            </div>
+
+            <!-- FOOTER -->
+
+            <div class="footer">
+
+                <span>
+                    <i class="fa-solid fa-lock"></i>
+                    Secure Verification
+                </span>
+
+                <small>
+                    Developed for Antipolo City LGU
+                </small>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- GLOBAL MODAL -->
+
+    <div id="globalModal" class="modal">
+
+        <div class="modal-box">
+
+            <div
+                id="modalIcon"
+                class="modal-icon">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+            </div>
+
+            <div
+                id="modalTitle"
+                class="modal-title">
+
+                Success
+
+            </div>
+
+            <div
+                id="modalMessage"
+                class="modal-message">
+
+                Message
+
+            </div>
+
+            <div
+                id="modalButtons"
+                class="modal-buttons">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="../shared/js/config.js"></script>
+    <script src="../shared/js/modal.js"></script>
+    <script src="js/verification.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,139 @@
+/* ==========================================
+   PLATETRACK
+   MANUAL VIOLATION - EVIDENCE CAPTURE
+   (Used by violation-form.html)
+========================================== */
+
+.evidence-card{
+    margin-bottom:20px;
+}
+
+.evidence-preview{
+    position:relative;
+    width:100%;
+    height:260px;
+    border-radius:18px;
+    overflow:hidden;
+    background:#0e1a2e;
+    border:1px solid rgba(255,255,255,.08);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+#evidenceVideo{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+}
+
+#evidencePhoto{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+}
+
+.evidence-placeholder{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    text-align:center;
+    padding:24px;
+    color:#a8b9d9;
+}
+
+.evidence-placeholder i{
+    font-size:40px;
+    color:#6fa8ff;
+}
+
+.evidence-placeholder p{
+    font-size:15px;
+    color:#dce7ff;
+    font-weight:700;
+}
+
+.evidence-placeholder small{
+    color:#8fa7d3;
+    max-width:260px;
+}
+
+.evidence-buttons{
+    display:flex;
+    gap:14px;
+    margin-top:16px;
+}
+
+.evidence-btn{
+    flex:1;
+    border:none;
+    border-radius:16px;
+    padding:15px;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    transition:.30s ease;
+}
+
+.evidence-btn.primary{
+    background:linear-gradient(135deg,#3d6cff,#5b8cff);
+    color:#ffffff;
+    box-shadow:0 12px 28px rgba(61,108,255,.30);
+}
+
+.evidence-btn.primary:hover{
+    transform:translateY(-3px);
+}
+
+.evidence-btn.secondary{
+    background:#2b364b;
+    color:#ffffff;
+}
+
+.evidence-btn.secondary:hover{
+    background:#42516d;
+    transform:translateY(-3px);
+}
+
+@media(max-width:480px){
+
+    .evidence-preview{
+        height:220px;
+    }
+
+    .evidence-buttons{
+        flex-direction:column;
+    }
+
+}
+
+/* ==========================================
+   LIGHT MODE
+========================================== */
+
+body.light-mode .evidence-preview{
+    background:#f7f9fc;
+    border-color:rgba(36,58,88,.10);
+}
+
+body.light-mode .evidence-placeholder p{
+    color:#132033;
+}
+
+body.light-mode .evidence-placeholder small{
+    color:#52627a;
+}
+
+body.light-mode .evidence-btn.secondary{
+    background:#ffffff;
+    color:#132033;
+    border:1px solid rgba(36,58,88,.10);
+}

@@ -1,0 +1,426 @@
+/* ==========================================
+   PLATETRACK
+   OWNER PORTAL - SHARED STYLES
+   (Used by owner-dashboard.html and owner-violations.html)
+========================================== */
+
+/* ==========================================
+   PLATE CHIPS
+   (owner-dashboard.html - registered plates list)
+========================================== */
+
+#plateList{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.plate-chip{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 16px;
+    background:rgba(61,108,255,.12);
+    border:1px solid rgba(61,108,255,.30);
+    border-radius:30px;
+    font-weight:700;
+    letter-spacing:1px;
+    color:#dce7ff;
+}
+
+.plate-chip i{
+    color:#6fa8ff;
+}
+
+.plate-chip-detail{
+    color:#9fb2d8;
+    font-weight:500;
+    letter-spacing:normal;
+    font-size:13px;
+}
+
+/* ==========================================
+   APPEAL STATUS BADGE
+   (owner-violations.html - violation cards)
+========================================== */
+
+.appeal-badge{
+    padding:8px 14px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.appeal-badge.pending{
+    background:rgba(245,158,11,.15);
+    color:#fbbf24;
+}
+
+.appeal-badge.approved{
+    background:rgba(34,197,94,.15);
+    color:#4ade80;
+}
+
+.appeal-badge.denied{
+    background:rgba(239,68,68,.15);
+    color:#f87171;
+}
+
+/* ==========================================
+   FILE APPEAL BUTTON
+   (owner-violations.html - violation cards)
+========================================== */
+
+.appeal-btn{
+    width:100%;
+    margin-top:14px;
+    border:none;
+    border-radius:16px;
+    padding:14px;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    background:linear-gradient(135deg,#3d6cff,#5b8cff);
+    color:#ffffff;
+    box-shadow:0 12px 28px rgba(61,108,255,.30);
+    transition:.30s;
+}
+
+.appeal-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* ==========================================
+   LIGHT MODE SUPPORT
+========================================== */
+
+body.light-mode .plate-chip{
+    background:rgba(61,108,255,.08);
+    border-color:rgba(61,108,255,.20);
+    color:#132033;
+}
+
+body.light-mode .plate-chip i{
+    color:#3d6cff;
+}
+
+/* ==========================================
+   CARD TITLE (shared section heading)
+   Used by owner-register.html, owner-profile.html
+========================================== */
+
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:30px;
+    margin-bottom:18px;
+    color:#82aaff;
+    font-weight:700;
+    font-size:16px;
+}
+
+.card-title i{
+    font-size:18px;
+}
+
+.vehicle-section-heading{
+    margin-top:30px;
+    margin-bottom:16px;
+}
+
+.vehicle-section-heading .card-title{
+    margin:0 0 6px;
+}
+
+.vehicle-section-heading > p{
+    margin:0;
+    color:#9fb2d8;
+    font-size:13px;
+    line-height:1.5;
+}
+
+.vehicle-rows{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+/* ==========================================
+   VEHICLE ROWS
+   (owner-register.html - multi-vehicle registration)
+========================================== */
+
+.vehicle-row{
+    margin:0;
+    padding:18px;
+    border-radius:16px;
+    background:linear-gradient(145deg,rgba(27,47,77,.82),rgba(21,39,66,.62));
+    border:1px solid rgba(130,170,255,.16);
+    box-shadow:0 10px 24px rgba(5,14,31,.14);
+}
+
+.vehicle-row-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+    padding-bottom:14px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.vehicle-row-label{
+    display:block;
+    font-weight:800;
+    font-size:14px;
+    color:#ffffff;
+    letter-spacing:.3px;
+}
+
+.vehicle-row-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.vehicle-row-title small{
+    display:block;
+    margin-top:2px;
+    color:#9fb2d8;
+    font-size:11px;
+}
+
+.vehicle-number{
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    display:grid;
+    place-items:center;
+    flex-shrink:0;
+    color:#a9c3ff;
+    background:rgba(61,108,255,.16);
+}
+
+.vehicle-row-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+
+.vehicle-plate-field{
+    grid-column:1 / -1;
+}
+
+.vehicle-row-grid .input-group{
+    margin-bottom:0;
+}
+
+.remove-vehicle-btn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    border:none;
+    border-radius:10px;
+    padding:7px 12px;
+    background:rgba(239,68,68,.12);
+    color:#f87171;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.remove-vehicle-btn:hover{
+    background:#ef4444;
+    color:#ffffff;
+}
+
+.add-vehicle-btn{
+    width:100%;
+    margin-top:14px;
+    margin-bottom:22px;
+    padding:14px;
+    border:1px dashed rgba(61,108,255,.45);
+    border-radius:14px;
+    background:rgba(61,108,255,.08);
+    color:#82aaff;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    transition:.25s;
+}
+
+.add-vehicle-btn:hover{
+    background:rgba(61,108,255,.16);
+    color:#ffffff;
+}
+
+@media(max-width:700px){
+
+    .vehicle-row-grid{
+        grid-template-columns:1fr;
+    }
+
+    .vehicle-plate-field{
+        grid-column:auto;
+    }
+
+    .vehicle-row{
+        padding:15px;
+    }
+
+    .remove-vehicle-btn{
+        width:34px;
+        height:34px;
+        padding:0;
+        justify-content:center;
+        font-size:0;
+    }
+
+    .remove-vehicle-btn i{
+        font-size:13px;
+    }
+
+}
+
+body.light-mode .vehicle-row{
+    background:#f7f9fc;
+    border-color:rgba(36,58,88,.10);
+}
+
+body.light-mode .vehicle-row-header{
+    border-color:rgba(36,58,88,.10);
+}
+
+body.light-mode .vehicle-row-label{
+    color:#132033;
+}
+
+body.light-mode .vehicle-row-title small,
+body.light-mode .vehicle-section-heading > p{
+    color:#60708b;
+}
+
+/* ==========================================
+   VEHICLE ITEM (owner-profile.html - compact row layout)
+========================================== */
+
+.vehicle-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 0;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.vehicle-item:last-child{
+    border-bottom:none;
+}
+
+.vehicle-item-content{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+}
+
+.vehicle-item-plate{
+    font-weight:800;
+    font-size:15px;
+    color:#ffffff;
+    letter-spacing:.5px;
+}
+
+.vehicle-item-detail{
+    font-size:13px;
+    color:#9fb2d8;
+}
+
+.vehicle-actions{
+    display:flex;
+    gap:8px;
+    flex-shrink:0;
+    margin-left:auto;
+}
+
+.vehicle-actions button{
+    width:36px;
+    height:36px;
+    border:none;
+    border-radius:10px;
+    background:rgba(255,255,255,.08);
+    color:#c6d6ff;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.vehicle-actions button:hover{
+    background:#3d6cff;
+    color:#ffffff;
+}
+
+body.light-mode .vehicle-item{
+    border-color:rgba(36,58,88,.10);
+}
+
+body.light-mode .vehicle-item-plate{
+    color:#132033;
+}
+
+body.light-mode .vehicle-actions button{
+    background:#eef3fb;
+    color:#132033;
+}
+
+/* ==========================================
+   PROFILE PICTURE UPLOAD (owner-profile.html)
+========================================== */
+
+.avatar{
+    position:relative;
+}
+
+.avatar img{
+    display:none;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+.avatar-upload-btn{
+    position:absolute;
+    bottom:0;
+    right:0;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#3d6cff;
+    color:#ffffff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    border:3px solid #07111f;
+    font-size:13px;
+    transition:.25s;
+}
+
+.avatar-upload-btn:hover{
+    background:#2f58d4;
+    transform:scale(1.06);
+}
+
+body.light-mode .avatar-upload-btn{
+    border-color:#eef3fb;
+}

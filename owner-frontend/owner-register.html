@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PlateTrack | Vehicle Owner Registration</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="../shared/css/register.css">
+    <link rel="stylesheet" href="../shared/css/modal.css">
+    <link rel="stylesheet" href="css/owner-portal.css">
+
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="login-wrapper">
+
+    <div class="login-card">
+
+        <div class="logo-area">
+
+            <div class="logo-box">
+
+                <i class="fa-solid fa-car"></i>
+
+            </div>
+
+            <h1>PlateTrack</h1>
+
+            <span class="badge">
+
+                ANTIPOLO CITY LGU
+
+            </span>
+
+            <p class="portal">
+
+                Vehicle Owner Registration
+
+            </p>
+
+        </div>
+
+        <div class="welcome">
+
+            <h2>Create Owner Account</h2>
+
+            <p>
+
+                Register to check violations and file appeals for your vehicle.
+
+            </p>
+
+        </div>
+
+        <form
+        id="registerForm"
+        autocomplete="off">
+
+            <div class="progress-container">
+
+                <div class="progress-bar">
+
+                    <div
+                    class="progress-fill"
+                    id="progressFill">
+
+                    </div>
+
+                </div>
+
+                <p id="stepText">
+
+                    Step 1 of 2
+
+                </p>
+
+            </div>
+
+            <!-- STEP 1 -->
+
+            <div id="step1">
+
+                <h3 class="step-title">
+
+                    Personal Information
+
+                </h3>
+
+                <div class="input-group">
+
+                    <label>
+
+                        Full Name
+
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-user input-icon"></i>
+
+                        <input
+                        id="fullName"
+                        type="text"
+                        placeholder="Enter your full name"
+                        required>
+
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+
+                        Mobile Number
+
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-phone input-icon"></i>
+
+                        <input
+                        id="mobile"
+                        type="tel"
+                        maxlength="11"
+                        placeholder="09XXXXXXXXX"
+                        required>
+
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+
+                        Home Address
+
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-location-dot input-icon"></i>
+
+                        <input
+                        id="address"
+                        type="text"
+                        placeholder="Enter your address"
+                        required>
+
+                    </div>
+
+                </div>
+
+                <div class="vehicle-section-heading">
+                    <div class="card-title">
+                        <i class="fa-solid fa-car-side"></i>
+                        <span>Registered Vehicles</span>
+                    </div>
+                    <p>Add the vehicle details connected to this owner account.</p>
+                </div>
+
+                <div id="vehicleRows" class="vehicle-rows" aria-live="polite">
+
+                    <!-- Vehicle rows are injected here by JS -->
+
+                </div>
+
+                <button
+                type="button"
+                class="add-vehicle-btn"
+                onclick="addVehicleRow()">
+
+                    <i class="fa-solid fa-plus"></i>
+                    Add Another Vehicle
+
+                </button>
+
+                <button
+                type="button"
+                class="register-btn"
+                onclick="nextStep()">
+
+                    Next
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+            </div>
+
+            <!-- STEP 2 -->
+
+            <div id="step2" style="display:none;">
+
+                <h3 class="step-title">
+
+                    Account Information
+
+                </h3>
+
+                <div class="input-group">
+
+                    <label>
+
+                        Email Address
+
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-envelope input-icon"></i>
+
+                        <input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email address"
+                        required>
+                    
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+
+                        Password
+
+                    </label>
+
+                    <div class="password-box input-box">
+
+                        <i class="fa-solid fa-lock input-icon"></i>
+
+                        <input
+                        id="password"
+                        type="password"
+                        placeholder="Create password"
+                        required>
+
+                        <button
+                        type="button"
+                        id="togglePassword">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+
+                        Confirm Password
+
+                    </label>
+
+                    <div class="password-box input-box">
+
+                        <i
+                        id="confirmIcon"
+                        class="fa-solid fa-lock-open input-icon"></i>
+
+                        <input
+                        id="confirmPassword"
+                        type="password"
+                        placeholder="Confirm password"
+                        required>
+
+                        <button
+                        type="button"
+                        id="toggleConfirmPassword">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                        <div
+                            id="passwordMatch"
+                            class="password-match">
+                        </div>
+
+                </div>
+
+                <!-- PASSWORD REQUIREMENTS -->
+
+                <div class="password-rules">
+
+                    <h4>Password Requirements</h4>
+
+                    <div class="rule" id="ruleLength">
+
+                        <i class="fa-regular fa-circle"></i>
+
+                        Minimum 8 characters
+
+                    </div>
+
+                    <div class="rule" id="ruleUpper">
+
+                        <i class="fa-regular fa-circle"></i>
+
+                        One uppercase letter
+
+                    </div>
+
+                    <div class="rule" id="ruleLower">
+
+                        <i class="fa-regular fa-circle"></i>
+
+                        One lowercase letter
+
+                    </div>
+
+                    <div class="rule" id="ruleNumber">
+
+                        <i class="fa-regular fa-circle"></i>
+
+                        One number
+
+                    </div>
+
+                    <div class="rule" id="ruleSpecial">
+
+                        <i class="fa-regular fa-circle"></i>
+
+                        One special character
+
+                    </div>
+
+                </div>
+
+                <!-- PASSWORD STRENGTH -->
+
+                <div class="password-strength">
+
+                    <div class="strength-header">
+
+                        <span>Password Strength</span>
+
+                        <span id="strengthText">
+                            —
+                        </span>
+
+                    </div>
+
+                    <div class="strength-bar">
+
+                        <div
+                        id="strengthFill"
+                        class="strength-fill">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="remember">
+
+                    <label>
+
+                        <input
+                        id="agreement"
+                        type="checkbox"
+                        required>
+
+                        <span>
+
+                            I certify that the information provided is accurate.
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+                <div class="approval-note">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    <span>
+
+                        Your registered plate number(s) will be matched with recorded violations
+                        so you can view and respond to them here.
+
+                    </span>
+
+                </div>
+
+                <div class="button-group">
+
+                    <button
+                    type="button"
+                    class="back-btn"
+                    onclick="previousStep()">
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Previous
+
+                    </button>
+
+                    <button
+                    type="button"
+                    id="registerBtn"
+                    class="register-btn">
+
+                        Create Account
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <div class="back-link">
+
+            <a href="owner-login.html">
+
+                ← Back to Login
+
+            </a>
+
+        </div>
+
+        <div class="footer">
+
+            <span>
+
+                🔒 Secure Registration
+
+            </span>
+
+            <small>
+
+                Developed for Antipolo City LGU
+
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- GLOBAL MODAL -->
+
+<div id="globalModal" class="modal">
+
+    <div class="modal-box">
+
+        <div
+        id="modalIcon"
+        class="modal-icon">
+
+            ✅
+
+        </div>
+
+        <div
+        id="modalTitle"
+        class="modal-title">
+
+            Success
+
+        </div>
+
+        <div
+        id="modalMessage"
+        class="modal-message">
+
+            Message
+
+        </div>
+
+        <div
+        id="modalButtons"
+        class="modal-buttons">
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="../shared/js/config.js"></script>
+<script src="../shared/js/modal.js"></script>
+<script src="js/owner-register.js?v=20260820-1"></script>
+
+</body>
+
+</html>
