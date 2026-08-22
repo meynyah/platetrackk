@@ -686,7 +686,8 @@ body.light-mode .stat-card:hover{
     margin-bottom:100px;
 }
 
-#recentDetection{
+#recentDetection,
+#recentViolations{
     display:flex;
     flex-direction:column;
     gap:16px;
