@@ -2,12 +2,17 @@
 //
 // Minimal service worker so the app can be "installed" on a phone's home
 // screen (Chrome/Android requires a registered service worker with a
-// fetch handler for the install prompt to appear). It caches the shared
-// static assets (CSS/JS) so the app's shell loads instantly on repeat
-// visits, while always going to the network first for API calls (which
-// must never be served from a stale cache).
+// fetch handler for the install prompt to appear).
+//
+// Strategy: NETWORK-FIRST for everything (except API calls, which always
+// go straight to the network with no caching at all). This means updates
+// to the app show up immediately the next time the person is online,
+// while still providing a cached fallback if they briefly lose
+// connection. An earlier "cache-first" version of this file caused
+// updated files (like manifest.json) to keep serving stale cached
+// copies even after the server was updated -- network-first avoids that.
 
-const CACHE_NAME = "platetrack-shell-v1";
+const CACHE_NAME = "platetrack-shell-v2";
 
 const SHELL_ASSETS = [
     "../shared/css/dashboard.css",
@@ -57,12 +62,8 @@ self.addEventListener("fetch", (event) => {
     }
 
     event.respondWith(
-        caches.match(event.request).then((cached) => {
-            if (cached) {
-                return cached;
-            }
-
-            return fetch(event.request).then((response) => {
+        fetch(event.request)
+            .then((response) => {
                 // Only cache successful, same-origin responses.
                 if (response.ok && url.origin === self.location.origin) {
                     const responseClone = response.clone();
@@ -71,8 +72,8 @@ self.addEventListener("fetch", (event) => {
                     });
                 }
                 return response;
-            }).catch(() => cached);
-        })
+            })
+            .catch(() => caches.match(event.request))
     );
 
 });
