@@ -1,6 +1,6 @@
 {
   "name": "PlateTrack Enforcer",
-  "short_name": "PlateTrack",
+  "short_name": "PT Enforcer",
   "description": "PlateTrack traffic enforcement app for Antipolo City traffic enforcers.",
   "start_url": "./enforcer-login.html",
   "scope": "./",
@@ -10,13 +10,13 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "../shared/img/icon-192.png",
+      "src": "img/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "../shared/img/icon-512.png",
+      "src": "img/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

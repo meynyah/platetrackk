@@ -16,8 +16,8 @@ const SHELL_ASSETS = [
     "../shared/js/config.js",
     "../shared/js/modal.js",
     "../shared/js/theme.js",
-    "../shared/img/icon-192.png",
-    "../shared/img/icon-512.png",
+    "img/icon-192.png",
+    "img/icon-512.png",
 ];
 
 self.addEventListener("install", (event) => {
