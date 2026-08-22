@@ -1,0 +1,25 @@
+{
+  "name": "PlateTrack Admin",
+  "short_name": "PlateTrack Admin",
+  "description": "PlateTrack administrator command center for Antipolo City LGU.",
+  "start_url": "./admin-login.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#3d6cff",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "../shared/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../shared/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

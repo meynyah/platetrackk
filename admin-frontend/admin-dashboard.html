@@ -17,6 +17,11 @@
 
     <title>PlateTrack | Administrator Command Center</title>
 
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3d6cff">
+    <link rel="apple-touch-icon" href="../shared/img/icon-192.png">
+
+
     <link rel="icon" href="data:,">
 
     <link
@@ -3754,6 +3759,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script src="js/admin-dashboard.js?v=20260816-6"></script>
 
+
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch((err) => {
+            console.warn("Service worker registration failed:", err);
+        });
+    });
+}
+</script>
 
 </body>
 

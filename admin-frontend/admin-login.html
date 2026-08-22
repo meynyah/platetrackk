@@ -17,6 +17,11 @@
 
     <title>PlateTrack | Administrator Sign In</title>
 
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3d6cff">
+    <link rel="apple-touch-icon" href="../shared/img/icon-192.png">
+
+
     <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
@@ -501,6 +506,17 @@
     <script src="js/admin-api.js"></script>
 
     <script src="js/admin-login.js"></script>
+
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch((err) => {
+            console.warn("Service worker registration failed:", err);
+        });
+    });
+}
+</script>
 
 </body>
 
