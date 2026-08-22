@@ -504,11 +504,15 @@ function loadRecentViolations(violations){
                             </h3>
 
                             <p>
+                                ${escapeHtml(item.vehicleType || "Unknown Vehicle")} &bull; ${escapeHtml(item.vehicleColor || "Unknown Color")}
+                            </p>
+
+                            <small>
                                 ${escapeHtml(
                                     item.violationType ||
                                     "Traffic Violation"
                                 )}
-                            </p>
+                            </small>
 
                             <small>
                                 ${escapeHtml(
