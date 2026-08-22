@@ -260,6 +260,7 @@ function loadRegisteredPlate(owner){
 
         plateCount.textContent =
             plateNumber ? "1" : "0";
+        plateCount.classList.remove("is-loading");
     }
 
     if(!plateList){
@@ -414,12 +415,14 @@ function loadStats(violations, appeals){
 
         violationCount.textContent =
             violations.length;
+        violationCount.classList.remove("is-loading");
     }
 
     if(pendingAppeals){
 
         pendingAppeals.textContent =
             pending.length;
+        pendingAppeals.classList.remove("is-loading");
     }
 }
 

@@ -36,7 +36,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 href="../shared/css/modal.css?v=20260816-1">
 
 <link rel="stylesheet"
-href="../shared/css/dashboard.css?v=20260820-1">
+href="../shared/css/dashboard.css?v=20260822-2">
 
 <link rel="stylesheet"
 href="css/owner-portal.css">
@@ -219,9 +219,9 @@ TODAY'S SUMMARY
 
             </div>
 
-            <h2 id="plateCount">
+            <h2 id="plateCount" class="is-loading">
 
-                0
+                &ndash;
 
             </h2>
 
@@ -241,9 +241,9 @@ TODAY'S SUMMARY
 
             </div>
 
-            <h2 id="violationCount">
+            <h2 id="violationCount" class="is-loading">
 
-                0
+                &ndash;
 
             </h2>
 
@@ -263,9 +263,9 @@ TODAY'S SUMMARY
 
             </div>
 
-            <h2 id="pendingAppeals">
+            <h2 id="pendingAppeals" class="is-loading">
 
-                0
+                &ndash;
 
             </h2>
 
@@ -391,7 +391,18 @@ RECENT VIOLATIONS
 
     <div id="recentViolations">
 
-        <!-- Recent violation cards will appear here -->
+        <div class="recent-loading-state">
+
+            <div class="recent-loading-spinner">
+                <i class="fa-solid fa-car"></i>
+            </div>
+
+            <p>Loading recent violations...</p>
+
+            <div class="recent-skeleton-card"></div>
+            <div class="recent-skeleton-card"></div>
+
+        </div>
 
     </div>
 
@@ -550,7 +561,7 @@ BOTTOM NAVIGATION
 <script src="../shared/js/config.js"></script>
 <script src="../shared/js/modal.js?v=20260816-1"></script>
 <script src="../shared/js/theme.js"></script>
-<script src="js/owner-dashboard.js?v=20260822-1"></script>
+<script src="js/owner-dashboard.js?v=20260822-2"></script>
 
 
 <script>
