@@ -1,0 +1,8 @@
+backend/.env
+backend/.env.save
+backend/.env.save.1
+backend/node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
