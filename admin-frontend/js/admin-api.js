@@ -2,10 +2,11 @@
  * PlateTrack Admin — shared API helper.
  *
  * IMPORTANT: set API_BASE_URL to wherever you deploy the backend
- * (backend/server.js). While developing locally with `npm run dev`
- * in /backend, this defaults to http://localhost:5000.
+ * (backend/server.js). This is now pointed at the permanent Render
+ * deployment -- if you ever redeploy the backend somewhere else, update
+ * this one line.
  */
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://platetrackk.onrender.com/api";
 
 const Auth = {
   TOKEN_KEY: "platetrack_admin_token",
