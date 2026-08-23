@@ -104,6 +104,26 @@ body{
 
 }
 
+.flash-btn.active{
+
+    background:#f5b400;
+    color:#1a1400;
+    box-shadow:0 0 18px rgba(245,180,0,.55);
+
+}
+
+.flash-btn.active:hover{
+
+    background:#ffc933;
+
+}
+
+.flash-btn.unsupported{
+
+    opacity:.4;
+
+}
+
 .page-title{
 
     text-align:center;

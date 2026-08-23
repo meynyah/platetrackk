@@ -6,6 +6,7 @@ let stream = null;
 let scanning = false;
 let currentFacingMode = "environment";
 let detectionTimer = null;
+let flashOn = false;
 
 // ==========================================
 // CAMERA HELPERS
@@ -78,6 +79,13 @@ async function openCamera(){
 
         setText("cameraStatus","Active");
 
+        // Every new stream starts with the flash off, and whether it can
+        // even be controlled depends on this specific track/device (the
+        // front camera usually has no torch, and not every browser
+        // exposes torch control at all -- notably iOS Safari doesn't).
+        flashOn = false;
+        updateFlashButtonState();
+
         return true;
 
     }
@@ -112,6 +120,8 @@ function closeCamera(){
         stream = null;
 
     }
+
+    flashOn = false;
 
 }
 
@@ -431,6 +441,104 @@ function stopDetection(){
 // ==========================================
 // FLASH BUTTON
 // ==========================================
+//
+// Uses the real camera torch, via the same MediaStreamTrack that's
+// already showing the live preview. Torch control is currently only
+// supported by some browsers -- notably Android Chrome usually works
+// (rear camera only), while iOS Safari does not expose torch control to
+// web pages at all (an Apple platform restriction, not something we can
+// work around from here).
+
+function getActiveVideoTrack(){
+
+    if(!stream){
+        return null;
+    }
+
+    const tracks = stream.getVideoTracks();
+
+    return tracks.length ? tracks[0] : null;
+
+}
+
+function trackSupportsTorch(track){
+
+    if(!track || typeof track.getCapabilities !== "function"){
+        return false;
+    }
+
+    try{
+        const capabilities = track.getCapabilities();
+        return Boolean(capabilities && capabilities.torch);
+    }catch(error){
+        return false;
+    }
+
+}
+
+function updateFlashButtonState(){
+
+    const flashBtn = getElement("flashBtn");
+
+    if(!flashBtn){
+        return;
+    }
+
+    const track = getActiveVideoTrack();
+    const supported = trackSupportsTorch(track);
+
+    flashBtn.classList.toggle("active", flashOn);
+    flashBtn.classList.toggle("unsupported", !supported);
+
+}
+
+async function toggleFlash(){
+
+    const track = getActiveVideoTrack();
+
+    if(!track){
+
+        showError(
+            "Camera Not Active",
+            "Start detection first before turning on the flash."
+        );
+
+        return;
+    }
+
+    if(!trackSupportsTorch(track)){
+
+        showInfo(
+            "Flash Not Available",
+            "Your device or browser doesn't support camera flash control from a webpage. This typically works on Android Chrome using the rear camera."
+        );
+
+        return;
+    }
+
+    const nextState = !flashOn;
+
+    try{
+
+        await track.applyConstraints({
+            advanced: [{ torch: nextState }]
+        });
+
+        flashOn = nextState;
+        updateFlashButtonState();
+
+    }catch(error){
+
+        console.error("Unable to toggle flash:", error);
+
+        showError(
+            "Flash Error",
+            "Unable to turn the flash on or off right now."
+        );
+
+    }
+
+}
 
 document.addEventListener("DOMContentLoaded",function(){
 
@@ -440,10 +548,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
         flashBtn.addEventListener("click",function(){
 
-            showSuccess(
-                "Flash",
-                "Flash control will be available in the Android version."
-            );
+            toggleFlash();
 
         });
 
