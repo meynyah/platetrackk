@@ -16,6 +16,9 @@ async function getStats(req, res) {
     const startOfToday =
       new Date(new Date().setHours(0, 0, 0, 0));
 
+    const startOfWeek =
+      new Date(startOfToday.getTime() - 6 * 24 * 60 * 60 * 1000);
+
     const [
       totalEnforcers,
       pendingEnforcers,
@@ -26,6 +29,8 @@ async function getStats(req, res) {
       pendingAppeals,
       violationsToday,
       resolvedToday,
+      enforcersApprovedToday,
+      ownersApprovedThisWeek,
     ] = await Promise.all([
       Enforcer.countDocuments({ status: "approved" }),
       Enforcer.countDocuments({ status: "pending" }),
@@ -45,6 +50,16 @@ async function getStats(req, res) {
           $gte: startOfToday
         }
       }),
+      // Real counterparts for the dashboard's "+X Today" / "+X This Week"
+      // trend chips, which used to just be hardcoded placeholder text.
+      Enforcer.countDocuments({
+        status: "approved",
+        reviewedAt: { $gte: startOfToday },
+      }),
+      Owner.countDocuments({
+        status: "approved",
+        reviewedAt: { $gte: startOfWeek },
+      }),
     ]);
 
     res.json({
@@ -58,6 +73,8 @@ async function getStats(req, res) {
       violationsToday,
 
       resolvedToday,
+      enforcersApprovedToday,
+      ownersApprovedThisWeek,
 
       // Approved enforcers muna ang gagamitin
       // bilang operational/active enforcers.

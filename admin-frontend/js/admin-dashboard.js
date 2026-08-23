@@ -86,7 +86,7 @@ async function loadOverview() {
         <div class="stat-footer">
           <span class="trend up">
             <i class="fa-solid fa-arrow-trend-up"></i>
-            +2 Today
+            +${stats.enforcersApprovedToday || 0} Today
           </span>
         </div>
       </article>
@@ -126,7 +126,7 @@ async function loadOverview() {
         <div class="stat-footer">
           <span class="trend up">
             <i class="fa-solid fa-arrow-trend-up"></i>
-            +5 This Week
+            +${stats.ownersApprovedThisWeek || 0} This Week
           </span>
         </div>  
       </article>
