@@ -14,9 +14,19 @@ document.addEventListener("DOMContentLoaded",function(){
 
 function requireOwnerSession(){
 
-    const sessionEmail = localStorage.getItem("plateTrackOwnerSession");
+    const token = localStorage.getItem("plateTrackOwnerToken");
+    const raw = localStorage.getItem("plateTrackOwnerUser");
 
-    if(!sessionEmail){
+    if(!token || !raw){
+        window.location.href = "owner-login.html";
+        return;
+    }
+
+    try{
+        JSON.parse(raw);
+    }catch(error){
+        localStorage.removeItem("plateTrackOwnerToken");
+        localStorage.removeItem("plateTrackOwnerUser");
         window.location.href = "owner-login.html";
     }
 
