@@ -52,6 +52,11 @@ function loadDetectionData(){
         document.getElementById("ocrConfidenceText").textContent =
         (storedResult.ocrConfidence * 100).toFixed(1) + "%";
 
+        document.getElementById("processingTimeText").textContent =
+        (storedResult.processingTimeMs !== undefined && storedResult.processingTimeMs !== null)
+            ? Math.round(storedResult.processingTimeMs) + " ms"
+            : "--";
+
         aiSummary.style.display = "flex";
         manualSummary.style.display = "none";
 

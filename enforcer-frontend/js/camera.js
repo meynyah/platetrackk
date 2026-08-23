@@ -340,6 +340,7 @@ function handleDetectionSuccess(data){
             detectionTime: detectionTime,
             detectionConfidence: data.detectionConfidence,
             ocrConfidence: data.ocrConfidence,
+            processingTimeMs: data.processingTimeMs,
             ownerFound: Boolean(owner),
             ownerName: owner ? owner.fullName : "",
             ownerEmail: owner ? owner.email : "",
