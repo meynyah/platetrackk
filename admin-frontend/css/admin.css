@@ -1407,28 +1407,114 @@ tbody tr:hover { background: var(--gray-25); }
 
     .admin-login-form-panel{
         justify-content:flex-start;
-        padding:22px 14px 30px;
+        padding:16px 14px 20px;
+    }
+
+    .mobile-admin-brand{
+        margin-bottom:12px;
     }
 
     .admin-login-card{
-        padding:27px 20px;
-        border-radius:21px;
+        padding:20px 18px;
+        border-radius:18px;
+    }
+
+    .login-security-icon{
+        width:36px;
+        height:36px;
+        margin-bottom:10px;
+        font-size:15px;
+    }
+
+    .login-security-label{
+        margin-bottom:6px;
+        font-size:10px;
+    }
+
+    .login-card-header{
+        margin-bottom:16px;
     }
 
     .login-card-header h2{
-        font-size:26px;
+        font-size:22px;
+        margin-bottom:5px;
+    }
+
+    .login-card-header p{
+        font-size:12px;
+    }
+
+    .admin-field-group{
+        margin-bottom:12px;
+    }
+
+    .admin-field-group label{
+        margin-bottom:5px;
+        font-size:11px;
+    }
+
+    .admin-input-wrapper input{
+        height:44px;
+        font-size:12px;
     }
 
     .admin-login-options{
         align-items:flex-start;
         flex-direction:column;
-        gap:10px;
+        gap:8px;
+        margin:2px 0 14px;
+    }
+
+    .admin-login-button{
+        min-height:44px;
+        padding:10px 16px;
+    }
+
+    /* These are decorative trust badges rather than core to logging in
+       -- hide them on small screens so the card fits without scrolling. */
+    .login-divider,
+    .login-security-panel{
+        display:none;
+    }
+
+    .login-card-footer{
+        margin-top:14px;
+        padding-top:12px;
+    }
+
+    .login-card-footer p{
+        margin-bottom:8px;
+        font-size:10px;
     }
 
     .admin-login-copyright{
         flex-direction:column;
         align-items:flex-start;
         gap:5px;
+        margin-top:10px;
+        font-size:8px;
+    }
+
+}
+
+@media(max-height:700px){
+
+    .admin-login-form-panel{
+        padding-top:12px;
+        padding-bottom:12px;
+    }
+
+    .mobile-admin-brand{
+        margin-bottom:8px;
+    }
+
+    .login-card-header{
+        margin-bottom:10px;
+    }
+
+    .login-card-footer{
+        margin-top:8px;
+        padding-top:8px;
     }
 
 }
