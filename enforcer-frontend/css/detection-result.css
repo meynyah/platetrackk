@@ -323,6 +323,20 @@ body{
 
 }
 
+.summary-item strong{
+
+    color:#ffffff;
+
+    font-weight:800;
+
+}
+
+#aiConfidenceSummary .summary-item i{
+
+    color:#82aaff;
+
+}
+
 /* ==========================================
    VEHICLE INFORMATION
 ========================================== */

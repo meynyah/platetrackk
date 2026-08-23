@@ -27,7 +27,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 href="../shared/css/modal.css">
 
 <link rel="stylesheet"
-href="css/detection-result.css?v=20260820-2">
+href="css/detection-result.css?v=20260824-1">
 
 </head>
 
@@ -116,7 +116,32 @@ class="plate-number-input"
 value="ABC 1234"
 autocomplete="off">
 
-<div class="summary">
+<div
+class="summary"
+id="aiConfidenceSummary"
+style="display:none;">
+
+<div class="summary-item">
+
+<i class="fa-solid fa-crosshairs"></i>
+
+<span>Detection Confidence: <strong id="detectionConfidenceText">--</strong></span>
+
+</div>
+
+<div class="summary-item">
+
+<i class="fa-solid fa-font"></i>
+
+<span>OCR Confidence: <strong id="ocrConfidenceText">--</strong></span>
+
+</div>
+
+</div>
+
+<div
+class="summary"
+id="manualEntrySummary">
 
 <div class="summary-item">
 
@@ -510,7 +535,7 @@ class="modal-buttons">
 <script src="../shared/js/config.js"></script>
 <script src="../shared/js/modal.js"></script>
 <script src="../shared/js/theme.js"></script>
-<script src="js/detection-result.js?v=20260820-2"></script>
+<script src="js/detection-result.js?v=20260824-1"></script>
 
 </body>
 </html>

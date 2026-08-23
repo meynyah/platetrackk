@@ -38,6 +38,31 @@ function loadDetectionData(){
     document.getElementById("detectionTime").textContent =
     storedResult.detectionTime || getFormattedDateTime();
 
+    const aiSummary = document.getElementById("aiConfidenceSummary");
+    const manualSummary = document.getElementById("manualEntrySummary");
+    const hasConfidenceData =
+        storedResult.detectionConfidence !== undefined &&
+        storedResult.detectionConfidence !== null;
+
+    if(hasConfidenceData && aiSummary && manualSummary){
+
+        document.getElementById("detectionConfidenceText").textContent =
+        (storedResult.detectionConfidence * 100).toFixed(1) + "%";
+
+        document.getElementById("ocrConfidenceText").textContent =
+        (storedResult.ocrConfidence * 100).toFixed(1) + "%";
+
+        aiSummary.style.display = "flex";
+        manualSummary.style.display = "none";
+
+    }
+    else if(aiSummary && manualSummary){
+
+        aiSummary.style.display = "none";
+        manualSummary.style.display = "flex";
+
+    }
+
     const ownerSection = document.getElementById("ownerSection");
 
     if(storedResult.ownerFound && ownerSection){
