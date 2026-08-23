@@ -180,6 +180,65 @@ CAMERA PREVIEW
 </section>
 
 <!-- ==========================================
+ACTION BUTTONS
+========================================== -->
+
+<section class="action-section">
+
+    <button
+    id="startDetectionBtn"
+    class="detect-btn"
+    type="button"
+    onclick="startDetection()">
+
+        <i class="fa-solid fa-camera"></i>
+
+        Start Detection
+
+    </button>
+
+    <button
+    id="captureBtn"
+    class="capture-btn"
+    type="button"
+    onclick="capturePlate()"
+    style="display:none;">
+
+        <i class="fa-solid fa-crosshairs"></i>
+
+        Capture Plate
+
+    </button>
+
+    <button
+    id="switchCameraBtn"
+    class="switch-btn"
+    type="button"
+    onclick="switchCamera()"
+    style="display:none;">
+
+        <i class="fa-solid fa-camera-rotate"></i>
+
+        Switch Camera
+
+    </button>
+
+    <button
+    id="stopDetectionBtn"
+    class="stop-btn"
+    type="button"
+    onclick="stopDetection()"
+    style="display:none;">
+
+        <i class="fa-solid fa-circle-stop"></i>
+
+        Stop Detection
+
+    </button>
+
+</section>
+
+<!-- ==========================================
 DETECTION STATUS
 ========================================== -->
 
@@ -292,65 +351,6 @@ DETECTED PLATE
         </div>
 
     </div>
-
-</section>
-
-<!-- ==========================================
-ACTION BUTTONS
-========================================== -->
-
-<section class="action-section">
-
-    <button
-    id="startDetectionBtn"
-    class="detect-btn"
-    type="button"
-    onclick="startDetection()">
-
-        <i class="fa-solid fa-camera"></i>
-
-        Start Detection
-
-    </button>
-
-    <button
-    id="captureBtn"
-    class="capture-btn"
-    type="button"
-    onclick="capturePlate()"
-    style="display:none;">
-
-        <i class="fa-solid fa-crosshairs"></i>
-
-        Capture Plate
-
-    </button>
-
-    <button
-    id="switchCameraBtn"
-    class="switch-btn"
-    type="button"
-    onclick="switchCamera()"
-    style="display:none;">
-
-        <i class="fa-solid fa-camera-rotate"></i>
-
-        Switch Camera
-
-    </button>
-
-    <button
-    id="stopDetectionBtn"
-    class="stop-btn"
-    type="button"
-    onclick="stopDetection()"
-    style="display:none;">
-
-        <i class="fa-solid fa-circle-stop"></i>
-
-        Stop Detection
-
-    </button>
 
 </section>
 
