@@ -99,8 +99,64 @@ function loadCapturedImage(){
     }
 
     captureBox.innerHTML = `
-        <img src="${capturedImage}" alt="Captured vehicle image" class="captured-photo">
+        <img src="${capturedImage}" alt="Captured vehicle image" class="captured-photo" id="capturedPhotoImg">
+        <div class="plate-bounding-box" id="plateBoundingBox" style="display:none;"></div>
     `;
+
+    const storedResult = JSON.parse(
+        localStorage.getItem("plateTrackDetectionResult") || "null"
+    );
+
+    const box = storedResult && storedResult.boundingBox;
+
+    if(!box){
+        return;
+    }
+
+    const img = document.getElementById("capturedPhotoImg");
+    const overlay = document.getElementById("plateBoundingBox");
+
+    function positionOverlay(){
+
+        // The image uses object-fit:cover, so the visible portion is
+        // scaled up (cropped) relative to the container -- we need to
+        // reproduce that same math to place the box correctly over the
+        // actual detected plate region instead of the raw image
+        // coordinates.
+        const naturalW = img.naturalWidth;
+        const naturalH = img.naturalHeight;
+
+        if(!naturalW || !naturalH){
+            return;
+        }
+
+        const containerW = captureBox.clientWidth;
+        const containerH = captureBox.clientHeight;
+
+        const scale = Math.max(containerW / naturalW, containerH / naturalH);
+
+        const renderedW = naturalW * scale;
+        const renderedH = naturalH * scale;
+
+        const offsetX = (containerW - renderedW) / 2;
+        const offsetY = (containerH - renderedH) / 2;
+
+        overlay.style.left = (offsetX + box.x1 * scale) + "px";
+        overlay.style.top = (offsetY + box.y1 * scale) + "px";
+        overlay.style.width = ((box.x2 - box.x1) * scale) + "px";
+        overlay.style.height = ((box.y2 - box.y1) * scale) + "px";
+        overlay.style.display = "block";
+
+    }
+
+    if(img.complete && img.naturalWidth){
+        positionOverlay();
+    }
+    else{
+        img.addEventListener("load", positionOverlay);
+    }
+
+    window.addEventListener("resize", positionOverlay);
 
 }
 

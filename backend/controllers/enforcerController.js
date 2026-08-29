@@ -168,6 +168,7 @@ async function detectPlate(req, res) {
       detectionConfidence: result.detectionConfidence,
       ocrConfidence: result.ocrConfidence,
       processingTimeMs: result.processingTimeMs,
+      boundingBox: result.boundingBox,
       owner: owner
         ? {
             found: true,

@@ -341,6 +341,7 @@ function handleDetectionSuccess(data){
             detectionConfidence: data.detectionConfidence,
             ocrConfidence: data.ocrConfidence,
             processingTimeMs: data.processingTimeMs,
+            boundingBox: data.boundingBox || null,
             ownerFound: Boolean(owner),
             ownerName: owner ? owner.fullName : "",
             ownerEmail: owner ? owner.email : "",

@@ -187,6 +187,10 @@ body{
 
     background:#0e1a2e;
 
+    position:relative;
+
+    overflow:hidden;
+
 }
 
 .capture-image i{
@@ -893,6 +897,14 @@ body{
     height:100%;
     object-fit:cover;
     border-radius:18px;
+}
+
+.plate-bounding-box{
+    position:absolute;
+    border:3px solid #22c55e;
+    border-radius:4px;
+    box-shadow:0 0 12px rgba(34,197,94,.7);
+    pointer-events:none;
 }
 
 /* LIGHT MODE - DETECTION RESULT */
