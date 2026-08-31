@@ -158,6 +158,53 @@ function loadCapturedImage(){
 
     window.addEventListener("resize", positionOverlay);
 
+    // Also render a separate, zoomed-in crop of just the plate region --
+    // done entirely in the browser using <canvas>, since we already have
+    // both the full captured image and the bounding box coordinates. No
+    // need to ask the backend for a separate cropped image.
+    function renderZoomedCrop(){
+
+        const naturalW = img.naturalWidth;
+        const naturalH = img.naturalHeight;
+
+        if(!naturalW || !naturalH){
+            return;
+        }
+
+        const cropW = Math.max(1, Math.round(box.x2 - box.x1));
+        const cropH = Math.max(1, Math.round(box.y2 - box.y1));
+
+        const cropCanvas = document.createElement("canvas");
+        cropCanvas.width = cropW;
+        cropCanvas.height = cropH;
+
+        const ctx = cropCanvas.getContext("2d");
+
+        // Draw just the bounding-box region of the source image onto a
+        // canvas sized to match -- this is the actual "crop."
+        ctx.drawImage(
+            img,
+            box.x1, box.y1, cropW, cropH,   // source rectangle (from the full image)
+            0, 0, cropW, cropH              // destination rectangle (fills the new canvas)
+        );
+
+        const zoomedImg = document.getElementById("zoomedPlateImg");
+        const zoomedSection = document.getElementById("zoomedPlateSection");
+
+        if(zoomedImg && zoomedSection){
+            zoomedImg.src = cropCanvas.toDataURL("image/jpeg", 0.92);
+            zoomedSection.style.display = "block";
+        }
+
+    }
+
+    if(img.complete && img.naturalWidth){
+        renderZoomedCrop();
+    }
+    else{
+        img.addEventListener("load", renderZoomedCrop);
+    }
+
 }
 
 function getFormattedDateTime(){
