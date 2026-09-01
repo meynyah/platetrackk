@@ -91,6 +91,26 @@ async function loadOverview() {
         </div>
       </article>
 
+      <article class="stat-card stat-green">
+        <div class="stat-card-top">
+          <span class="stat-icon">
+            <i class="fa-solid fa-satellite-dish"></i>
+          </span>
+          <span class="stat-trend trend-neutral">
+            Live
+          </span>
+        </div>
+        <div class="num animated-stat" data-value="${stats.enforcersOnDuty || 0}">0</div>
+
+        <div class="label">Currently On Duty</div>
+        <div class="stat-footer">
+          <span class="trend waiting">
+            <i class="fa-solid fa-shield-halved"></i>
+            of ${stats.totalEnforcers || 0} approved enforcers
+          </span>
+        </div>
+      </article>
+
       <article class="stat-card stat-amber warn">
         <div class="stat-card-top">
           <span class="stat-icon">
@@ -438,7 +458,7 @@ function renderEnforcerMonitorTable(list) {
   if (!body) return;
 
   if (!list.length) {
-    body.innerHTML = `<tr><td colspan="5" class="empty-state">No matching enforcer accounts.</td></tr>`;
+    body.innerHTML = `<tr><td colspan="6" class="empty-state">No matching enforcer accounts.</td></tr>`;
     return;
   }
 
@@ -449,8 +469,16 @@ function renderEnforcerMonitorTable(list) {
       <td class="mono">${escapeHtml(e.badgeNumber)}</td>
       <td>${escapeHtml(e.station || "—")}</td>
       <td>${statusChip(e.status)}</td>
+      <td>${dutyChip(e.onDuty)}</td>
     </tr>
   `).join("");
+}
+
+function dutyChip(onDuty) {
+  if (onDuty) {
+    return `<span class="status-chip status-onduty"><i class="fa-solid fa-circle" style="font-size:7px;"></i> On Duty</span>`;
+  }
+  return `<span class="status-chip status-offduty">Off Duty</span>`;
 }
 
 function filterEnforcerMonitor() {

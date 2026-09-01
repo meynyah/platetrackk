@@ -332,6 +332,27 @@ body.light-mode .nav-item{
     font-size:9px;
 }
 
+.duty-toggle{
+    cursor:pointer;
+    font-family:inherit;
+    transition:.2s ease;
+}
+
+.duty-toggle:hover{
+    transform:translateY(-1px);
+}
+
+.duty-toggle.off-duty{
+    background:rgba(148,163,184,.18);
+    color:#94a3b8;
+    border-color:rgba(148,163,184,.35);
+}
+
+.duty-toggle:disabled{
+    opacity:.6;
+    cursor:wait;
+}
+
 .date-time{
     display:inline-flex;
     align-items:center;

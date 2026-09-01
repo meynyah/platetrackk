@@ -30,6 +30,13 @@ const enforcerSchema = new mongoose.Schema(
     rejectionReason: { type: String, default: null },
     reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", default: null },
     reviewedAt: { type: Date, default: null },
+
+    // Real, backend-enforced duty status -- used to prevent an approved
+    // enforcer from using plate detection or filing violations outside
+    // their actual duty hours. Defaults to off-duty; the enforcer must
+    // explicitly toggle this on each time they start their shift.
+    onDuty: { type: Boolean, default: false },
+    dutyChangedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );

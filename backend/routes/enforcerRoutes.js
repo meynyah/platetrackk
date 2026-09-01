@@ -18,6 +18,9 @@ router.get("/violations/mine", enforcer.myViolations);
 
 router.post("/detect-plate", upload.single("image"), enforcer.detectPlate);
 
+router.get("/duty-status", enforcer.getDutyStatus);
+router.patch("/duty-status", enforcer.setDutyStatus);
+
 router.get("/notifications", enforcer.myNotifications);
 router.patch("/notifications/:id/read", enforcer.markNotificationRead);
 

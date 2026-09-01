@@ -271,7 +271,7 @@ async function detectPlateFromImage(imageBlob){
             }
         );
 
-        if(response.status === 401 || response.status === 403){
+        if(response.status === 401){
             localStorage.removeItem("plateTrackToken");
             localStorage.removeItem("plateTrackEnforcerSession");
             window.location.href = "enforcer-login.html";

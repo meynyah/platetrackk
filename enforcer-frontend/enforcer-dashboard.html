@@ -36,7 +36,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 href="../shared/css/modal.css?v=20260816-1">
 
 <link rel="stylesheet"
-href="../shared/css/dashboard.css?v=20260820-1">
+href="../shared/css/dashboard.css?v=20260901-1">
 
 </head>
 
@@ -162,13 +162,17 @@ WELCOME CARD
 
         <div class="info-row">
 
-            <span class="status">
+            <button
+            type="button"
+            id="dutyToggle"
+            class="status duty-toggle"
+            onclick="toggleDutyStatus()">
 
                 <i class="fa-solid fa-circle"></i>
 
-                On Duty
+                <span id="dutyStatusText">Checking...</span>
 
-            </span>
+            </button>
 
             <span class="date-time">
 
@@ -625,7 +629,7 @@ BOTTOM NAVIGATION
 <script src="../shared/js/config.js"></script>
 <script src="../shared/js/modal.js?v=20260816-1"></script>
 <script src="../shared/js/theme.js"></script>
-<script src="js/dashboard.js?v=20260820-1"></script>
+<script src="js/dashboard.js?v=20260901-1"></script>
 
 
 <script>

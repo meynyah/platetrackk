@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateGreeting();
     loadDashboardData();
     loadEnforcerNotifications();
+    loadDutyStatus();
 
     setInterval(updateDateTime,1000);
 
@@ -517,3 +518,142 @@ window.addEventListener("pageshow", (event) => {
     }
 
 });
+
+// ==========================================
+// DUTY STATUS (real, backend-enforced -- not just a display badge)
+// ==========================================
+
+function renderDutyStatus(onDuty){
+
+    const toggle = document.getElementById("dutyToggle");
+    const text = document.getElementById("dutyStatusText");
+
+    if(!toggle || !text){
+        return;
+    }
+
+    if(onDuty){
+        toggle.classList.remove("off-duty");
+        text.textContent = "On Duty";
+    }
+    else{
+        toggle.classList.add("off-duty");
+        text.textContent = "Off Duty";
+    }
+
+}
+
+async function loadDutyStatus(){
+
+    const token = localStorage.getItem("plateTrackToken");
+
+    if(!token){
+        return;
+    }
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE}/enforcer/duty-status`,
+            {
+                method:"GET",
+                headers:{
+                    "Authorization":`Bearer ${token}`
+                }
+            }
+        );
+
+        if(!response.ok){
+            return;
+        }
+
+        const data = await response.json();
+
+        renderDutyStatus(Boolean(data.onDuty));
+
+    }
+    catch(error){
+
+        console.error("Unable to load duty status:",error);
+
+    }
+
+}
+
+async function toggleDutyStatus(){
+
+    const token = localStorage.getItem("plateTrackToken");
+
+    if(!token){
+        window.location.href = "enforcer-login.html";
+        return;
+    }
+
+    const toggle = document.getElementById("dutyToggle");
+    const currentlyOnDuty = toggle && !toggle.classList.contains("off-duty");
+    const nextState = !currentlyOnDuty;
+
+    if(toggle){
+        toggle.disabled = true;
+    }
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE}/enforcer/duty-status`,
+            {
+                method:"PATCH",
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization":`Bearer ${token}`
+                },
+                body: JSON.stringify({ onDuty: nextState })
+            }
+        );
+
+        if(response.status === 401){
+            localStorage.removeItem("plateTrackToken");
+            localStorage.removeItem("plateTrackEnforcerSession");
+            window.location.href = "enforcer-login.html";
+            return;
+        }
+
+        if(!response.ok){
+            showError(
+                "Unable to Update",
+                "Could not update your duty status right now. Please try again."
+            );
+            return;
+        }
+
+        const data = await response.json();
+
+        renderDutyStatus(Boolean(data.onDuty));
+
+        showSuccess(
+            data.onDuty ? "You're now On Duty" : "You're now Off Duty",
+            data.onDuty
+                ? "You can now use plate detection and submit violation reports."
+                : "Plate detection and violation submission are disabled until you go back on duty."
+        );
+
+    }
+    catch(error){
+
+        console.error("Unable to update duty status:",error);
+
+        showError(
+            "Unable to Update",
+            "Could not reach the server. Please check your connection and try again."
+        );
+
+    }
+    finally{
+
+        if(toggle){
+            toggle.disabled = false;
+        }
+
+    }
+
+}

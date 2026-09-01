@@ -31,6 +31,7 @@ async function getStats(req, res) {
       resolvedToday,
       enforcersApprovedToday,
       ownersApprovedThisWeek,
+      enforcersOnDuty,
     ] = await Promise.all([
       Enforcer.countDocuments({ status: "approved" }),
       Enforcer.countDocuments({ status: "pending" }),
@@ -60,6 +61,10 @@ async function getStats(req, res) {
         status: "approved",
         reviewedAt: { $gte: startOfWeek },
       }),
+      // How many approved enforcers currently have their duty toggle on --
+      // this is the real "who's actually allowed to use PlateTrack right
+      // now" number, used to catch off-shift usage at a glance.
+      Enforcer.countDocuments({ status: "approved", onDuty: true }),
     ]);
 
     res.json({
@@ -76,9 +81,8 @@ async function getStats(req, res) {
       enforcersApprovedToday,
       ownersApprovedThisWeek,
 
-      // Approved enforcers muna ang gagamitin
-      // bilang operational/active enforcers.
-      activeEnforcers: totalEnforcers,
+      enforcersOnDuty,
+      activeEnforcers: enforcersOnDuty,
     });
   } catch (err) {
     console.error(err);

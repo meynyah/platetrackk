@@ -376,6 +376,8 @@ tbody tr:hover { background: var(--gray-25); }
 .status-flagged { background: var(--red-100); color: var(--red-600); }
 .status-appealed { background: var(--amber-100); color: var(--amber-600); }
 .status-resolved { background: var(--green-100); color: var(--green-600); }
+.status-onduty { background: var(--green-100); color: var(--green-600); }
+.status-offduty { background: var(--navy-100); color: var(--navy-500, #64748b); }
 .status-submitted { background: var(--amber-100); color: var(--amber-600); }
 .status-under_review { background: #dbe3f5; color: var(--navy-700); }
 .status-denied { background: var(--red-100); color: var(--red-600); }

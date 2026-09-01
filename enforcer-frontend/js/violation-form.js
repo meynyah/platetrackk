@@ -513,7 +513,7 @@ async function saveViolation(){
 
         const data = await response.json();
 
-        if(response.status === 401 || response.status === 403){
+        if(response.status === 401){
 
             localStorage.removeItem("plateTrackToken");
             localStorage.removeItem("plateTrackEnforcerSession");
@@ -528,6 +528,17 @@ async function saveViolation(){
             setTimeout(function(){
                 window.location.href = "enforcer-login.html";
             },1500);
+
+            return;
+
+        }
+
+        if(response.status === 403){
+
+            showError(
+                "Not On Duty",
+                data.message || "You must be on duty to submit a violation report."
+            );
 
             return;
 
