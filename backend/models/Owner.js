@@ -8,6 +8,7 @@ const ownerSchema = new mongoose.Schema(
     vehicleType: { type: String, trim: true, default: "" },
     vehicleColor: { type: String, trim: true, default: "" },
     contactNumber: { type: String, trim: true },
+    address: { type: String, trim: true, default: "" },
     password: { type: String, required: true }, // hashed
     status: {
       type: String,

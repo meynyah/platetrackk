@@ -80,7 +80,7 @@ function openEditModal(){
 
 function closeEditModal(){ document.getElementById("editModal").classList.remove("show"); }
 
-function saveProfile(){
+async function saveProfile(){
     const email = getInputValue("editEmail").toLowerCase();
     const mobile = getInputValue("editContact");
     const assignedArea = getInputValue("editArea");
@@ -88,14 +88,58 @@ function saveProfile(){
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showError("Invalid Email", "Please enter a valid email address."); return; }
     if(!/^09\d{9}$/.test(mobile)){ showError("Invalid Contact Number", "Please enter a valid 11-digit Philippine mobile number."); return; }
 
-    // Editing profile details isn't wired up to the backend yet — there's
-    // no PATCH /api/enforcer/profile endpoint to persist this to your
-    // account. Rather than pretend it saved, we say so plainly.
-    closeEditModal();
-    showInfo(
-        "Not Available Yet",
-        "Editing your profile details isn't connected to the server yet, so changes here won't be saved to your account. This is a planned feature."
-    );
+    const token = localStorage.getItem("plateTrackToken");
+    if(!token){ window.location.href = "enforcer-login.html"; return; }
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE}/enforcer/profile`,
+            {
+                method:"PATCH",
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization":`Bearer ${token}`
+                },
+                body: JSON.stringify({ email, mobile, station: assignedArea })
+            }
+        );
+
+        const data = await response.json().catch(function(){ return {}; });
+
+        if(response.status === 401){
+            localStorage.removeItem("plateTrackToken");
+            localStorage.removeItem("plateTrackEnforcerSession");
+            window.location.href = "enforcer-login.html";
+            return;
+        }
+
+        if(!response.ok){
+            showError("Unable to Save", data.message || "Could not update your profile right now.");
+            return;
+        }
+
+        // Keep the local session in sync so the rest of the app (and a
+        // page refresh) shows the updated details immediately, without
+        // needing to log in again.
+        currentEnforcer = Object.assign({}, currentEnforcer, {
+            email: data.enforcer.email,
+            mobile: data.enforcer.mobile,
+            station: data.enforcer.station,
+        });
+        localStorage.setItem("plateTrackEnforcerSession", JSON.stringify(currentEnforcer));
+
+        closeEditModal();
+        showSuccess("Profile Updated", "Your profile details have been saved.");
+        loadProfile();
+
+    }
+    catch(error){
+
+        console.error("Unable to update profile:", error);
+        showError("Unable to Save", "Could not reach the server. Please check your connection and try again.");
+
+    }
 }
 
 function openPasswordModal(){
@@ -105,7 +149,7 @@ function openPasswordModal(){
 
 function closePasswordModal(){ document.getElementById("passwordModal").classList.remove("show"); }
 
-function savePassword(){
+async function savePassword(){
     const currentPassword = getInputValue("currentPassword");
     const newPassword = getInputValue("newPassword");
     const confirmPassword = getInputValue("confirmPassword");
@@ -115,14 +159,53 @@ function savePassword(){
     }
     if(newPassword !== confirmPassword){ showError("Password Mismatch", "The new passwords do not match."); return; }
 
-    // Changing your password from here isn't wired up to the backend yet.
-    // Use "Forgot Password" from the login screen instead — that flow does
-    // hit the real server and will actually update your account.
-    closePasswordModal();
-    showInfo(
-        "Not Available Yet",
-        "Changing your password from this screen isn't connected to the server yet. Use \"Forgot Password\" on the login screen instead — that one works."
-    );
+    const token = localStorage.getItem("plateTrackToken");
+    if(!token){ window.location.href = "enforcer-login.html"; return; }
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE}/enforcer/password`,
+            {
+                method:"PATCH",
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization":`Bearer ${token}`
+                },
+                body: JSON.stringify({ currentPassword, newPassword })
+            }
+        );
+
+        const data = await response.json().catch(function(){ return {}; });
+
+        if(response.status === 401 && data.message && data.message.toLowerCase().indexOf("incorrect") !== -1){
+            // Wrong CURRENT password -- stay logged in, just show the error.
+            showError("Incorrect Password", data.message);
+            return;
+        }
+
+        if(response.status === 401){
+            localStorage.removeItem("plateTrackToken");
+            localStorage.removeItem("plateTrackEnforcerSession");
+            window.location.href = "enforcer-login.html";
+            return;
+        }
+
+        if(!response.ok){
+            showError("Unable to Change Password", data.message || "Could not change your password right now.");
+            return;
+        }
+
+        closePasswordModal();
+        showSuccess("Password Changed", "Your password has been updated successfully.");
+
+    }
+    catch(error){
+
+        console.error("Unable to change password:", error);
+        showError("Unable to Change Password", "Could not reach the server. Please check your connection and try again.");
+
+    }
 }
 
 function handleAvatarUpload(event){

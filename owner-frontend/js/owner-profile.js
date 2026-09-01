@@ -301,7 +301,7 @@ function openEditModal(){
 
     document.getElementById("editEmail").value = currentOwner.email;
     document.getElementById("editContact").value = currentOwner.contactNumber || "";
-    document.getElementById("editAddress").value = "";
+    document.getElementById("editAddress").value = currentOwner.address || "";
 
     document.getElementById("editModal").classList.add("show");
 
@@ -313,7 +313,7 @@ function closeEditModal(){
 
 }
 
-function saveProfile(){
+async function saveProfile(){
 
     const newEmail = document.getElementById("editEmail").value.trim().toLowerCase();
     const newContact = document.getElementById("editContact").value.trim();
@@ -341,14 +341,54 @@ function saveProfile(){
         return;
     }
 
-    // Editing profile details isn't wired up to the backend yet — there's
-    // no PATCH /api/owner/profile endpoint to persist this to your
-    // account. Rather than pretend it saved, we say so plainly.
-    closeEditModal();
-    showInfo(
-        "Not Available Yet",
-        "Editing your profile details isn't connected to the server yet, so changes here won't be saved to your account. This is a planned feature."
-    );
+    const token = localStorage.getItem("plateTrackOwnerToken");
+    if(!token){ window.location.href = "owner-login.html"; return; }
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE}/owner/profile`,
+            {
+                method:"PATCH",
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization":`Bearer ${token}`
+                },
+                body: JSON.stringify({ email: newEmail, contactNumber: newContact, address: newAddress })
+            }
+        );
+
+        const data = await response.json().catch(function(){ return {}; });
+
+        if(response.status === 401){
+            localStorage.removeItem("plateTrackOwnerToken");
+            localStorage.removeItem("plateTrackOwnerUser");
+            window.location.href = "owner-login.html";
+            return;
+        }
+
+        if(!response.ok){
+            showError("Unable to Save", data.message || "Could not update your profile right now.");
+            return;
+        }
+
+        currentOwner = Object.assign({}, currentOwner, {
+            email: data.owner.email,
+            contactNumber: data.owner.contactNumber,
+            address: data.owner.address,
+        });
+        localStorage.setItem("plateTrackOwnerUser", JSON.stringify(currentOwner));
+
+        closeEditModal();
+        showSuccess("Profile Updated", "Your profile details have been saved.");
+
+    }
+    catch(error){
+
+        console.error("Unable to update profile:", error);
+        showError("Unable to Save", "Could not reach the server. Please check your connection and try again.");
+
+    }
 
 }
 
@@ -372,7 +412,7 @@ function closePasswordModal(){
 
 }
 
-function savePassword(){
+async function savePassword(){
 
     const currentPassword = document.getElementById("currentPassword").value.trim();
     const newPassword = document.getElementById("newPassword").value.trim();
@@ -408,15 +448,52 @@ function savePassword(){
         return;
     }
 
-    // Changing your password from here isn't wired up to the backend yet.
-    // (Note: unlike the enforcer app, the owner "Forgot Password" flow is
-    // ALSO not connected to the backend right now — see the chat for
-    // details. Don't point users there until that's fixed too.)
-    closePasswordModal();
-    showInfo(
-        "Not Available Yet",
-        "Changing your password from this screen isn't connected to the server yet. This is a planned feature."
-    );
+    const token = localStorage.getItem("plateTrackOwnerToken");
+    if(!token){ window.location.href = "owner-login.html"; return; }
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE}/owner/password`,
+            {
+                method:"PATCH",
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization":`Bearer ${token}`
+                },
+                body: JSON.stringify({ currentPassword, newPassword })
+            }
+        );
+
+        const data = await response.json().catch(function(){ return {}; });
+
+        if(response.status === 401 && data.message && data.message.toLowerCase().indexOf("incorrect") !== -1){
+            showError("Incorrect Password", data.message);
+            return;
+        }
+
+        if(response.status === 401){
+            localStorage.removeItem("plateTrackOwnerToken");
+            localStorage.removeItem("plateTrackOwnerUser");
+            window.location.href = "owner-login.html";
+            return;
+        }
+
+        if(!response.ok){
+            showError("Unable to Change Password", data.message || "Could not change your password right now.");
+            return;
+        }
+
+        closePasswordModal();
+        showSuccess("Password Changed", "Your password has been updated successfully.");
+
+    }
+    catch(error){
+
+        console.error("Unable to change password:", error);
+        showError("Unable to Change Password", "Could not reach the server. Please check your connection and try again.");
+
+    }
 
 }
 

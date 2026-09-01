@@ -1,6 +1,9 @@
 // =========================================
 // PlateTrack | Owner Email Verification
 // =========================================
+// Previously "verified" any 6-digit code via a fake setTimeout with no
+// real backend call. Now calls the same verify-reset-code endpoint the
+// enforcer flow already uses successfully, with role: "owner".
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -14,10 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetEmail = localStorage.getItem("plateTrackOwnerResetEmail");
 
     if(!resetEmail){
-
         window.location.href = "owner-forgot-password.html";
         return;
-
     }
 
     function maskEmail(email){
@@ -104,9 +105,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-    // Verify code (simulated - this prototype has no real email/SMS backend)
+    // Verify code (real backend call)
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
 
         e.preventDefault();
 
@@ -152,18 +153,37 @@ document.addEventListener("DOMContentLoaded", () => {
             Verifying...
         `;
 
-        setTimeout(() => {
+        try{
 
-            verifyBtn.classList.remove("loading");
-
-            inputs.forEach(input => {
-                input.classList.add("success");
+            const response = await fetch(`${API_BASE}/auth/verify-reset-code`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: resetEmail, role: "owner", code: otp })
             });
 
-            verifyBtn.innerHTML = `
-                <i class="fa-solid fa-circle-check"></i>
-                Code Verified
-            `;
+            const data = await response.json();
+
+            if(!response.ok){
+
+                verifyBtn.disabled = false;
+                verifyBtn.classList.remove("loading");
+                verifyBtn.innerHTML = "Verify Code";
+
+                verificationBox.classList.add("shake");
+                inputs.forEach(input => input.classList.add("error"));
+
+                setTimeout(() => {
+                    verificationBox.classList.remove("shake");
+                    inputs.forEach(input => input.classList.remove("error"));
+                }, 400);
+
+                showError("Verification Failed", data.message || "Invalid or expired code.");
+                return;
+            }
+
+            verifyBtn.classList.remove("loading");
+            inputs.forEach(input => input.classList.add("success"));
+            verifyBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Code Verified`;
 
             setTimeout(() => {
 
@@ -181,7 +201,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }, 900);
 
-        }, 1800);
+        }
+        catch(error){
+            verifyBtn.disabled = false;
+            verifyBtn.classList.remove("loading");
+            verifyBtn.innerHTML = "Verify Code";
+            showError("Connection Error", "Unable to reach the server. Please try again.");
+        }
 
     });
 
@@ -226,9 +252,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     startResendTimer();
 
-    // Resend code
+    // Resend code (real backend call)
 
-    resendBtn.addEventListener("click", function () {
+    resendBtn.addEventListener("click", async function () {
 
         resendBtn.disabled = true;
 
@@ -237,7 +263,22 @@ document.addEventListener("DOMContentLoaded", () => {
             Sending...
         `;
 
-        setTimeout(() => {
+        try{
+
+            const response = await fetch(`${API_BASE}/auth/forgot-password`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: resetEmail, role: "owner" })
+            });
+
+            const data = await response.json();
+
+            if(!response.ok){
+                showError("Failed to Resend", data.message || "Could not resend the verification code.");
+                resendBtn.disabled = false;
+                resendBtn.textContent = "Resend Code";
+                return;
+            }
 
             showSuccess(
                 "Verification Code Sent",
@@ -249,7 +290,12 @@ document.addEventListener("DOMContentLoaded", () => {
             countdown = 60;
             startResendTimer();
 
-        }, 1600);
+        }
+        catch(error){
+            showError("Connection Error", "Unable to reach the server. Please try again.");
+            resendBtn.disabled = false;
+            resendBtn.textContent = "Resend Code";
+        }
 
     });
 

@@ -21,6 +21,9 @@ router.post("/detect-plate", upload.single("image"), enforcer.detectPlate);
 router.get("/duty-status", enforcer.getDutyStatus);
 router.patch("/duty-status", enforcer.setDutyStatus);
 
+router.patch("/profile", enforcer.updateProfile);
+router.patch("/password", enforcer.changePassword);
+
 router.get("/notifications", enforcer.myNotifications);
 router.patch("/notifications/:id/read", enforcer.markNotificationRead);
 

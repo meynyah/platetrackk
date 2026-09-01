@@ -1,16 +1,18 @@
 // =========================================
 // PlateTrack | Owner Reset Password
 // =========================================
+// Previously read/wrote a "plateTrackOwners" localStorage array that
+// nothing else in the app populates, so a password "reset" here never
+// actually reached the real account. Now calls the same reset-password
+// endpoint the enforcer flow already uses successfully, with role: "owner".
 
 document.addEventListener("DOMContentLoaded", () => {
 
     const resetEmail = localStorage.getItem("plateTrackOwnerResetEmail");
 
     if(!resetEmail){
-
         window.location.href = "owner-forgot-password.html";
         return;
-
     }
 
     const form = document.getElementById("resetForm");
@@ -37,18 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
         special: document.getElementById("ruleSpecial")
     };
 
-    function getOwners(){
-        return JSON.parse(localStorage.getItem("plateTrackOwners")) || [];
-    }
-
-    function saveOwners(owners){
-        localStorage.setItem("plateTrackOwners", JSON.stringify(owners));
-    }
-
     function togglePassword(input, button){
-
         const icon = button.querySelector("i");
-
         if(input.type === "password"){
             input.type = "text";
             icon.className = "fa-solid fa-eye-slash";
@@ -56,7 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
             input.type = "password";
             icon.className = "fa-solid fa-eye";
         }
-
     }
 
     toggleNewPassword.addEventListener("click", () => {
@@ -67,10 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
         togglePassword(confirmPassword, toggleConfirmPassword);
     });
 
-    function updateRule(rule, valid,hasTyped){
-
+    function updateRule(rule, valid, hasTyped){
         const icon = rule.querySelector("i");
-
         rule.classList.remove("valid", "invalid");
 
         if(!hasTyped){
@@ -85,7 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
             rule.classList.add("invalid");
             icon.className = "fa-solid fa-circle-xmark";
         }
-
     }
 
     function checkPassword(){
@@ -106,7 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateRule(rules.special, hasSpecial, hasTyped);
 
         let score = 0;
-
         if(hasLength) score++;
         if(hasUpper) score++;
         if(hasLower) score++;
@@ -117,8 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
             strengthFill.style.width = "0%";
             strengthText.textContent = "-";
             strengthText.style.color = "#94a3b8";
-
-            return { score };
+            return { hasLength, hasUpper, hasLower, hasNumber, hasSpecial, score };
         }
 
         if(score <= 1){
@@ -143,8 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
             strengthText.style.color = "#4ade80";
         }
 
-        return { score };
-
+        return { hasLength, hasUpper, hasLower, hasNumber, hasSpecial, score };
     }
 
     function checkPasswordMatch(){
@@ -154,37 +139,25 @@ document.addEventListener("DOMContentLoaded", () => {
         const box = confirmPassword.parentElement;
 
         if(confirm === ""){
-
             passwordMatch.textContent = "";
             box.classList.remove("success", "error");
             confirmIcon.className = "fa-solid fa-lock-open input-icon";
-
             return;
-
         }
 
         if(password === confirm){
-
             passwordMatch.innerHTML = '<i class="fa-solid fa-circle-check"></i> Passwords match';
             passwordMatch.className = "password-match success";
-
             box.classList.remove("error");
             box.classList.add("success");
-
             confirmIcon.className = "fa-solid fa-circle-check input-icon";
-
         }else{
-
             passwordMatch.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Passwords do not match';
             passwordMatch.className = "password-match error";
-
             box.classList.remove("success");
             box.classList.add("error");
-
             confirmIcon.className = "fa-solid fa-circle-xmark input-icon";
-
         }
-
     }
 
     newPassword.addEventListener("input", () => {
@@ -194,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     confirmPassword.addEventListener("input", checkPasswordMatch);
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
 
         e.preventDefault();
 
@@ -203,72 +176,47 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = checkPassword();
 
         if(password === "" || confirm === ""){
-
-            showError(
-                "Missing Information",
-                "Please complete all required password fields."
-            );
-
+            showError("Missing Information", "Please complete all required password fields.");
             return;
-
         }
 
         if(result.score < 5){
-
-            showError(
-                "Weak Password",
-                "Please follow all password requirements before continuing."
-            );
-
+            showError("Weak Password", "Please follow all password requirements before continuing.");
             return;
-
         }
 
         if(password !== confirm){
-
-            showError(
-                "Password Mismatch",
-                "The passwords do not match. Please check your new password and confirmation."
-            );
-
+            showError("Password Mismatch", "The passwords do not match. Please check your new password and confirmation.");
             return;
-
         }
 
         resetPasswordBtn.disabled = true;
         resetPasswordBtn.classList.add("loading");
+        resetPasswordBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Updating Password...`;
 
-        resetPasswordBtn.innerHTML = `
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            Updating Password...
-        `;
+        try{
 
-        setTimeout(() => {
+            const response = await fetch(`${API_BASE}/auth/reset-password`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: resetEmail, role: "owner", newPassword: password })
+            });
+
+            const data = await response.json();
+
+            if(!response.ok){
+                resetPasswordBtn.disabled = false;
+                resetPasswordBtn.classList.remove("loading");
+                resetPasswordBtn.innerHTML = "Reset Password";
+                showError("Reset Failed", data.message || "Unable to reset your password. Please try again.");
+                return;
+            }
 
             resetPasswordBtn.classList.remove("loading");
             resetPasswordBtn.classList.add("success");
-
-            resetPasswordBtn.innerHTML = `
-                <i class="fa-solid fa-circle-check"></i>
-                Password Updated
-            `;
+            resetPasswordBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Password Updated`;
 
             setTimeout(() => {
-
-                // Actually update the stored password for this account
-                const owners = getOwners();
-
-                const ownerIndex = owners.findIndex(function(owner){
-                    return owner.email.toLowerCase() === resetEmail.toLowerCase();
-                });
-
-                if(ownerIndex !== -1){
-
-                    owners[ownerIndex].password = password;
-
-                    saveOwners(owners);
-
-                }
 
                 localStorage.removeItem("plateTrackOwnerResetEmail");
 
@@ -287,7 +235,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }, 900);
 
-        }, 1800);
+        }
+        catch(error){
+            resetPasswordBtn.disabled = false;
+            resetPasswordBtn.classList.remove("loading");
+            resetPasswordBtn.innerHTML = "Reset Password";
+            showError("Connection Error", "Unable to reach the server. Please try again.");
+        }
 
     });
 

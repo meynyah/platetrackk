@@ -2,7 +2,10 @@ const Violation = require("../models/Violation");
 const Owner = require("../models/Owner");
 const Notification = require("../models/Notification");
 const Enforcer = require("../models/Enforcer");
+const bcrypt = require("bcryptjs");
 const { buildFlexiblePlateRegex } = require("../utils/normalizePlate");
+
+const SALT_ROUNDS = 10;
 
 // POST /api/enforcer/violations
 // This is how "lahat ng reports ng traffic enforcer" reach the admin — every
@@ -271,6 +274,107 @@ async function getDutyStatus(req, res) {
   }
 }
 
+// PATCH /api/enforcer/profile
+// Lets an enforcer update their own contact details -- email, mobile
+// number, and station. Badge number and full name are intentionally left
+// out here since those are official designations, not self-editable
+// contact info.
+async function updateProfile(req, res) {
+  try {
+
+    const { email, mobile, station } = req.body;
+
+    if (!email || !mobile) {
+      return res.status(400).json({ message: "Email and mobile number are required." });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ message: "Please enter a valid email address." });
+    }
+
+    if (!/^09\d{9}$/.test(mobile)) {
+      return res.status(400).json({ message: "Please enter a valid 11-digit Philippine mobile number." });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // If the email is changing, make sure no other enforcer account
+    // already uses it -- email is unique per the schema, so a duplicate
+    // save would otherwise fail with a raw Mongo error.
+    const existing = await Enforcer.findOne({
+      email: normalizedEmail,
+      _id: { $ne: req.user.id },
+    });
+
+    if (existing) {
+      return res.status(409).json({ message: "That email address is already in use by another account." });
+    }
+
+    const enforcer = await Enforcer.findByIdAndUpdate(
+      req.user.id,
+      { email: normalizedEmail, mobile, station },
+      { new: true }
+    ).select("-password");
+
+    if (!enforcer) {
+      return res.status(404).json({ message: "Enforcer account not found." });
+    }
+
+    res.json({ message: "Profile updated.", enforcer });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update profile." });
+  }
+}
+
+// PATCH /api/enforcer/password
+// Lets an enforcer change their own password from the profile screen,
+// verifying their current password first.
+async function changePassword(req, res) {
+  try {
+
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Current and new password are required." });
+    }
+
+    const strongEnough =
+      newPassword.length >= 8 &&
+      /[A-Z]/.test(newPassword) &&
+      /[a-z]/.test(newPassword) &&
+      /\d/.test(newPassword);
+
+    if (!strongEnough) {
+      return res.status(400).json({
+        message: "Use at least 8 characters with uppercase, lowercase, and a number.",
+      });
+    }
+
+    const enforcer = await Enforcer.findById(req.user.id);
+
+    if (!enforcer) {
+      return res.status(404).json({ message: "Enforcer account not found." });
+    }
+
+    const matches = await bcrypt.compare(currentPassword, enforcer.password);
+
+    if (!matches) {
+      return res.status(401).json({ message: "Your current password is incorrect." });
+    }
+
+    enforcer.password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    await enforcer.save();
+
+    res.json({ message: "Password changed successfully." });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to change password." });
+  }
+}
+
 module.exports = {
   submitViolation,
   myViolations,
@@ -279,4 +383,6 @@ module.exports = {
   detectPlate,
   setDutyStatus,
   getDutyStatus,
+  updateProfile,
+  changePassword,
 };

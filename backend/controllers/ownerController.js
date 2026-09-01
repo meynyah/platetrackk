@@ -1,6 +1,10 @@
 const Violation = require("../models/Violation");
 const Appeal = require("../models/Appeal");
 const Notification = require("../models/Notification");
+const Owner = require("../models/Owner");
+const bcrypt = require("bcryptjs");
+
+const SALT_ROUNDS = 10;
 
 // GET /api/owner/violations/mine
 async function myViolations(req, res) {
@@ -91,4 +95,98 @@ async function markNotificationRead(req, res) {
   }
 }
 
-module.exports = { myViolations, submitAppeal, myAppeals, myNotifications, markNotificationRead };
+// PATCH /api/owner/profile
+// Lets an owner update their own contact details -- email, contact
+// number, and address. Plate number, vehicle type/color are intentionally
+// left out here; those are handled by the vehicle-management endpoints,
+// not general profile editing.
+async function updateProfile(req, res) {
+  try {
+
+    const { email, contactNumber, address } = req.body;
+
+    if (!email || !contactNumber) {
+      return res.status(400).json({ message: "Email and contact number are required." });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ message: "Please enter a valid email address." });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const existing = await Owner.findOne({
+      email: normalizedEmail,
+      _id: { $ne: req.user.id },
+    });
+
+    if (existing) {
+      return res.status(409).json({ message: "That email address is already in use by another account." });
+    }
+
+    const owner = await Owner.findByIdAndUpdate(
+      req.user.id,
+      { email: normalizedEmail, contactNumber, address: address || "" },
+      { new: true }
+    ).select("-password");
+
+    if (!owner) {
+      return res.status(404).json({ message: "Owner account not found." });
+    }
+
+    res.json({ message: "Profile updated.", owner });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update profile." });
+  }
+}
+
+// PATCH /api/owner/password
+// Lets an owner change their own password from the profile screen,
+// verifying their current password first.
+async function changePassword(req, res) {
+  try {
+
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Current and new password are required." });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({ message: "Your new password must be at least 8 characters long." });
+    }
+
+    const owner = await Owner.findById(req.user.id);
+
+    if (!owner) {
+      return res.status(404).json({ message: "Owner account not found." });
+    }
+
+    const matches = await bcrypt.compare(currentPassword, owner.password);
+
+    if (!matches) {
+      return res.status(401).json({ message: "Your current password is incorrect." });
+    }
+
+    owner.password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    await owner.save();
+
+    res.json({ message: "Password changed successfully." });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to change password." });
+  }
+}
+
+module.exports = {
+  myViolations,
+  submitAppeal,
+  myAppeals,
+  myNotifications,
+  markNotificationRead,
+  updateProfile,
+  changePassword,
+};
