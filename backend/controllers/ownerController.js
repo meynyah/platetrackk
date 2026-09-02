@@ -3,6 +3,7 @@ const Appeal = require("../models/Appeal");
 const Notification = require("../models/Notification");
 const Owner = require("../models/Owner");
 const bcrypt = require("bcryptjs");
+const { buildFlexiblePlateRegex } = require("../utils/normalizePlate");
 
 const SALT_ROUNDS = 10;
 
@@ -181,6 +182,143 @@ async function changePassword(req, res) {
   }
 }
 
+// Checks whether a plate number is already registered to ANY account --
+// either as someone's primary plate, or as one of their additional
+// vehicles. When editing an existing additional vehicle, pass its own
+// _id as excludeVehicleId so it doesn't flag itself as a duplicate of
+// itself when its plate hasn't actually changed.
+async function isPlateTaken(plateNumber, excludeVehicleId) {
+
+  const plateRegex = buildFlexiblePlateRegex(plateNumber);
+  if (!plateRegex) return false;
+
+  const match = await Owner.findOne({
+    $or: [
+      { plateNumber: { $regex: plateRegex } },
+      { "additionalVehicles.plateNumber": { $regex: plateRegex } },
+    ],
+  });
+
+  if (!match) return false;
+
+  if (excludeVehicleId) {
+    const isPrimaryMatch = plateRegex.test(match.plateNumber);
+    if (isPrimaryMatch) return true;
+
+    const stillMatchesAnother = match.additionalVehicles.some(
+      (v) => String(v._id) !== String(excludeVehicleId) && plateRegex.test(v.plateNumber)
+    );
+    return stillMatchesAnother;
+  }
+
+  return true;
+}
+
+// POST /api/owner/vehicles
+async function addVehicle(req, res) {
+  try {
+
+    const { plateNumber, vehicleType, vehicleColor } = req.body;
+
+    if (!plateNumber || !plateNumber.trim()) {
+      return res.status(400).json({ message: "Plate number is required." });
+    }
+
+    const taken = await isPlateTaken(plateNumber);
+    if (taken) {
+      return res.status(409).json({ message: "This plate number is already registered to an account." });
+    }
+
+    const owner = await Owner.findByIdAndUpdate(
+      req.user.id,
+      {
+        $push: {
+          additionalVehicles: {
+            plateNumber: plateNumber.toUpperCase().trim(),
+            vehicleType: vehicleType || "",
+            vehicleColor: vehicleColor || "",
+          },
+        },
+      },
+      { new: true }
+    ).select("-password");
+
+    if (!owner) {
+      return res.status(404).json({ message: "Owner account not found." });
+    }
+
+    res.status(201).json({ message: "Vehicle added.", owner });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to add vehicle." });
+  }
+}
+
+// PATCH /api/owner/vehicles/:vehicleId
+async function updateVehicle(req, res) {
+  try {
+
+    const { vehicleId } = req.params;
+    const { plateNumber, vehicleType, vehicleColor } = req.body;
+
+    if (!plateNumber || !plateNumber.trim()) {
+      return res.status(400).json({ message: "Plate number is required." });
+    }
+
+    const taken = await isPlateTaken(plateNumber, vehicleId);
+    if (taken) {
+      return res.status(409).json({ message: "This plate number is already registered to an account." });
+    }
+
+    const owner = await Owner.findOneAndUpdate(
+      { _id: req.user.id, "additionalVehicles._id": vehicleId },
+      {
+        $set: {
+          "additionalVehicles.$.plateNumber": plateNumber.toUpperCase().trim(),
+          "additionalVehicles.$.vehicleType": vehicleType || "",
+          "additionalVehicles.$.vehicleColor": vehicleColor || "",
+        },
+      },
+      { new: true }
+    ).select("-password");
+
+    if (!owner) {
+      return res.status(404).json({ message: "Vehicle not found." });
+    }
+
+    res.json({ message: "Vehicle updated.", owner });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update vehicle." });
+  }
+}
+
+// DELETE /api/owner/vehicles/:vehicleId
+async function deleteVehicle(req, res) {
+  try {
+
+    const { vehicleId } = req.params;
+
+    const owner = await Owner.findByIdAndUpdate(
+      req.user.id,
+      { $pull: { additionalVehicles: { _id: vehicleId } } },
+      { new: true }
+    ).select("-password");
+
+    if (!owner) {
+      return res.status(404).json({ message: "Owner account not found." });
+    }
+
+    res.json({ message: "Vehicle removed.", owner });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to remove vehicle." });
+  }
+}
+
 module.exports = {
   myViolations,
   submitAppeal,
@@ -189,4 +327,7 @@ module.exports = {
   markNotificationRead,
   updateProfile,
   changePassword,
+  addVehicle,
+  updateVehicle,
+  deleteVehicle,
 };

@@ -7,6 +7,18 @@ const ownerSchema = new mongoose.Schema(
     plateNumber: { type: String, required: true, unique: true, uppercase: true, trim: true },
     vehicleType: { type: String, trim: true, default: "" },
     vehicleColor: { type: String, trim: true, default: "" },
+
+    // Multi-vehicle support: the fields above remain the owner's primary/
+    // original registered vehicle (unchanged, so existing accounts and
+    // the registration flow don't need to change at all). Any vehicles
+    // added later from the dashboard go here instead.
+    additionalVehicles: [
+      {
+        plateNumber: { type: String, required: true, uppercase: true, trim: true },
+        vehicleType: { type: String, trim: true, default: "" },
+        vehicleColor: { type: String, trim: true, default: "" },
+      },
+    ],
     contactNumber: { type: String, trim: true },
     address: { type: String, trim: true, default: "" },
     password: { type: String, required: true }, // hashed

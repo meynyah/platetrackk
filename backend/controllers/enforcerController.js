@@ -47,7 +47,12 @@ async function submitViolation(req, res) {
     // plate) — otherwise the violation silently never links to an owner.
     const plateRegex = buildFlexiblePlateRegex(plateNumber);
     const owner = plateRegex
-      ? await Owner.findOne({ plateNumber: { $regex: plateRegex } })
+      ? await Owner.findOne({
+          $or: [
+            { plateNumber: { $regex: plateRegex } },
+            { "additionalVehicles.plateNumber": { $regex: plateRegex } },
+          ],
+        })
       : null;
 
     const violation = await Violation.create({
@@ -186,8 +191,30 @@ async function detectPlate(req, res) {
     // type it in blind.
     const plateRegex = buildFlexiblePlateRegex(result.plateNumber);
     const owner = plateRegex
-      ? await Owner.findOne({ plateNumber: { $regex: plateRegex } })
+      ? await Owner.findOne({
+          $or: [
+            { plateNumber: { $regex: plateRegex } },
+            { "additionalVehicles.plateNumber": { $regex: plateRegex } },
+          ],
+        })
       : null;
+
+    // An owner can now have more than one registered vehicle, so figure
+    // out exactly which one matched the detected plate -- not just
+    // assume it was always their original/primary vehicle.
+    let matchedVehicle = null;
+    if (owner && plateRegex) {
+      if (plateRegex.test(owner.plateNumber)) {
+        matchedVehicle = {
+          plateNumber: owner.plateNumber,
+          vehicleType: owner.vehicleType,
+          vehicleColor: owner.vehicleColor,
+        };
+      } else {
+        matchedVehicle =
+          owner.additionalVehicles.find((v) => plateRegex.test(v.plateNumber)) || null;
+      }
+    }
 
     res.json({
       success: true,
@@ -196,14 +223,14 @@ async function detectPlate(req, res) {
       ocrConfidence: result.ocrConfidence,
       processingTimeMs: result.processingTimeMs,
       boundingBox: result.boundingBox,
-      owner: owner
+      owner: owner && matchedVehicle
         ? {
             found: true,
             fullName: owner.fullName,
             email: owner.email,
-            registeredPlateNumber: owner.plateNumber,
-            vehicleType: owner.vehicleType || "",
-            vehicleColor: owner.vehicleColor || "",
+            registeredPlateNumber: matchedVehicle.plateNumber,
+            vehicleType: matchedVehicle.vehicleType || "",
+            vehicleColor: matchedVehicle.vehicleColor || "",
           }
         : { found: false },
     });

@@ -74,9 +74,7 @@ function loadProfile(){
     document.getElementById("emailText").textContent = currentOwner.email;
     document.getElementById("contactText").textContent = currentOwner.contactNumber || "Not provided";
 
-    // The owner account model doesn't currently store a separate address
-    // field — only registered plate number and contact number.
-    document.getElementById("addressText").textContent = "Not provided";
+    document.getElementById("addressText").textContent = currentOwner.address || "Not provided";
 
     if(currentOwner.createdAt){
 
@@ -243,52 +241,197 @@ function loadVehicles(){
         return;
     }
 
-    vehicleList.innerHTML = `
+    // The primary/original registered vehicle -- not deletable from here,
+    // since it's tied to the account itself.
+    let html = `
         <div class="vehicle-item">
             <div class="info-icon">
                 <i class="fa-solid fa-car"></i>
             </div>
             <div class="vehicle-item-content">
                 <span class="vehicle-item-plate">${currentOwner.plateNumber}</span>
-                <span class="vehicle-item-detail">Registered to your account</span>
+                <span class="vehicle-item-detail">${[currentOwner.vehicleColor, currentOwner.vehicleType].filter(Boolean).join(" ") || "Registered to your account"}</span>
             </div>
         </div>
     `;
 
+    // Any additional vehicles the owner has added since registering.
+    const additional = currentOwner.additionalVehicles || [];
+
+    additional.forEach(function(vehicle){
+
+        html += `
+            <div class="vehicle-item">
+                <div class="info-icon">
+                    <i class="fa-solid fa-car"></i>
+                </div>
+                <div class="vehicle-item-content">
+                    <span class="vehicle-item-plate">${vehicle.plateNumber}</span>
+                    <span class="vehicle-item-detail">${[vehicle.vehicleColor, vehicle.vehicleType].filter(Boolean).join(" ") || "Additional vehicle"}</span>
+                </div>
+                <div class="vehicle-actions">
+                    <button type="button" onclick="openEditVehicleModal('${vehicle._id}')" title="Edit">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button type="button" onclick="deleteVehicle('${vehicle._id}')" title="Remove">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+    });
+
+    vehicleList.innerHTML = html;
+
 }
 
 function openAddVehicleModal(){
-    showInfo(
-        "Not Available Yet",
-        "Adding additional vehicles isn't supported yet — each account currently supports one registered plate number."
-    );
+    document.getElementById("vehicleModalTitle").textContent = "Add Vehicle";
+    document.getElementById("vehicleEditIndex").value = "-1";
+    document.getElementById("vehiclePlateInput").value = "";
+    document.getElementById("vehicleTypeInput").value = "";
+    document.getElementById("vehicleColorInput").value = "";
+    document.getElementById("vehicleModal").classList.add("show");
 }
 
-// The vehicle modal itself is no longer opened (see openAddVehicleModal
-// above), but its Cancel/Save buttons in the HTML still reference these
-// function names, so we keep no-op stubs to avoid a console error if the
-// modal is ever shown by other means.
 function closeVehicleModal(){
     const modal = document.getElementById("vehicleModal");
     if(modal) modal.classList.remove("show");
 }
 
-function saveVehicle(){
-    closeVehicleModal();
+function openEditVehicleModal(vehicleId){
+
+    const vehicle = (currentOwner.additionalVehicles || []).find(function(v){
+        return v._id === vehicleId;
+    });
+
+    if(!vehicle){
+        showError("Vehicle Not Found", "This vehicle could not be found on your account.");
+        return;
+    }
+
+    document.getElementById("vehicleModalTitle").textContent = "Edit Vehicle";
+    document.getElementById("vehicleEditIndex").value = vehicleId;
+    document.getElementById("vehiclePlateInput").value = vehicle.plateNumber;
+    document.getElementById("vehicleTypeInput").value = vehicle.vehicleType || "";
+    document.getElementById("vehicleColorInput").value = vehicle.vehicleColor || "";
+    document.getElementById("vehicleModal").classList.add("show");
+
 }
 
-function openEditVehicleModal(){
-    showInfo(
-        "Not Available Yet",
-        "Editing your registered plate number from here isn't connected to the server yet."
-    );
+async function saveVehicle(){
+
+    const vehicleId = document.getElementById("vehicleEditIndex").value;
+    const plateNumber = document.getElementById("vehiclePlateInput").value.trim();
+    const vehicleType = document.getElementById("vehicleTypeInput").value.trim();
+    const vehicleColor = document.getElementById("vehicleColorInput").value.trim();
+
+    if(!plateNumber){
+        showError("Missing Plate Number", "Please enter the vehicle's plate number.");
+        return;
+    }
+
+    const token = localStorage.getItem("plateTrackOwnerToken");
+    if(!token){ window.location.href = "owner-login.html"; return; }
+
+    const isEditing = vehicleId && vehicleId !== "-1";
+
+    try{
+
+        const response = await fetch(
+            isEditing
+                ? `${API_BASE}/owner/vehicles/${vehicleId}`
+                : `${API_BASE}/owner/vehicles`,
+            {
+                method: isEditing ? "PATCH" : "POST",
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization":`Bearer ${token}`
+                },
+                body: JSON.stringify({ plateNumber, vehicleType, vehicleColor })
+            }
+        );
+
+        const data = await response.json().catch(function(){ return {}; });
+
+        if(response.status === 401){
+            localStorage.removeItem("plateTrackOwnerToken");
+            localStorage.removeItem("plateTrackOwnerUser");
+            window.location.href = "owner-login.html";
+            return;
+        }
+
+        if(!response.ok){
+            showError("Unable to Save Vehicle", data.message || "Could not save this vehicle right now.");
+            return;
+        }
+
+        currentOwner = data.owner;
+        localStorage.setItem("plateTrackOwnerUser", JSON.stringify(currentOwner));
+
+        closeVehicleModal();
+        loadVehicles();
+        showSuccess(
+            isEditing ? "Vehicle Updated" : "Vehicle Added",
+            isEditing ? "Your vehicle details have been updated." : "Your new vehicle has been added to your account."
+        );
+
+    }
+    catch(error){
+
+        console.error("Unable to save vehicle:", error);
+        showError("Unable to Save Vehicle", "Could not reach the server. Please check your connection and try again.");
+
+    }
+
 }
 
-function deleteVehicle(){
-    showInfo(
-        "Not Available Yet",
-        "Removing your registered vehicle isn't available from here yet."
-    );
+async function deleteVehicle(vehicleId){
+
+    const token = localStorage.getItem("plateTrackOwnerToken");
+    if(!token){ window.location.href = "owner-login.html"; return; }
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE}/owner/vehicles/${vehicleId}`,
+            {
+                method:"DELETE",
+                headers:{
+                    "Authorization":`Bearer ${token}`
+                }
+            }
+        );
+
+        const data = await response.json().catch(function(){ return {}; });
+
+        if(response.status === 401){
+            localStorage.removeItem("plateTrackOwnerToken");
+            localStorage.removeItem("plateTrackOwnerUser");
+            window.location.href = "owner-login.html";
+            return;
+        }
+
+        if(!response.ok){
+            showError("Unable to Remove Vehicle", data.message || "Could not remove this vehicle right now.");
+            return;
+        }
+
+        currentOwner = data.owner;
+        localStorage.setItem("plateTrackOwnerUser", JSON.stringify(currentOwner));
+
+        loadVehicles();
+        showSuccess("Vehicle Removed", "The vehicle has been removed from your account.");
+
+    }
+    catch(error){
+
+        console.error("Unable to remove vehicle:", error);
+        showError("Unable to Remove Vehicle", "Could not reach the server. Please check your connection and try again.");
+
+    }
+
 }
 
 // ==========================================
