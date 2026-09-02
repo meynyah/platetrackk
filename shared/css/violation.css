@@ -64,7 +64,7 @@ body{
 
     margin:auto;
 
-    padding:20px 18px 80px;
+    padding:20px 18px 130px;
 
 }
 
@@ -462,7 +462,7 @@ body{
 
     .violation-container{
 
-        padding:18px 16px 40px;
+        padding:18px 16px 130px;
 
     }
 
@@ -615,4 +615,74 @@ body.light-mode .input-group select option{
 
 body.light-mode::-webkit-scrollbar-track{
     background:#dce5f2;
+}
+/* ==========================================
+   BOTTOM NAV
+========================================== */
+
+.bottom-nav{
+    position:fixed;
+    left:50%;
+    bottom:18px;
+    transform:translateX(-50%);
+    width:calc(100% - 30px);
+    max-width:520px;
+    background:rgba(17,30,53,.94);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:24px;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    padding:12px 8px;
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.35),
+        0 0 25px rgba(61,108,255,.15);
+    z-index:999;
+}
+
+.nav-item{
+    flex:1;
+    text-decoration:none;
+    color:#9fb2d8;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:10px 6px;
+    border-radius:18px;
+    transition:.28s ease;
+}
+
+.nav-item i{
+    font-size:21px;
+}
+
+.nav-item span{
+    font-size:12px;
+    font-weight:700;
+}
+
+.nav-item.active{
+    background:#3d6cff;
+    color:#ffffff;
+    box-shadow:0 0 20px rgba(61,108,255,.35);
+}
+
+@media(max-width:480px){
+
+    .bottom-nav{
+        width:calc(100% - 20px);
+        bottom:12px;
+    }
+
+    .nav-item i{
+        font-size:20px;
+    }
+
+    .nav-item span{
+        font-size:11px;
+    }
+
 }

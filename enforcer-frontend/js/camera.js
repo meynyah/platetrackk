@@ -345,6 +345,7 @@ function handleDetectionSuccess(data){
             ownerFound: Boolean(owner),
             ownerName: owner ? owner.fullName : "",
             ownerEmail: owner ? owner.email : "",
+            ownerAddress: owner ? owner.address || "" : "",
             source: "camera-ai"
         })
     );

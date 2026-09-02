@@ -27,7 +27,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 href="../shared/css/modal.css">
 
 <link rel="stylesheet"
-href="css/detection-result.css?v=20260901-1">
+href="css/detection-result.css?v=20260902-1">
 
 </head>
 
@@ -205,7 +205,7 @@ REGISTERED OWNER
 <h3>
 
 <i class="fa-solid fa-circle-user"></i>
-Registered Owner
+Registered Owner Information
 
 </h3>
 
@@ -241,15 +241,64 @@ Email Address
 
 </div>
 
+<div class="info-row">
+
+<span>
+
+Address
+
+</span>
+
+<strong id="ownerAddress">
+
+--
+
+</strong>
+
+</div>
+
+<div class="info-row">
+
+<span>
+
+Vehicle Type
+
+</span>
+
+<strong id="ownerVehicleType">
+
+--
+
+</strong>
+
+</div>
+
+<div class="info-row">
+
+<span>
+
+Vehicle Color
+
+</span>
+
+<strong id="ownerVehicleColor">
+
+--
+
+</strong>
+
+</div>
+
 </div>
 
 </section>
 
 <!-- ==========================================
-VEHICLE INFORMATION
+VEHICLE INFORMATION (manual entry -- only shown
+when no registered owner was matched)
 ========================================== -->
 
-<section class="vehicle-section">
+<section class="vehicle-section" id="manualVehicleSection">
 
 <div class="info-card">
 
@@ -556,7 +605,7 @@ class="modal-buttons">
 <script src="../shared/js/config.js"></script>
 <script src="../shared/js/modal.js"></script>
 <script src="../shared/js/theme.js"></script>
-<script src="js/detection-result.js?v=20260901-1"></script>
+<script src="js/detection-result.js?v=20260902-2"></script>
 
 </body>
 </html>

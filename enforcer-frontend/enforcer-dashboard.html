@@ -322,104 +322,6 @@ TODAY'S SUMMARY
 </section>
 
 <!-- ===========================
-QUICK ACTIONS
-=========================== -->
-
-<section class="quick-actions">
-
-    <div class="section-header">
-
-        <h2>
-
-            Quick Actions
-
-        </h2>
-
-    </div>
-
-    <div class="action-grid">
-
-        <button
-        class="action-card"
-        type="button"
-        onclick="startDetection()">
-
-            <div class="action-icon">
-
-                <i class="fa-solid fa-camera"></i>
-
-            </div>
-
-            <span>
-
-                Start Detection
-
-            </span>
-
-        </button>
-
-        <button
-        class="action-card"
-        type="button"
-        onclick="window.location.href='violation-form.html'">
-
-            <div class="action-icon">
-
-                <i class="fa-solid fa-file-pen"></i>
-
-            </div>
-
-            <span>
-
-                Manual Violation
-
-            </span>
-
-        </button>
-
-        <button
-        class="action-card"
-        type="button"
-        onclick="window.location.href='history.html'">
-
-            <div class="action-icon">
-
-                <i class="fa-solid fa-clock-rotate-left"></i>
-
-            </div>
-
-            <span>
-
-                Violation History
-
-            </span>
-
-        </button>
-
-        <button
-        class="action-card"
-        type="button"
-        onclick="window.location.href='detection-result.html'">
-
-            <div class="action-icon">
-
-                <i class="fa-solid fa-square-poll-vertical"></i>
-
-            </div>
-
-            <span>
-
-                Detection Result
-
-            </span>
-
-        </button>
-
-    </div>
-
-</section>
-
-<!-- ===========================
 RECENT DETECTIONS
 =========================== -->
 
@@ -581,6 +483,20 @@ BOTTOM NAVIGATION
     </a>
 
     <a
+    href="violation-form.html"
+    class="nav-item">
+
+        <i class="fa-solid fa-file-pen"></i>
+
+        <span>
+
+            Manual
+
+        </span>
+
+    </a>
+
+    <a
     href="camera.html"
     class="nav-item">
 
@@ -629,7 +545,7 @@ BOTTOM NAVIGATION
 <script src="../shared/js/config.js"></script>
 <script src="../shared/js/modal.js?v=20260816-1"></script>
 <script src="../shared/js/theme.js"></script>
-<script src="js/dashboard.js?v=20260901-1"></script>
+<script src="js/dashboard.js?v=20260902-1"></script>
 
 
 <script>

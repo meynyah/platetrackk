@@ -65,7 +65,6 @@ function loadProfile(){
     setText("badgeNumber", "Badge No. " + (currentEnforcer.badgeNumber || "Not provided"));
     setText("emailText", currentEnforcer.email);
     setText("contactText", currentEnforcer.mobile || "Not provided");
-    setText("areaText", currentEnforcer.station || "Antipolo City");
     setText("joinedDate", registered && !Number.isNaN(registered.getTime()) ? "Joined " + registered.getFullYear() : "Joined 2026");
     loadAvatar();
 }
@@ -74,7 +73,6 @@ function openEditModal(){
     if(!currentEnforcer) return;
     document.getElementById("editEmail").value = currentEnforcer.email;
     document.getElementById("editContact").value = currentEnforcer.mobile || "";
-    document.getElementById("editArea").value = currentEnforcer.station || "Antipolo City";
     document.getElementById("editModal").classList.add("show");
 }
 
@@ -83,8 +81,7 @@ function closeEditModal(){ document.getElementById("editModal").classList.remove
 async function saveProfile(){
     const email = getInputValue("editEmail").toLowerCase();
     const mobile = getInputValue("editContact");
-    const assignedArea = getInputValue("editArea");
-    if(!email || !mobile || !assignedArea){ showError("Incomplete Profile", "Please complete all profile fields."); return; }
+    if(!email || !mobile){ showError("Incomplete Profile", "Please complete all profile fields."); return; }
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showError("Invalid Email", "Please enter a valid email address."); return; }
     if(!/^09\d{9}$/.test(mobile)){ showError("Invalid Contact Number", "Please enter a valid 11-digit Philippine mobile number."); return; }
 
@@ -101,7 +98,7 @@ async function saveProfile(){
                     "Content-Type":"application/json",
                     "Authorization":`Bearer ${token}`
                 },
-                body: JSON.stringify({ email, mobile, station: assignedArea })
+                body: JSON.stringify({ email, mobile })
             }
         );
 
@@ -125,7 +122,6 @@ async function saveProfile(){
         currentEnforcer = Object.assign({}, currentEnforcer, {
             email: data.enforcer.email,
             mobile: data.enforcer.mobile,
-            station: data.enforcer.station,
         });
         localStorage.setItem("plateTrackEnforcerSession", JSON.stringify(currentEnforcer));
 

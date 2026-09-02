@@ -69,6 +69,7 @@ function loadDetectionData(){
     }
 
     const ownerSection = document.getElementById("ownerSection");
+    const manualVehicleSection = document.getElementById("manualVehicleSection");
 
     if(storedResult.ownerFound && ownerSection){
 
@@ -78,12 +79,34 @@ function loadDetectionData(){
         document.getElementById("ownerEmail").textContent =
         storedResult.ownerEmail || "--";
 
+        document.getElementById("ownerAddress").textContent =
+        storedResult.ownerAddress || "--";
+
+        document.getElementById("ownerVehicleType").textContent =
+        storedResult.vehicleType || "--";
+
+        document.getElementById("ownerVehicleColor").textContent =
+        storedResult.vehicleColor || "--";
+
         ownerSection.style.display = "block";
+
+        // A registered owner was found, so vehicle type/color are already
+        // shown above (read-only, from official records) -- no need for
+        // the separate manual-entry card too.
+        if(manualVehicleSection){
+            manualVehicleSection.style.display = "none";
+        }
 
     }
     else if(ownerSection){
 
         ownerSection.style.display = "none";
+
+        // No registered owner matched this plate, so fall back to letting
+        // the enforcer manually confirm/enter the vehicle type and color.
+        if(manualVehicleSection){
+            manualVehicleSection.style.display = "block";
+        }
 
     }
 

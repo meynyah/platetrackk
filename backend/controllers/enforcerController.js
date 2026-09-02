@@ -228,6 +228,7 @@ async function detectPlate(req, res) {
             found: true,
             fullName: owner.fullName,
             email: owner.email,
+            address: owner.address || "",
             registeredPlateNumber: matchedVehicle.plateNumber,
             vehicleType: matchedVehicle.vehicleType || "",
             vehicleColor: matchedVehicle.vehicleColor || "",
@@ -309,7 +310,7 @@ async function getDutyStatus(req, res) {
 async function updateProfile(req, res) {
   try {
 
-    const { email, mobile, station } = req.body;
+    const { email, mobile } = req.body;
 
     if (!email || !mobile) {
       return res.status(400).json({ message: "Email and mobile number are required." });
@@ -339,7 +340,7 @@ async function updateProfile(req, res) {
 
     const enforcer = await Enforcer.findByIdAndUpdate(
       req.user.id,
-      { email: normalizedEmail, mobile, station },
+      { email: normalizedEmail, mobile },
       { new: true }
     ).select("-password");
 
