@@ -108,19 +108,17 @@ body{
 }
 
 .logo-box{
-    width:82px;
-    height:82px;
+    width:80px;
+    height:80px;
     margin:0 auto 20px;
-    border-radius:22px;
-    background:linear-gradient(135deg,#4e7eff,#2c5fff);
+    border-radius:20px;
+    background:#3d6cff;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:38px;
+    font-size:40px;
     color:#ffffff;
-    box-shadow:
-        0 0 30px rgba(61,108,255,.45),
-        inset 0 1px 0 rgba(255,255,255,.25);
+    box-shadow:0 0 35px rgba(61,108,255,.5);
 }
 
 .logo-area h1{
