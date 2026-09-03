@@ -50,6 +50,7 @@ function loadViewData(viewName) {
     case "enforcer-approvals": return loadEnforcerApprovals();
     case "owner-approvals": return loadOwnerApprovals();
     case "enforcer-monitor": return loadEnforcerMonitor();
+    case "active-duty": return loadActiveDuty();
     case "owner-monitor": return loadOwnerMonitor();
     case "violations": return loadViolations();
     case "appeals": return loadAppeals();
@@ -87,26 +88,6 @@ async function loadOverview() {
           <span class="trend up">
             <i class="fa-solid fa-arrow-trend-up"></i>
             +${stats.enforcersApprovedToday || 0} Today
-          </span>
-        </div>
-      </article>
-
-      <article class="stat-card stat-green">
-        <div class="stat-card-top">
-          <span class="stat-icon">
-            <i class="fa-solid fa-satellite-dish"></i>
-          </span>
-          <span class="stat-trend trend-neutral">
-            Live
-          </span>
-        </div>
-        <div class="num animated-stat" data-value="${stats.enforcersOnDuty || 0}">0</div>
-
-        <div class="label">Currently On Duty</div>
-        <div class="stat-footer">
-          <span class="trend waiting">
-            <i class="fa-solid fa-shield-halved"></i>
-            of ${stats.totalEnforcers || 0} approved enforcers
           </span>
         </div>
       </article>
@@ -509,7 +490,48 @@ async function loadEnforcerMonitor() {
     enforcerMonitorCache = Array.isArray(list) ? list : [];
     filterEnforcerMonitor();
   } catch (err) {
-    if (body) body.innerHTML = `<tr><td colspan="5" class="empty-state">Failed to load enforcer accounts.</td></tr>`;
+    if (body) body.innerHTML = `<tr><td colspan="6" class="empty-state">Failed to load enforcer accounts.</td></tr>`;
+    showToast(err.message, "error");
+  }
+}
+
+/* ------------------------------- ACTIVE DUTY ------------------------------ */
+
+async function loadActiveDuty() {
+  const body = document.getElementById("activeDutyBody");
+  const countLabel = document.getElementById("activeDutyCount");
+
+  try {
+    const list = await apiRequest("/admin/enforcers");
+    const onDuty = (Array.isArray(list) ? list : []).filter((e) => e.onDuty);
+
+    if (countLabel) {
+      countLabel.textContent = `${onDuty.length} On Duty`;
+    }
+
+    if (!body) return;
+
+    if (!onDuty.length) {
+      body.innerHTML = `<tr><td colspan="4" class="empty-state">No enforcers are currently on duty.</td></tr>`;
+      return;
+    }
+
+    // Most recently-started shift first, so a fresh check-in surfaces at
+    // the top rather than getting buried among enforcers who have been
+    // on duty since earlier in the day.
+    onDuty.sort((a, b) => new Date(b.dutyChangedAt || 0) - new Date(a.dutyChangedAt || 0));
+
+    body.innerHTML = onDuty.map((e) => `
+      <tr>
+        <td>${escapeHtml(e.fullName)}</td>
+        <td class="mono">${escapeHtml(e.badgeNumber)}</td>
+        <td>${escapeHtml(e.station || "—")}</td>
+        <td>${e.dutyChangedAt ? new Date(e.dutyChangedAt).toLocaleString("en-PH", { hour: "2-digit", minute: "2-digit", month: "short", day: "numeric" }) : "—"}</td>
+      </tr>
+    `).join("");
+
+  } catch (err) {
+    if (body) body.innerHTML = `<tr><td colspan="4" class="empty-state">Failed to load active duty enforcers.</td></tr>`;
     showToast(err.message, "error");
   }
 }

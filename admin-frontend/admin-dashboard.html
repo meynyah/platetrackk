@@ -259,6 +259,24 @@
                 <button
                     type="button"
                     class="nav-item"
+                    data-view="active-duty"
+                >
+
+                    <span class="nav-item-icon">
+
+                        <i class="fa-solid fa-satellite-dish"></i>
+
+                    </span>
+
+                    <span class="nav-item-text">
+                        Active Duty
+                    </span>
+
+                </button>
+
+                <button
+                    type="button"
+                    class="nav-item"
                     data-view="owner-monitor"
                 >
 
@@ -1746,6 +1764,111 @@
                                 >
 
                                     Loading enforcer accounts…
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =========================================
+             ACTIVE DUTY
+        ========================================== -->
+
+        <section
+            class="view"
+            id="view-active-duty"
+        >
+
+            <div class="topbar command-topbar">
+
+                <div>
+
+                    <div class="page-label">
+
+                        <i class="fa-solid fa-satellite-dish"></i>
+
+                        Live Status
+
+                    </div>
+
+                    <h1>
+                        Active Duty
+                    </h1>
+
+                    <p class="desc">
+
+                        See which approved enforcers currently have their
+                        duty toggle switched on and are allowed to use
+                        PlateTrack right now.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="panel command-panel">
+
+                <div class="panel-head command-panel-head">
+
+                    <div>
+
+                        <span class="panel-eyebrow" id="activeDutyCount">
+                            0 On Duty
+                        </span>
+
+                        <h2>
+                            Currently On Duty
+                        </h2>
+
+                    </div>
+
+                    <span class="verified-credential-chip">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        Live
+
+                    </span>
+
+                </div>
+
+                <div class="panel-body table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Name</th>
+                                <th>Badge No.</th>
+                                <th>Station</th>
+                                <th>On Duty Since</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="activeDutyBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="empty-state"
+                                >
+
+                                    Loading active duty enforcers…
 
                                 </td>
 
@@ -3758,7 +3881,7 @@
 
 <script src="js/admin-api.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script src="js/admin-dashboard.js?v=20260901-1"></script>
+<script src="js/admin-dashboard.js?v=20260902-1"></script>
 
 
 
