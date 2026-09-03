@@ -303,12 +303,12 @@ async function loadOwnerDashboardData(token){
     try{
 
         const [
-            violations,
+            violationsResult,
             appeals
         ] = await Promise.all([
 
             ownerApiRequest(
-                "/owner/violations/mine",
+                "/owner/violations/mine?page=1&limit=100",
                 token
             ),
 
@@ -320,9 +320,14 @@ async function loadOwnerDashboardData(token){
         ]);
 
         const safeViolations =
-            Array.isArray(violations)
-                ? violations
+            Array.isArray(violationsResult?.violations)
+                ? violationsResult.violations
                 : [];
+
+        const violationsTotalCount =
+            typeof violationsResult?.totalCount === "number"
+                ? violationsResult.totalCount
+                : safeViolations.length;
 
         safeViolations.sort(function (a, b) {
 
@@ -341,7 +346,8 @@ async function loadOwnerDashboardData(token){
 
         loadStats(
             safeViolations,
-            safeAppeals
+            safeAppeals,
+            violationsTotalCount
         );
 
         loadRecentViolations(
@@ -390,7 +396,7 @@ async function loadOwnerDashboardData(token){
 // STATS
 // ==========================================
 
-function loadStats(violations, appeals){
+function loadStats(violations, appeals, violationsTotalCount){
 
     const violationCount =
         document.getElementById(
@@ -414,7 +420,9 @@ function loadStats(violations, appeals){
     if(violationCount){
 
         violationCount.textContent =
-            violations.length;
+            typeof violationsTotalCount === "number"
+                ? violationsTotalCount
+                : violations.length;
         violationCount.classList.remove("is-loading");
     }
 

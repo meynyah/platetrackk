@@ -131,12 +131,14 @@ async function loadRecordForAppeal(token){
 
     try{
 
-        const [violations, appeals] = await Promise.all([
-            ownerApiRequest("/owner/violations/mine", token),
+        const [violationsResult, appeals] = await Promise.all([
+            ownerApiRequest("/owner/violations/mine?page=1&limit=100", token),
             ownerApiRequest("/owner/appeals/mine", token)
         ]);
 
-        currentRecord = (Array.isArray(violations) ? violations : []).find(function(item){
+        const violations = Array.isArray(violationsResult?.violations) ? violationsResult.violations : [];
+
+        currentRecord = violations.find(function(item){
             return item._id === violationId;
         });
 

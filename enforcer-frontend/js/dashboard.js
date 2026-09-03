@@ -73,13 +73,18 @@ async function fetchEnforcerViolations(){
     const token = localStorage.getItem("plateTrackToken");
 
     if(!token){
-        return [];
+        return { violations: [], totalCount: 0 };
     }
 
     try{
 
+        // The backend now paginates this endpoint -- request a large
+        // enough page (100, the backend's max) so the dashboard's
+        // summary counts and "Recent Detections" list stay accurate for
+        // the typical enforcer. totalCount below always reflects the
+        // true total regardless of page size.
         const response = await fetch(
-            DASHBOARD_API_URL,
+            `${DASHBOARD_API_URL}?page=1&limit=100`,
             {
                 method:"GET",
                 headers:{
@@ -93,23 +98,26 @@ async function fetchEnforcerViolations(){
             localStorage.removeItem("plateTrackToken");
             localStorage.removeItem("plateTrackEnforcerSession");
             window.location.replace("enforcer-login.html");
-            return [];
+            return { violations: [], totalCount: 0 };
         }
 
         if(!response.ok){
-            return [];
+            return { violations: [], totalCount: 0 };
         }
 
         const data = await response.json();
 
-        return Array.isArray(data) ? data : [];
+        return {
+            violations: Array.isArray(data?.violations) ? data.violations : [],
+            totalCount: typeof data?.totalCount === "number" ? data.totalCount : 0,
+        };
 
     }
     catch(error){
 
         console.error("Unable to load your reports:",error);
 
-        return [];
+        return { violations: [], totalCount: 0 };
 
     }
 
@@ -419,16 +427,18 @@ function confirmLogout(){
 
 async function loadDashboardData(){
 
-    const violations = await fetchEnforcerViolations();
+    const result = await fetchEnforcerViolations();
+    const violations = result.violations;
+    const totalCount = result.totalCount;
 
     const vehicleCountEl = document.getElementById("vehicleCount");
     const violationCountEl = document.getElementById("violationCount");
     const pendingReportsEl = document.getElementById("pendingReports");
 
-    vehicleCountEl.textContent = violations.length;
+    vehicleCountEl.textContent = totalCount;
     vehicleCountEl.classList.remove("is-loading");
 
-    violationCountEl.textContent = violations.length;
+    violationCountEl.textContent = totalCount;
     violationCountEl.classList.remove("is-loading");
 
     const pending = violations.filter(function(item){
