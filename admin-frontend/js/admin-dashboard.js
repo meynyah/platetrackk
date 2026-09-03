@@ -1897,6 +1897,7 @@ function applyAppealsFilters() {
         appeal.violation?.violationType,
 
         appeal.reason,
+        appeal.supportingDetails,
         appeal.feedback,
         appeal.status
 
@@ -2171,6 +2172,21 @@ function renderAppealsV2(appeals) {
               ${escapeHtml(
                 appeal.reason ||
                 "No appeal reason was provided."
+              )}
+            </p>
+
+          </div>
+
+          <div class="appeal-reason-box">
+
+            <span>
+              Owner's Explanation
+            </span>
+
+            <p>
+              ${escapeHtml(
+                appeal.supportingDetails ||
+                "No additional explanation was provided."
               )}
             </p>
 

@@ -504,6 +504,10 @@ function viewRecord(violationId){
                 <strong>${escapeHtml(appeal.reason)}</strong>
             </div>
             <div class="detail-item">
+                <span>Explanation</span>
+                <strong>${escapeHtml(appeal.supportingDetails || "No additional explanation was provided.")}</strong>
+            </div>
+            <div class="detail-item">
                 <span>Appeal Status</span>
                 <strong>${escapeHtml(appealStatusLabel(appeal.status))}</strong>
             </div>
