@@ -27,7 +27,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 href="../shared/css/modal.css">
 
 <link rel="stylesheet"
-href="../shared/css/history.css?v=20260819-1">
+href="../shared/css/history.css?v=20260903-1">
 
 <link rel="stylesheet"
 href="css/owner-portal.css">
@@ -149,6 +149,20 @@ class="history-list">
     <!-- Violation cards will appear here -->
 
 </section>
+
+<div id="loadMoreViolationsWrap" style="display:none; text-align:center; margin-top:16px;">
+
+    <button
+    type="button"
+    id="loadMoreViolationsBtn"
+    class="load-more-btn"
+    onclick="loadMoreOwnerViolations()">
+
+        Load More
+
+    </button>
+
+</div>
 
 <!-- ==========================================
 EMPTY STATE
@@ -387,7 +401,7 @@ class="modal">
 <script src="../shared/js/config.js"></script>
 <script src="../shared/js/modal.js"></script>
 <script src="../shared/js/theme.js"></script>
-<script src="js/owner-violations.js"></script>
+<script src="js/owner-violations.js?v=20260903-1"></script>
 
 </body>
 

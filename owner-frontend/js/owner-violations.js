@@ -6,6 +6,9 @@
 
 let allViolations = [];
 let allAppeals = [];
+let ownerViolationsCurrentPage = 1;
+let ownerViolationsTotalPages = 1;
+const OWNER_VIOLATIONS_PAGE_SIZE = 20;
 
 document.addEventListener("DOMContentLoaded", async function(){
 
@@ -159,38 +162,74 @@ function appealStatusClass(status){
 // LOAD VIOLATIONS (from backend)
 // ==========================================
 
-async function loadViolations(token, data = null){
+async function loadViolations(token, data = null, append = false){
 
     const historyList = document.getElementById("historyList");
     const emptyState = document.getElementById("emptyState");
+    const loadMoreWrap = document.getElementById("loadMoreViolationsWrap");
+    const loadMoreBtn = document.getElementById("loadMoreViolationsBtn");
 
     if(data === null){
 
-        emptyState.style.display = "none";
+        if(append){
 
-        historyList.innerHTML = `
-            <div class="history-loading-state">
-                <div class="history-loading-spinner">
-                    <i class="fa-solid fa-car-burst"></i>
+            if(loadMoreBtn){
+                loadMoreBtn.disabled = true;
+                loadMoreBtn.textContent = "Loading...";
+            }
+
+        }
+        else{
+
+            ownerViolationsCurrentPage = 1;
+
+            emptyState.style.display = "none";
+
+            if(loadMoreWrap){
+                loadMoreWrap.style.display = "none";
+            }
+
+            historyList.innerHTML = `
+                <div class="history-loading-state">
+                    <div class="history-loading-spinner">
+                        <i class="fa-solid fa-car-burst"></i>
+                    </div>
+                    <p>Loading your violations...</p>
+                    <div class="history-loading-skeletons">
+                        <div class="history-skeleton-card"></div>
+                        <div class="history-skeleton-card"></div>
+                        <div class="history-skeleton-card"></div>
+                    </div>
                 </div>
-                <p>Loading your violations...</p>
-                <div class="history-loading-skeletons">
-                    <div class="history-skeleton-card"></div>
-                    <div class="history-skeleton-card"></div>
-                    <div class="history-skeleton-card"></div>
-                </div>
-            </div>
-        `;
+            `;
+
+        }
 
         try{
 
-            const [violations, appeals] = await Promise.all([
-                ownerApiRequest("/owner/violations/mine", token),
+            const [violationsResult, appeals] = await Promise.all([
+                ownerApiRequest(`/owner/violations/mine?page=${ownerViolationsCurrentPage}&limit=${OWNER_VIOLATIONS_PAGE_SIZE}`, token),
                 ownerApiRequest("/owner/appeals/mine", token)
             ]);
 
-            allViolations = Array.isArray(violations) ? violations : [];
+            const newViolations = Array.isArray(violationsResult?.violations) ? violationsResult.violations : [];
+            ownerViolationsTotalPages = violationsResult?.totalPages || 1;
+
+            allViolations = append ? allViolations.concat(newViolations) : newViolations;
             allAppeals = Array.isArray(appeals) ? appeals : [];
+
+            if(loadMoreWrap && loadMoreBtn){
+
+                if(ownerViolationsCurrentPage < ownerViolationsTotalPages){
+                    loadMoreWrap.style.display = "block";
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.textContent = "Load More";
+                }
+                else{
+                    loadMoreWrap.style.display = "none";
+                }
+
+            }
 
         }
         catch(error){
@@ -331,6 +370,19 @@ async function loadViolations(token, data = null){
 // ==========================================
 // SEARCH + FILTER
 // ==========================================
+
+function loadMoreOwnerViolations(){
+
+    if(ownerViolationsCurrentPage >= ownerViolationsTotalPages){
+        return;
+    }
+
+    ownerViolationsCurrentPage += 1;
+
+    const token = localStorage.getItem("plateTrackOwnerToken");
+    loadViolations(token, null, true);
+
+}
 
 function applyFilters(){
 

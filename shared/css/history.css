@@ -961,3 +961,28 @@ body.light-mode::-webkit-scrollbar-track{
     }
 
 }
+/* ==========================================
+   LOAD MORE BUTTON
+========================================== */
+
+.load-more-btn{
+    background:rgba(61,108,255,.14);
+    color:#7fa2ff;
+    border:1px solid rgba(61,108,255,.35);
+    border-radius:14px;
+    padding:12px 28px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s ease;
+}
+
+.load-more-btn:hover{
+    background:#3d6cff;
+    color:#ffffff;
+}
+
+.load-more-btn:disabled{
+    opacity:.6;
+    cursor:wait;
+}

@@ -7,6 +7,9 @@
 const HISTORY_API_URL = `${API_BASE}/enforcer/violations/mine`;
 
 let historyRecords = [];
+let historyCurrentPage = 1;
+let historyTotalPages = 1;
+const HISTORY_PAGE_SIZE = 20;
 
 // ==========================================
 // PAGE INITIALIZATION
@@ -58,7 +61,7 @@ window.addEventListener("pageshow", function () {
 // LOAD HISTORY FROM MONGODB
 // ==========================================
 
-async function loadHistory(data = null) {
+async function loadHistory(append = false) {
 
     const historyList =
         document.getElementById("historyList");
@@ -66,15 +69,13 @@ async function loadHistory(data = null) {
     const emptyState =
         document.getElementById("emptyState");
 
+    const loadMoreWrap =
+        document.getElementById("loadMoreHistoryWrap");
+
+    const loadMoreBtn =
+        document.getElementById("loadMoreHistoryBtn");
+
     if (!historyList || !emptyState) {
-        return;
-    }
-
-    // Kapag may filtered data, render lamang iyon.
-    if (Array.isArray(data)) {
-
-        renderHistory(data);
-
         return;
     }
 
@@ -90,26 +91,43 @@ async function loadHistory(data = null) {
         return;
     }
 
-    historyList.innerHTML = `
-        <div class="history-loading-state">
-            <div class="history-loading-spinner">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-            </div>
-            <p>Loading violation history...</p>
-            <div class="history-loading-skeletons">
-                <div class="history-skeleton-card"></div>
-                <div class="history-skeleton-card"></div>
-                <div class="history-skeleton-card"></div>
-            </div>
-        </div>
-    `;
+    if (append) {
 
-    emptyState.style.display = "none";
+        if (loadMoreBtn) {
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.textContent = "Loading...";
+        }
+
+    } else {
+
+        historyCurrentPage = 1;
+
+        historyList.innerHTML = `
+            <div class="history-loading-state">
+                <div class="history-loading-spinner">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <p>Loading violation history...</p>
+                <div class="history-loading-skeletons">
+                    <div class="history-skeleton-card"></div>
+                    <div class="history-skeleton-card"></div>
+                    <div class="history-skeleton-card"></div>
+                </div>
+            </div>
+        `;
+
+        emptyState.style.display = "none";
+
+        if (loadMoreWrap) {
+            loadMoreWrap.style.display = "none";
+        }
+
+    }
 
     try {
 
         const response = await fetch(
-            HISTORY_API_URL,
+            `${HISTORY_API_URL}?page=${historyCurrentPage}&limit=${HISTORY_PAGE_SIZE}`,
             {
                 method: "GET",
 
@@ -156,10 +174,16 @@ async function loadHistory(data = null) {
             );
         }
 
-        historyRecords =
-            Array.isArray(result)
-                ? result
+        const newViolations =
+            Array.isArray(result?.violations)
+                ? result.violations
                 : [];
+
+        historyTotalPages = result?.totalPages || 1;
+
+        historyRecords = append
+            ? historyRecords.concat(newViolations)
+            : newViolations;
 
         historyRecords.sort(function (a, b) {
 
@@ -171,6 +195,18 @@ async function loadHistory(data = null) {
         });
 
         renderHistory(historyRecords);
+
+        if (loadMoreWrap && loadMoreBtn) {
+
+            if (historyCurrentPage < historyTotalPages) {
+                loadMoreWrap.style.display = "block";
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.textContent = "Load More";
+            } else {
+                loadMoreWrap.style.display = "none";
+            }
+
+        }
 
     } catch (error) {
 
@@ -540,6 +576,16 @@ function closeDetailsModal() {
 function refreshHistory() {
 
     loadHistory();
+}
+
+function loadMoreHistory() {
+
+    if (historyCurrentPage >= historyTotalPages) {
+        return;
+    }
+
+    historyCurrentPage += 1;
+    loadHistory(true);
 }
 
 // ==========================================

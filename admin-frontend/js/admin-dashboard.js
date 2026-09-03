@@ -701,10 +701,30 @@ async function loadViolations() {
 
   try {
 
-    const list = await apiRequest("/admin/violations");
+    // The backend now paginates this endpoint (100 records max per
+    // request) instead of returning every violation report at once --
+    // fetch a few pages in sequence to build a comfortably large working
+    // set for the existing search/filter UI below, without ever pulling
+    // an unbounded, ever-growing number of records into the browser.
+    const MAX_BATCHES = 5;
+    const BATCH_SIZE = 100;
+    let combined = [];
 
-    violationsCache =
-      Array.isArray(list) ? list : [];
+    for (let page = 1; page <= MAX_BATCHES; page++) {
+
+      const result = await apiRequest(`/admin/violations?page=${page}&limit=${BATCH_SIZE}`);
+      const batch = Array.isArray(result?.violations) ? result.violations : [];
+
+      combined = combined.concat(batch);
+
+      const totalPages = result?.totalPages || 1;
+      if (page >= totalPages) {
+        break;
+      }
+
+    }
+
+    violationsCache = combined;
 
     violationCurrentPage = 1;
 

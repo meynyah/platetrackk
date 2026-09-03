@@ -84,8 +84,23 @@ async function submitViolation(req, res) {
 // GET /api/enforcer/violations/mine
 async function myViolations(req, res) {
   try {
-    const violations = await Violation.find({ enforcer: req.user.id }).sort({ dateTime: -1 });
-    res.json(violations);
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+    const skip = (page - 1) * limit;
+
+    const filter = { enforcer: req.user.id };
+
+    const [violations, totalCount] = await Promise.all([
+      Violation.find(filter).sort({ dateTime: -1 }).skip(skip).limit(limit),
+      Violation.countDocuments(filter),
+    ]);
+
+    res.json({
+      violations,
+      totalCount,
+      totalPages: Math.max(1, Math.ceil(totalCount / limit)),
+      currentPage: page,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to load your reports." });
