@@ -707,6 +707,14 @@ body.light-mode .stat-card:hover{
     margin-bottom:100px;
 }
 
+/* My Registered Plates now sits in the middle of the page (between the
+   hero card and Account Summary), not at the very bottom, so it doesn't
+   need the large 100px clearance reserved for the floating bottom nav --
+   that still applies only to whichever .recent-section is actually last. */
+.plates-section{
+    margin-bottom:30px;
+}
+
 #recentDetection,
 #recentViolations{
     display:flex;
