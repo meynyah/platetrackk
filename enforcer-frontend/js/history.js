@@ -541,6 +541,43 @@ function viewRecord(databaseId) {
             : "No additional remarks."
     );
 
+    const ownerDetailsSection =
+        document.getElementById(
+            "ownerDetailsSection"
+        );
+
+    if (ownerDetailsSection) {
+
+        if (item.owner && item.owner.fullName) {
+
+            setTextContent(
+                "detailOwnerName",
+                item.owner.fullName || "-"
+            );
+
+            setTextContent(
+                "detailOwnerEmail",
+                item.owner.email || "-"
+            );
+
+            setTextContent(
+                "detailOwnerAddress",
+                item.owner.address &&
+                item.owner.address.trim() !== ""
+                    ? item.owner.address
+                    : "Not provided"
+            );
+
+            ownerDetailsSection.style.display = "block";
+
+        } else {
+
+            ownerDetailsSection.style.display = "none";
+
+        }
+
+    }
+
     const detailsModal =
         document.getElementById(
             "detailsModal"

@@ -91,7 +91,11 @@ async function myViolations(req, res) {
     const filter = { enforcer: req.user.id };
 
     const [violations, totalCount] = await Promise.all([
-      Violation.find(filter).sort({ dateTime: -1 }).skip(skip).limit(limit),
+      Violation.find(filter)
+        .populate("owner", "fullName email address")
+        .sort({ dateTime: -1 })
+        .skip(skip)
+        .limit(limit),
       Violation.countDocuments(filter),
     ]);
 
