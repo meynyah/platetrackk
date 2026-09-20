@@ -1,41 +1,60 @@
 const nodemailer = require("nodemailer");
-const dns = require("dns");
+const dns = require("dns").promises;
 
-// Node 18+ can prefer IPv6 results from DNS lookups, and hosts like Render
-// have no IPv6 egress at all -- so a connection to Gmail's SMTP server
-// picks an IPv6 address and fails with ENETUNREACH before it ever gets a
-// chance to try IPv4, even with the transporter's own `family: 4` option
-// below (confirmed in production logs: the failure was still against an
-// IPv6 address). This changes Node's *global* default DNS lookup order to
-// try IPv4 addresses first, which is the fix that actually holds for this
-// specific error.
-dns.setDefaultResultOrder("ipv4first");
+const GMAIL_SMTP_HOST = "smtp.gmail.com";
+const GMAIL_SMTP_PORT = 465;
 
-// Gmail SMTP transport. Requires a Gmail "App Password" (not the normal
-// account password) — see .env.example for the link to generate one.
+// Render's containers have no outbound IPv6 route, and smtp.gmail.com has
+// both an IPv4 (A) and IPv6 (AAAA) record. The obvious fix -- forcing IPv4
+// -- turned out to need two layers, confirmed against production logs:
 //
-// `family: 4` forces IPv4 for this connection. Without it, some cloud
-// hosts (Render included) try to reach Gmail's SMTP server over IPv6 and
-// fail with "connect ENETUNREACH ..." even though the credentials are
-// completely correct, because the host's network can't route to that
-// IPv6 address at all.
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-  family: 4,
-  // Without these, nodemailer's defaults (multiple minutes) mean a slow or
-  // unresponsive connection to Gmail leaves the request -- and the person
-  // staring at "Sending Verification Code..." -- hanging far longer than
-  // is reasonable for a password-reset flow. Fail fast instead so
-  // requestPasswordReset can report the honest "couldn't send" error
-  // within seconds rather than minutes.
-  connectionTimeout: 10000, // time to establish the TCP connection
-  greetingTimeout: 10000,   // time to wait for Gmail's initial greeting
-  socketTimeout: 15000,     // time to wait on an idle connection overall
-});
+//   1. dns.setDefaultResultOrder("ipv4first") only changes the order for
+//      dns.lookup() (the OS-level getaddrinfo call). It does NOT affect
+//      nodemailer's own resolution, because nodemailer resolves SMTP
+//      hostnames with the lower-level dns.resolve4()/dns.resolve6() (raw
+//      DNS queries), falling back to dns.lookup() only if BOTH of those
+//      fail. On Render's network, the resolve4() query itself silently
+//      fails, so nodemailer falls through to resolve6() -- which
+//      succeeds -- and hands back an IPv6 address that then can't be
+//      reached at all (ENETUNREACH), even with the transporter's own
+//      `family: 4` option, which only applies to nodemailer's internal
+//      resolution, not to fixing resolve4() itself.
+//
+//   2. The fix that actually holds: resolve the hostname ourselves with
+//      dns.lookup(host, { family: 4 }) -- which uses getaddrinfo and does
+//      work correctly on Render -- and hand nodemailer the literal IP
+//      address as `host`, skipping its internal DNS resolution entirely.
+//      `tls.servername` is required alongside this so the certificate is
+//      still validated against "smtp.gmail.com" rather than the raw IP.
+//
+// Resolved fresh (not cached at module load) so a change in Gmail's IP
+// over time doesn't require a redeploy; the lookup itself is a fast local
+// getaddrinfo call, not a network round trip.
+async function createGmailTransporter() {
+  const { address } = await dns.lookup(GMAIL_SMTP_HOST, { family: 4 });
+
+  return nodemailer.createTransport({
+    host: address,
+    port: GMAIL_SMTP_PORT,
+    secure: true,
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+    tls: {
+      servername: GMAIL_SMTP_HOST,
+    },
+    // Without these, nodemailer's defaults (multiple minutes) mean a slow
+    // or unresponsive connection leaves the request -- and the person
+    // staring at "Sending Verification Code..." -- hanging far longer
+    // than is reasonable for a password-reset flow. Fail fast instead so
+    // requestPasswordReset can report the honest "couldn't send" error
+    // within seconds rather than minutes.
+    connectionTimeout: 10000, // time to establish the TCP connection
+    greetingTimeout: 10000,   // time to wait for Gmail's initial greeting
+    socketTimeout: 15000,     // time to wait on an idle connection overall
+  });
+}
 
 // Wraps whatever content each controller passes in with a consistent,
 // branded look -- table-based layout with inline styles throughout,
@@ -91,6 +110,8 @@ function buildEmailHtml(innerHtml) {
  */
 async function sendEmail(to, subject, html) {
   try {
+    const transporter = await createGmailTransporter();
+
     await transporter.sendMail({
       from: `"${process.env.APP_NAME || "PlateTrack"}" <${process.env.GMAIL_USER}>`,
       to,

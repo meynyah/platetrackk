@@ -28,6 +28,16 @@ const ownerRoutes = require("./routes/ownerRoutes");
 
 const app = express();
 
+// Render (like Heroku and most PaaS hosts) puts the app behind a single
+// reverse proxy, which sets X-Forwarded-For to the real client IP. Without
+// this, Express's default "don't trust any proxy" setting makes
+// express-rate-limit refuse to use that header at all (logged as
+// ERR_ERL_UNEXPECTED_X_FORWARDED_FOR) since trusting it blindly would let a
+// client fake their own IP by sending their own X-Forwarded-For. Trusting
+// exactly one hop tells Express to use only the IP the proxy itself
+// recorded, which can't be spoofed by the client.
+app.set("trust proxy", 1);
+
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "5mb" })); // higher limit to allow base64 violation photos
 app.use((req, res, next) => {
