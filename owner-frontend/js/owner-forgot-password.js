@@ -51,7 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 button.disabled = false;
                 button.classList.remove("loading");
                 button.innerHTML = "Send Verification Code";
-                showError("Account Not Found", data.message || "No vehicle owner account was found for this email address.");
+                const title = response.status === 404 ? "Account Not Found" : "Unable to Send Code";
+                showError(title, data.message || "No vehicle owner account was found for this email address.");
                 return;
             }
 

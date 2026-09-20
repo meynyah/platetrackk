@@ -1,4 +1,15 @@
 const nodemailer = require("nodemailer");
+const dns = require("dns");
+
+// Node 18+ can prefer IPv6 results from DNS lookups, and hosts like Render
+// have no IPv6 egress at all -- so a connection to Gmail's SMTP server
+// picks an IPv6 address and fails with ENETUNREACH before it ever gets a
+// chance to try IPv4, even with the transporter's own `family: 4` option
+// below (confirmed in production logs: the failure was still against an
+// IPv6 address). This changes Node's *global* default DNS lookup order to
+// try IPv4 addresses first, which is the fix that actually holds for this
+// specific error.
+dns.setDefaultResultOrder("ipv4first");
 
 // Gmail SMTP transport. Requires a Gmail "App Password" (not the normal
 // account password) — see .env.example for the link to generate one.
