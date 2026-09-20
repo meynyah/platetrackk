@@ -46,11 +46,25 @@ async function requestPasswordReset(req, res) {
       { upsert: true, new: true }
     );
 
-    await sendEmail(
+    const emailSent = await sendEmail(
       normalizedEmail,
       "PlateTrack Password Reset Code",
-      `<p>Your PlateTrack verification code is:</p><h2>${code}</h2><p>This code expires in ${CODE_EXPIRY_MINUTES} minutes.</p>`
+      `<p>Your PlateTrack verification code is:</p>
+      <div style="background:#f3f4f6;border-radius:8px;padding:18px;text-align:center;margin:16px 0;">
+        <span style="font-size:32px;font-weight:bold;letter-spacing:6px;color:#3d6cff;">${code}</span>
+      </div>
+      <p style="color:#6b7280;font-size:13px;">This code expires in ${CODE_EXPIRY_MINUTES} minutes. If you didn't request this, you can safely ignore this email.</p>`
     );
+
+    if (!emailSent) {
+      // The reset record above is already saved, but the user has no way
+      // to get the code that's sitting in it -- telling them "sent!" here
+      // would strand them on the next screen with a code they never
+      // received. Say so plainly instead.
+      return res.status(502).json({
+        message: "We couldn't send the verification code to that email address right now. Please try again in a few minutes.",
+      });
+    }
 
     return res.json({ message: "A verification code has been sent to your email address." });
 
