@@ -15,6 +15,15 @@ const transporter = nodemailer.createTransport({
     pass: process.env.GMAIL_APP_PASSWORD,
   },
   family: 4,
+  // Without these, nodemailer's defaults (multiple minutes) mean a slow or
+  // unresponsive connection to Gmail leaves the request -- and the person
+  // staring at "Sending Verification Code..." -- hanging far longer than
+  // is reasonable for a password-reset flow. Fail fast instead so
+  // requestPasswordReset can report the honest "couldn't send" error
+  // within seconds rather than minutes.
+  connectionTimeout: 10000, // time to establish the TCP connection
+  greetingTimeout: 10000,   // time to wait for Gmail's initial greeting
+  socketTimeout: 15000,     // time to wait on an idle connection overall
 });
 
 // Wraps whatever content each controller passes in with a consistent,
