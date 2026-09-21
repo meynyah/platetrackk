@@ -61,7 +61,16 @@ async function openCamera(){
         stream = await navigator.mediaDevices.getUserMedia({
 
             video:{
-                facingMode:currentFacingMode
+                facingMode:currentFacingMode,
+                // Capping resolution here (rather than leaving it to the
+                // device's default, which can be 1080p or higher on many
+                // phones) cuts upload size and server-side processing time
+                // substantially, with no real loss in plate readability --
+                // YOLOv8 resizes the image internally regardless, and 720p
+                // is already well above what's needed to read a plate at
+                // the near/medium/far distances this system is used at.
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
             },
 
             audio:false
