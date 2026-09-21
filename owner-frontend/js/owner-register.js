@@ -562,8 +562,6 @@ registerBtn.addEventListener("click", async function(){
         return;
     }
 
-    const primaryVehicle = vehicles[0];
-
     registerBtn.disabled = true;
     registerBtn.classList.add("loading");
 
@@ -587,10 +585,7 @@ registerBtn.addEventListener("click", async function(){
                     fullName: fullName,
                     licenseNumber: licenseNumber,
                     email: email,
-                    plateNumber: primaryVehicle.plateNumber,
-                    orCrNumber: primaryVehicle.orCrNumber,
-                    vehicleType: primaryVehicle.vehicleType,
-                    vehicleColor: primaryVehicle.vehicleColor,
+                    vehicles: vehicles,
                     contactNumber: mobile,
                     password: password.value
                 })

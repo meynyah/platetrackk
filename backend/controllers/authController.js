@@ -4,7 +4,7 @@ const Owner = require("../models/Owner");
 const Admin = require("../models/Admin");
 const Notification = require("../models/Notification");
 const generateToken = require("../utils/generateToken");
-const { buildFlexiblePlateRegex } = require("../utils/normalizePlate");
+const { buildFlexiblePlateRegex, normalizePlate } = require("../utils/normalizePlate");
 
 const SALT_ROUNDS = 10;
 
@@ -132,34 +132,74 @@ async function loginEnforcer(req, res) {
 // POST /api/auth/owner/register
 async function registerOwner(req, res) {
   try {
-    const { fullName, email, licenseNumber, plateNumber, vehicleType, vehicleColor, orCrNumber, contactNumber, password } = req.body;
+    const { fullName, email, licenseNumber, vehicles, contactNumber, password } = req.body;
 
-    if (!fullName || !email || !licenseNumber || !plateNumber || !orCrNumber || !password) {
+    if (!fullName || !email || !licenseNumber || !password) {
       return res.status(400).json({ message: "Please fill in all required fields." });
     }
 
-    // Flexible match on plate number too, so "JCG-5463" and "JCG 5463"
-    // are correctly treated as the same plate and can't both register.
-    const plateRegex = buildFlexiblePlateRegex(plateNumber);
+    if (!Array.isArray(vehicles) || vehicles.length === 0) {
+      return res.status(400).json({ message: "Please provide at least one vehicle." });
+    }
+
+    for (const v of vehicles) {
+      if (!v || !v.plateNumber || !String(v.plateNumber).trim() || !v.orCrNumber || !String(v.orCrNumber).trim()) {
+        return res.status(400).json({ message: "Please complete the plate number and OR/CR number for each vehicle." });
+      }
+    }
+
+    // Catch duplicate plates within the submitted list itself (e.g. the
+    // same plate typed into two different vehicle rows, with or without
+    // a space/dash, by mistake), before checking against everyone else's
+    // registered vehicles. Compared on the fully-normalized form (bare
+    // alphanumeric characters only) so "ABC1234" and "ABC 1234" are
+    // correctly caught as the same plate, not two different ones.
+    const normalizedPlates = vehicles.map((v) => normalizePlate(v.plateNumber));
+    const hasInternalDuplicate = normalizedPlates.some((p, i) => normalizedPlates.indexOf(p) !== i);
+    if (hasInternalDuplicate) {
+      return res.status(400).json({ message: "Each vehicle must have a different plate number." });
+    }
+
+    // Check email and every submitted plate -- against both other
+    // owners' primary plate AND their additionalVehicles -- in a single
+    // query, the same comprehensive check ownerController's isPlateTaken
+    // uses for adding a vehicle after registration.
+    const plateRegexes = normalizedPlates
+      .map((p) => buildFlexiblePlateRegex(p))
+      .filter(Boolean);
+
     const existing = await Owner.findOne({
       $or: [
         { email },
-        ...(plateRegex ? [{ plateNumber: { $regex: plateRegex } }] : []),
+        ...(plateRegexes.length
+          ? [
+              { plateNumber: { $in: plateRegexes } },
+              { "additionalVehicles.plateNumber": { $in: plateRegexes } },
+            ]
+          : []),
       ],
     });
     if (existing) {
-      return res.status(409).json({ message: "An account with this email or plate number already exists." });
+      return res.status(409).json({ message: "An account with this email or one of these plate numbers already exists." });
     }
+
+    const [primaryVehicle, ...restVehicles] = vehicles;
 
     const hashed = await bcrypt.hash(password, SALT_ROUNDS);
     const owner = await Owner.create({
       fullName,
       email,
       licenseNumber,
-      plateNumber,
-      vehicleType,
-      vehicleColor,
-      orCrNumber,
+      plateNumber: primaryVehicle.plateNumber,
+      vehicleType: primaryVehicle.vehicleType,
+      vehicleColor: primaryVehicle.vehicleColor,
+      orCrNumber: primaryVehicle.orCrNumber,
+      additionalVehicles: restVehicles.map((v) => ({
+        plateNumber: v.plateNumber,
+        vehicleType: v.vehicleType || "",
+        vehicleColor: v.vehicleColor || "",
+        orCrNumber: v.orCrNumber,
+      })),
       contactNumber,
       password: hashed,
       status: "pending",
