@@ -3164,6 +3164,67 @@
 </div>
 
 <!-- =========================================
+     OWNER APPLICATION DETAILS MODAL
+========================================== -->
+
+<div
+    class="modal-backdrop"
+    id="ownerDetailsModal"
+>
+
+    <div class="modal-box admin-modal-box owner-details-modal-box">
+
+        <div class="modal-header-icon">
+
+            <i class="fa-solid fa-user"></i>
+
+        </div>
+
+        <h3>
+            Vehicle Owner Application
+        </h3>
+
+        <p class="modal-sub">
+            Review the applicant's full submitted details before approving or rejecting this registration.
+        </p>
+
+        <div id="ownerDetailsModalBody" class="owner-details-modal-body">
+            <!-- Populated by viewOwnerApplicationDetails() -->
+        </div>
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                id="ownerDetailsModalClose"
+            >
+                Close
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                id="ownerDetailsModalReject"
+            >
+                Reject
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-amber btn-sm"
+                id="ownerDetailsModalApprove"
+            >
+                Approve
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================
      APPEAL FEEDBACK MODAL
 ========================================== -->
 
@@ -3881,7 +3942,7 @@
 
 <script src="js/admin-api.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script src="js/admin-dashboard.js?v=20260903-2"></script>
+<script src="js/admin-dashboard.js?v=20260921-1"></script>
 
 
 

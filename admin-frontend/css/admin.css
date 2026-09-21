@@ -12570,3 +12570,44 @@ body.admin-dashboard-page .violation-page-numbers button.active {
     }
 
 }
+/* =========================================
+   OWNER APPLICATION DETAILS MODAL
+========================================== */
+
+.owner-details-modal-box{
+    max-width:620px;
+}
+
+.owner-details-modal-body{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    max-height:55vh;
+    overflow-y:auto;
+
+    margin-bottom:18px;
+    padding-right:4px;
+}
+
+.owner-details-vehicle-block{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+
+    margin-top:6px;
+    padding:12px;
+
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:12px;
+
+    background:rgba(255,255,255,.02);
+}
+
+.owner-details-vehicle-label{
+    color:#7fa2ff;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+}

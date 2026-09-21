@@ -377,10 +377,13 @@ function rejectEnforcer(id) {
 
 /* ------------------------------ OWNER APPROVALS --------------------------- */
 
+let pendingOwnersOld = [];
+
 async function loadOwnerApprovals() {
   const body = document.getElementById("ownerApprovalsBody");
   try {
     const list = await apiRequest("/admin/owners?status=pending");
+    pendingOwnersOld = list;
     if (!list.length) {
       body.innerHTML = `<tr><td colspan="5" class="empty-state">No pending owner registrations.</td></tr>`;
       return;
@@ -393,6 +396,7 @@ async function loadOwnerApprovals() {
         <td class="text-muted">${formatDate(o.createdAt)}</td>
         <td>
           <div class="row-actions">
+            <button class="btn btn-outline btn-sm" onclick="viewOwnerApplicationDetails('${o._id}', 'old')">View Details</button>
             <button class="btn btn-outline btn-sm" onclick="rejectOwner('${o._id}')">Reject</button>
             <button class="btn btn-amber btn-sm" onclick="approveOwner('${o._id}')">Approve</button>
           </div>
@@ -3289,6 +3293,113 @@ function openReasonModal({ title, sub, onConfirm }) {
   };
 }
 
+/* ------------------------- OWNER APPLICATION DETAILS MODAL ------------------------- */
+// Shared by both the older table-based "Vehicle Owner Applications" view and
+// the newer card-based "Account Approvals" view -- `source` ("old" or "v2")
+// says which in-memory list to look the owner up in, and which
+// approve/reject functions to call when the modal's own buttons are used.
+
+function viewOwnerApplicationDetails(ownerId, source) {
+  const list = source === "v2" ? pendingOwnersV2 : pendingOwnersOld;
+  const owner = (list || []).find((o) => o._id === ownerId);
+
+  if (!owner) {
+    showToast("Could not find this application's details.", "error");
+    return;
+  }
+
+  const vehicles = [
+    {
+      plateNumber: owner.plateNumber,
+      vehicleType: owner.vehicleType,
+      vehicleColor: owner.vehicleColor,
+      orCrNumber: owner.orCrNumber,
+      label: "Primary Vehicle",
+    },
+    ...(Array.isArray(owner.additionalVehicles)
+      ? owner.additionalVehicles.map((v, i) => ({ ...v, label: `Additional Vehicle ${i + 1}` }))
+      : []),
+  ];
+
+  const vehiclesHtml = vehicles.map((v) => `
+    <div class="owner-details-vehicle-block">
+      <span class="owner-details-vehicle-label">${escapeHtml(v.label)}</span>
+      <div class="approval-detail-row">
+        <span>Plate Number</span>
+        <strong><span class="plate-chip">${escapeHtml(v.plateNumber || "—")}</span></strong>
+      </div>
+      <div class="approval-detail-row">
+        <span>OR/CR Number</span>
+        <strong>${escapeHtml(v.orCrNumber || "—")}</strong>
+      </div>
+      <div class="approval-detail-row">
+        <span>Vehicle Type</span>
+        <strong>${escapeHtml(v.vehicleType || "—")}</strong>
+      </div>
+      <div class="approval-detail-row">
+        <span>Vehicle Color</span>
+        <strong>${escapeHtml(v.vehicleColor || "—")}</strong>
+      </div>
+    </div>
+  `).join("");
+
+  const body = document.getElementById("ownerDetailsModalBody");
+  body.innerHTML = `
+    <div class="approval-detail-row">
+      <span>Full Name</span>
+      <strong>${escapeHtml(owner.fullName || "—")}</strong>
+    </div>
+    <div class="approval-detail-row">
+      <span>Email</span>
+      <strong>${escapeHtml(owner.email || "—")}</strong>
+    </div>
+    <div class="approval-detail-row">
+      <span>Contact Number</span>
+      <strong>${escapeHtml(owner.contactNumber || "—")}</strong>
+    </div>
+    <div class="approval-detail-row">
+      <span>Address</span>
+      <strong>${escapeHtml(owner.address || "—")}</strong>
+    </div>
+    <div class="approval-detail-row">
+      <span>Driver's License Number</span>
+      <strong>${escapeHtml(owner.licenseNumber || "—")}</strong>
+    </div>
+    <div class="approval-detail-row">
+      <span>Submitted</span>
+      <strong>${escapeHtml(formatDate(owner.createdAt))}</strong>
+    </div>
+    ${vehiclesHtml}
+  `;
+
+  const modal = document.getElementById("ownerDetailsModal");
+  modal.classList.add("show");
+
+  document.getElementById("ownerDetailsModalClose").onclick = () => {
+    modal.classList.remove("show");
+  };
+
+  document.getElementById("ownerDetailsModalApprove").onclick = () => {
+    modal.classList.remove("show");
+    if (source === "v2") {
+      approveOwnerApplicationV2(ownerId);
+    } else {
+      approveOwner(ownerId);
+    }
+  };
+
+  document.getElementById("ownerDetailsModalReject").onclick = () => {
+    modal.classList.remove("show");
+    if (source === "v2") {
+      rejectOwnerApplicationV2(ownerId);
+    } else {
+      rejectOwner(ownerId);
+    }
+  };
+}
+
+window.viewOwnerApplicationDetails = viewOwnerApplicationDetails;
+
 /* ------------------------------------ Init ------------------------------------ */
 // NOTE: the actual initial-view bootstrap (which restores the last active
 // view from the URL hash on refresh) runs at the very end of this file,
@@ -5377,6 +5488,18 @@ function renderOwnerApprovalCardsV2(
           </div>
 
           <div class="approval-card-actions">
+
+            <button
+              type="button"
+              class="btn btn-outline btn-sm"
+              onclick="viewOwnerApplicationDetails('${owner._id}', 'v2')"
+            >
+
+              <i class="fa-solid fa-eye"></i>
+
+              View Details
+
+            </button>
 
             <button
               type="button"
