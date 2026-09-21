@@ -47,8 +47,6 @@ function loadViewData(viewName) {
   switch (viewName) {
     case "overview": return loadOverview();
     case "account-approvals": return loadAccountApprovalsV2();
-    case "enforcer-approvals": return loadEnforcerApprovals();
-    case "owner-approvals": return loadOwnerApprovals();
     case "enforcer-monitor": return loadEnforcerMonitor();
     case "active-duty": return loadActiveDuty();
     case "owner-monitor": return loadOwnerMonitor();
@@ -318,121 +316,6 @@ function setCount(id, number) {
 }
 
 document.getElementById("refreshOverview").addEventListener("click", loadOverview);
-
-/* ---------------------------- ENFORCER APPROVALS -------------------------- */
-
-async function loadEnforcerApprovals() {
-  const body = document.getElementById("enforcerApprovalsBody");
-  try {
-    const list = await apiRequest("/admin/enforcers?status=pending");
-    if (!list.length) {
-      body.innerHTML = `<tr><td colspan="6" class="empty-state">No pending enforcer registrations.</td></tr>`;
-      return;
-    }
-    body.innerHTML = list.map((e) => `
-      <tr>
-        <td>${escapeHtml(e.fullName)}</td>
-        <td class="mono">${escapeHtml(e.email)}</td>
-        <td class="mono">${escapeHtml(e.badgeNumber)}</td>
-        <td>${escapeHtml(e.station || "—")}</td>
-        <td class="text-muted">${formatDate(e.createdAt)}</td>
-        <td>
-          <div class="row-actions">
-            <button class="btn btn-outline btn-sm" onclick="rejectEnforcer('${e._id}')">Reject</button>
-            <button class="btn btn-amber btn-sm" onclick="approveEnforcer('${e._id}')">Approve</button>
-          </div>
-        </td>
-      </tr>
-    `).join("");
-  } catch (err) {
-    showToast(err.message, "error");
-  }
-}
-
-async function approveEnforcer(id) {
-  try {
-    await apiRequest(`/admin/enforcers/${id}/approve`, { method: "PATCH" });
-    showToast("Enforcer approved.");
-    loadEnforcerApprovals();
-  } catch (err) {
-    showToast(err.message, "error");
-  }
-}
-
-function rejectEnforcer(id) {
-  openReasonModal({
-    title: "Reject enforcer registration",
-    sub: "The applicant will be notified by email.",
-    onConfirm: async (reason) => {
-      try {
-        await apiRequest(`/admin/enforcers/${id}/reject`, { method: "PATCH", body: { reason } });
-        showToast("Enforcer registration rejected.");
-        loadEnforcerApprovals();
-      } catch (err) {
-        showToast(err.message, "error");
-      }
-    },
-  });
-}
-
-/* ------------------------------ OWNER APPROVALS --------------------------- */
-
-let pendingOwnersOld = [];
-
-async function loadOwnerApprovals() {
-  const body = document.getElementById("ownerApprovalsBody");
-  try {
-    const list = await apiRequest("/admin/owners?status=pending");
-    pendingOwnersOld = list;
-    if (!list.length) {
-      body.innerHTML = `<tr><td colspan="5" class="empty-state">No pending owner registrations.</td></tr>`;
-      return;
-    }
-    body.innerHTML = list.map((o) => `
-      <tr>
-        <td>${escapeHtml(o.fullName)}</td>
-        <td class="mono">${escapeHtml(o.email)}</td>
-        <td><span class="plate-chip">${escapeHtml(o.plateNumber)}</span></td>
-        <td class="text-muted">${formatDate(o.createdAt)}</td>
-        <td>
-          <div class="row-actions">
-            <button class="btn btn-outline btn-sm" onclick="viewOwnerApplicationDetails('${o._id}', 'old')">View Details</button>
-            <button class="btn btn-outline btn-sm" onclick="rejectOwner('${o._id}')">Reject</button>
-            <button class="btn btn-amber btn-sm" onclick="approveOwner('${o._id}')">Approve</button>
-          </div>
-        </td>
-      </tr>
-    `).join("");
-  } catch (err) {
-    showToast(err.message, "error");
-  }
-}
-
-async function approveOwner(id) {
-  try {
-    await apiRequest(`/admin/owners/${id}/approve`, { method: "PATCH" });
-    showToast("Vehicle owner approved.");
-    loadOwnerApprovals();
-  } catch (err) {
-    showToast(err.message, "error");
-  }
-}
-
-function rejectOwner(id) {
-  openReasonModal({
-    title: "Reject owner registration",
-    sub: "The applicant will not be notified automatically by email.",
-    onConfirm: async (reason) => {
-      try {
-        await apiRequest(`/admin/owners/${id}/reject`, { method: "PATCH", body: { reason } });
-        showToast("Owner registration rejected.");
-        loadOwnerApprovals();
-      } catch (err) {
-        showToast(err.message, "error");
-      }
-    },
-  });
-}
 
 /* ------------------------------ ENFORCER MONITOR --------------------------- */
 
@@ -3299,9 +3182,8 @@ function openReasonModal({ title, sub, onConfirm }) {
 // says which in-memory list to look the owner up in, and which
 // approve/reject functions to call when the modal's own buttons are used.
 
-function viewOwnerApplicationDetails(ownerId, source) {
-  const list = source === "v2" ? pendingOwnersV2 : pendingOwnersOld;
-  const owner = (list || []).find((o) => o._id === ownerId);
+function viewOwnerApplicationDetails(ownerId) {
+  const owner = (pendingOwnersV2 || []).find((o) => o._id === ownerId);
 
   if (!owner) {
     showToast("Could not find this application's details.", "error");
@@ -3381,20 +3263,12 @@ function viewOwnerApplicationDetails(ownerId, source) {
 
   document.getElementById("ownerDetailsModalApprove").onclick = () => {
     modal.classList.remove("show");
-    if (source === "v2") {
-      approveOwnerApplicationV2(ownerId);
-    } else {
-      approveOwner(ownerId);
-    }
+    approveOwnerApplicationV2(ownerId);
   };
 
   document.getElementById("ownerDetailsModalReject").onclick = () => {
     modal.classList.remove("show");
-    if (source === "v2") {
-      rejectOwnerApplicationV2(ownerId);
-    } else {
-      rejectOwner(ownerId);
-    }
+    rejectOwnerApplicationV2(ownerId);
   };
 }
 
@@ -5492,7 +5366,7 @@ function renderOwnerApprovalCardsV2(
             <button
               type="button"
               class="btn btn-outline btn-sm"
-              onclick="viewOwnerApplicationDetails('${owner._id}', 'v2')"
+              onclick="viewOwnerApplicationDetails('${owner._id}')"
             >
 
               <i class="fa-solid fa-eye"></i>
