@@ -290,6 +290,7 @@ function openAddVehicleModal(){
     document.getElementById("vehicleModalTitle").textContent = "Add Vehicle";
     document.getElementById("vehicleEditIndex").value = "-1";
     document.getElementById("vehiclePlateInput").value = "";
+    document.getElementById("vehicleOrCrInput").value = "";
     document.getElementById("vehicleTypeInput").value = "";
     document.getElementById("vehicleColorInput").value = "";
     document.getElementById("vehicleModal").classList.add("show");
@@ -314,6 +315,7 @@ function openEditVehicleModal(vehicleId){
     document.getElementById("vehicleModalTitle").textContent = "Edit Vehicle";
     document.getElementById("vehicleEditIndex").value = vehicleId;
     document.getElementById("vehiclePlateInput").value = vehicle.plateNumber;
+    document.getElementById("vehicleOrCrInput").value = vehicle.orCrNumber || "";
     document.getElementById("vehicleTypeInput").value = vehicle.vehicleType || "";
     document.getElementById("vehicleColorInput").value = vehicle.vehicleColor || "";
     document.getElementById("vehicleModal").classList.add("show");
@@ -324,11 +326,17 @@ async function saveVehicle(){
 
     const vehicleId = document.getElementById("vehicleEditIndex").value;
     const plateNumber = document.getElementById("vehiclePlateInput").value.trim();
+    const orCrNumber = document.getElementById("vehicleOrCrInput").value.trim();
     const vehicleType = document.getElementById("vehicleTypeInput").value.trim();
     const vehicleColor = document.getElementById("vehicleColorInput").value.trim();
 
     if(!plateNumber){
         showError("Missing Plate Number", "Please enter the vehicle's plate number.");
+        return;
+    }
+
+    if(!orCrNumber){
+        showError("Missing OR/CR Number", "Please enter the vehicle's OR/CR number.");
         return;
     }
 
@@ -349,7 +357,7 @@ async function saveVehicle(){
                     "Content-Type":"application/json",
                     "Authorization":`Bearer ${token}`
                 },
-                body: JSON.stringify({ plateNumber, vehicleType, vehicleColor })
+                body: JSON.stringify({ plateNumber, orCrNumber, vehicleType, vehicleColor })
             }
         );
 

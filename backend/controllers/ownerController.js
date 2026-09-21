@@ -235,10 +235,14 @@ async function isPlateTaken(plateNumber, excludeVehicleId) {
 async function addVehicle(req, res) {
   try {
 
-    const { plateNumber, vehicleType, vehicleColor } = req.body;
+    const { plateNumber, vehicleType, vehicleColor, orCrNumber } = req.body;
 
     if (!plateNumber || !plateNumber.trim()) {
       return res.status(400).json({ message: "Plate number is required." });
+    }
+
+    if (!orCrNumber || !orCrNumber.trim()) {
+      return res.status(400).json({ message: "OR/CR number is required." });
     }
 
     const taken = await isPlateTaken(plateNumber);
@@ -254,6 +258,7 @@ async function addVehicle(req, res) {
             plateNumber: plateNumber.toUpperCase().trim(),
             vehicleType: vehicleType || "",
             vehicleColor: vehicleColor || "",
+            orCrNumber: orCrNumber.trim(),
           },
         },
       },
@@ -277,10 +282,14 @@ async function updateVehicle(req, res) {
   try {
 
     const { vehicleId } = req.params;
-    const { plateNumber, vehicleType, vehicleColor } = req.body;
+    const { plateNumber, vehicleType, vehicleColor, orCrNumber } = req.body;
 
     if (!plateNumber || !plateNumber.trim()) {
       return res.status(400).json({ message: "Plate number is required." });
+    }
+
+    if (!orCrNumber || !orCrNumber.trim()) {
+      return res.status(400).json({ message: "OR/CR number is required." });
     }
 
     const taken = await isPlateTaken(plateNumber, vehicleId);
@@ -295,6 +304,7 @@ async function updateVehicle(req, res) {
           "additionalVehicles.$.plateNumber": plateNumber.toUpperCase().trim(),
           "additionalVehicles.$.vehicleType": vehicleType || "",
           "additionalVehicles.$.vehicleColor": vehicleColor || "",
+          "additionalVehicles.$.orCrNumber": orCrNumber.trim(),
         },
       },
       { new: true }

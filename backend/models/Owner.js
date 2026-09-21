@@ -4,9 +4,11 @@ const ownerSchema = new mongoose.Schema(
   {
     fullName: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    licenseNumber: { type: String, required: true, trim: true }, // driver's license -- one per owner, used as an extra identity check at registration
     plateNumber: { type: String, required: true, unique: true, uppercase: true, trim: true },
     vehicleType: { type: String, trim: true, default: "" },
     vehicleColor: { type: String, trim: true, default: "" },
+    orCrNumber: { type: String, required: true, trim: true }, // Official Receipt/Certificate of Registration number for the primary vehicle -- an extra ownership check alongside the plate number
 
     // Multi-vehicle support: the fields above remain the owner's primary/
     // original registered vehicle (unchanged, so existing accounts and
@@ -17,6 +19,7 @@ const ownerSchema = new mongoose.Schema(
         plateNumber: { type: String, required: true, uppercase: true, trim: true },
         vehicleType: { type: String, trim: true, default: "" },
         vehicleColor: { type: String, trim: true, default: "" },
+        orCrNumber: { type: String, required: true, trim: true },
       },
     ],
     contactNumber: { type: String, trim: true },

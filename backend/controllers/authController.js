@@ -132,9 +132,9 @@ async function loginEnforcer(req, res) {
 // POST /api/auth/owner/register
 async function registerOwner(req, res) {
   try {
-    const { fullName, email, plateNumber, vehicleType, vehicleColor, contactNumber, password } = req.body;
+    const { fullName, email, licenseNumber, plateNumber, vehicleType, vehicleColor, orCrNumber, contactNumber, password } = req.body;
 
-    if (!fullName || !email || !plateNumber || !password) {
+    if (!fullName || !email || !licenseNumber || !plateNumber || !orCrNumber || !password) {
       return res.status(400).json({ message: "Please fill in all required fields." });
     }
 
@@ -155,9 +155,11 @@ async function registerOwner(req, res) {
     const owner = await Owner.create({
       fullName,
       email,
+      licenseNumber,
       plateNumber,
       vehicleType,
       vehicleColor,
+      orCrNumber,
       contactNumber,
       password: hashed,
       status: "pending",
