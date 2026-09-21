@@ -1,0 +1,37 @@
+name: Keep Services Warm
+
+# Pings the backend (Render) and the ML detection service (Modal) every
+# 10 minutes so their free-tier hosting never goes idle long enough to
+# "cold start" -- Render's free tier sleeps after ~15 minutes of no
+# traffic, and Modal's serverless containers scale to zero similarly.
+# A cold start costs 30-60+ seconds on the very next real request; this
+# keeps both services warm so that request responds in a few seconds
+# instead, as long as the workflow itself has been running recently.
+#
+# This does NOT eliminate cold starts entirely -- if GitHub Actions itself
+# has an outage, or nobody has used the app in a long time before this
+# workflow started running, the very first request afterward can still be
+# slow. It substantially reduces how often that happens during normal use
+# (e.g. a defense/demo session), which is the realistic best case on free
+# hosting tiers without paying for an always-on plan.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {} # allows manually triggering a run from the Actions tab, for testing
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend health endpoint
+        run: |
+          curl -sf --max-time 30 "https://platetrackk.onrender.com/api/health" \
+            && echo "Backend: OK" \
+            || echo "Backend: ping failed (service may be cold-starting or down)"
+
+      - name: Ping ML service health endpoint
+        run: |
+          curl -sf --max-time 60 "https://meynyah--platetrack-anpr-web.modal.run/health" \
+            && echo "ML service: OK" \
+            || echo "ML service: ping failed (service may be cold-starting or down)"
