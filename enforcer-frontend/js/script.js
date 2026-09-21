@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("password");
     const togglePassword = document.getElementById("togglePassword");
     const loginButton = document.getElementById("loginButton");
+    const rememberDevice = document.getElementById("remember");
 
     if(!loginForm){
         return;
@@ -65,7 +66,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch(`${API_BASE_URL}/api/auth/enforcer/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: emailValue, password: passwordValue })
+                body: JSON.stringify({
+                    email: emailValue,
+                    password: passwordValue,
+                    rememberDevice: !!(rememberDevice && rememberDevice.checked)
+                })
             });
 
             const data = await response.json();

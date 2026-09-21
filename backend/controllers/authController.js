@@ -84,7 +84,7 @@ async function registerEnforcer(req, res) {
 // POST /api/auth/enforcer/login
 async function loginEnforcer(req, res) {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberDevice } = req.body;
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required." });
     }
@@ -107,7 +107,7 @@ async function loginEnforcer(req, res) {
       });
     }
 
-    const token = generateToken(enforcer._id, "enforcer");
+    const token = generateToken(enforcer._id, "enforcer", rememberDevice);
     return res.json({
       token,
       user: {
@@ -176,7 +176,7 @@ async function registerOwner(req, res) {
 // POST /api/auth/owner/login
 async function loginOwner(req, res) {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberDevice } = req.body;
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required." });
     }
@@ -195,7 +195,7 @@ async function loginOwner(req, res) {
       return res.status(403).json({ message: "Your registration was not approved." });
     }
 
-    const token = generateToken(owner._id, "owner");
+    const token = generateToken(owner._id, "owner", rememberDevice);
     return res.json({
       token,
       user: {

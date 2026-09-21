@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginButton =
         document.getElementById("loginButton");
 
+    const rememberDeviceCheckbox =
+        document.getElementById("remember");
+
     if (
         !loginForm ||
         !emailInput ||
@@ -91,7 +94,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     body: JSON.stringify({
                         email,
-                        password
+                        password,
+                        rememberDevice: !!(rememberDeviceCheckbox && rememberDeviceCheckbox.checked)
                     })
                 });
 
