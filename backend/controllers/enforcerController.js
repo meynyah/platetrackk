@@ -228,6 +228,7 @@ async function detectPlate(req, res) {
           plateNumber: owner.plateNumber,
           vehicleType: owner.vehicleType,
           vehicleColor: owner.vehicleColor,
+          orCrNumber: owner.orCrNumber,
         };
       } else {
         matchedVehicle =
@@ -251,6 +252,7 @@ async function detectPlate(req, res) {
             registeredPlateNumber: matchedVehicle.plateNumber,
             vehicleType: matchedVehicle.vehicleType || "",
             vehicleColor: matchedVehicle.vehicleColor || "",
+            orCrNumber: matchedVehicle.orCrNumber || "",
           }
         : { found: false },
     });
