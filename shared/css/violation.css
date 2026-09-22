@@ -686,3 +686,30 @@ body.light-mode::-webkit-scrollbar-track{
     }
 
 }
+
+/* =========================================
+   REVIEW STEP INFO ROWS (Manual Violation)
+========================================== */
+
+.info-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 0;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.info-row:last-child{
+    border-bottom:none;
+}
+
+.info-row span{
+    color:#9fb2d8;
+    font-size:15px;
+}
+
+.info-row strong{
+    color:#ffffff;
+    font-weight:700;
+    text-align:right;
+}

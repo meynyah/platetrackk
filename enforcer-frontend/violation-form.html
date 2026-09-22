@@ -27,7 +27,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 href="../shared/css/modal.css">
 
 <link rel="stylesheet"
-href="../shared/css/violation.css?v=20260902-1">
+href="../shared/css/violation.css?v=20260922-1">
 
 <link rel="stylesheet"
 href="css/evidence-capture.css">
@@ -108,6 +108,8 @@ href="css/evidence-capture.css">
     </div>
 
 </section>
+
+<div id="formStep">
 
 <!-- ==========================================
 VEHICLE INFORMATION
@@ -422,13 +424,119 @@ LOCATION / OFFICER / DATE
     <button
     type="button"
     class="save-btn"
-    onclick="saveViolation()">
+    onclick="goToReview()">
 
-        <i class="fa-solid fa-floppy-disk"></i>
+        <i class="fa-solid fa-arrow-right"></i>
 
-        Save Violation
+        Next
 
     </button>
+
+</div>
+
+</div>
+
+<!-- ==========================================
+REVIEW STEP
+========================================== -->
+
+<div id="reviewStep" style="display:none;">
+
+    <div class="card-title">
+
+        <i class="fa-solid fa-clipboard-check"></i>
+
+        <span>
+
+            Review Violation Details
+
+        </span>
+
+    </div>
+
+    <p style="color:var(--text-muted,#8a94a6); font-size:14px; margin:0 0 16px;">
+
+        Please review the details below before saving this violation report.
+
+    </p>
+
+    <div class="evidence-preview" id="reviewEvidencePreview" style="display:none;">
+
+        <img id="reviewEvidencePhoto" alt="Captured vehicle evidence">
+
+    </div>
+
+    <div class="info-row">
+        <span>Plate Number</span>
+        <strong id="reviewPlateNumber">--</strong>
+    </div>
+
+    <div class="info-row">
+        <span>Vehicle Type</span>
+        <strong id="reviewVehicleType">--</strong>
+    </div>
+
+    <div class="info-row">
+        <span>Vehicle Color</span>
+        <strong id="reviewVehicleColor">--</strong>
+    </div>
+
+    <div class="info-row">
+        <span>Violation</span>
+        <strong id="reviewViolationType">--</strong>
+    </div>
+
+    <div class="info-row">
+        <span>Location</span>
+        <strong id="reviewLocation">--</strong>
+    </div>
+
+    <div class="info-row">
+        <span>Officer Notes</span>
+        <strong id="reviewOfficerNotes">--</strong>
+    </div>
+
+    <div class="info-row">
+        <span>Reporting Officer</span>
+        <strong id="reviewOfficerName">--</strong>
+    </div>
+
+    <div class="info-row">
+        <span>Badge Number</span>
+        <strong id="reviewBadgeNumber">--</strong>
+    </div>
+
+    <div class="info-row">
+        <span>Date &amp; Time</span>
+        <strong id="reviewDateTime">--</strong>
+    </div>
+
+    <div class="button-group">
+
+        <button
+        type="button"
+        class="cancel-btn"
+        onclick="backToEdit()">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to Edit
+
+        </button>
+
+        <button
+        type="button"
+        class="save-btn"
+        id="finalSaveBtn"
+        onclick="saveViolation()">
+
+            <i class="fa-solid fa-floppy-disk"></i>
+
+            Save Violation
+
+        </button>
+
+    </div>
 
 </div>
 
@@ -532,7 +640,7 @@ GLOBAL MODAL
 <script src="../shared/js/config.js"></script>
 <script src="../shared/js/modal.js"></script>
 <script src="../shared/js/theme.js"></script>
-<script src="js/violation-form.js?v=20260901-1"></script>
+<script src="js/violation-form.js?v=20260922-1"></script>
 
 </body>
 </html>

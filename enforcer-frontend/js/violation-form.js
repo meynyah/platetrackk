@@ -422,11 +422,63 @@ function validateForm(){
 // SAVE VIOLATION
 // ==========================================
 
-async function saveViolation(){
+function goToReview(){
 
     if(!validateForm()){
         return;
     }
+
+    let violation = getCleanValue("violationType");
+
+    if(violation === "Others"){
+        violation = getCleanValue("otherViolation");
+    }
+
+    setText("reviewPlateNumber", getCleanValue("plateNumber").toUpperCase());
+    setText("reviewVehicleType", getCleanValue("vehicleType"));
+    setText("reviewVehicleColor", getCleanValue("vehicleColor"));
+    setText("reviewViolationType", violation);
+    setText("reviewLocation", getCleanValue("location"));
+    setText("reviewOfficerNotes", getCleanValue("officerNotes") || "No additional remarks.");
+    setText("reviewOfficerName", getCleanValue("officerName"));
+    setText("reviewBadgeNumber", getCleanValue("badgeNumber"));
+    setText("reviewDateTime", getCleanValue("recordDateTime"));
+
+    const reviewPhotoWrapper = document.getElementById("reviewEvidencePreview");
+    const reviewPhoto = document.getElementById("reviewEvidencePhoto");
+
+    if(capturedEvidenceImage && reviewPhoto && reviewPhotoWrapper){
+        reviewPhoto.src = capturedEvidenceImage;
+        reviewPhotoWrapper.style.display = "block";
+    }
+    else if(reviewPhotoWrapper){
+        reviewPhotoWrapper.style.display = "none";
+    }
+
+    document.getElementById("formStep").style.display = "none";
+    document.getElementById("reviewStep").style.display = "block";
+
+    window.scrollTo({ top:0, behavior:"smooth" });
+
+}
+
+function setText(id, value){
+    const el = document.getElementById(id);
+    if(el){
+        el.textContent = (value === "" || value === null || value === undefined) ? "--" : value;
+    }
+}
+
+function backToEdit(){
+
+    document.getElementById("reviewStep").style.display = "none";
+    document.getElementById("formStep").style.display = "block";
+
+    window.scrollTo({ top:0, behavior:"smooth" });
+
+}
+
+async function saveViolation(){
 
     const token = getEnforcerToken();
 
@@ -451,7 +503,7 @@ async function saveViolation(){
         violation = getCleanValue("otherViolation");
     }
 
-    const saveButton = document.querySelector(".save-btn");
+    const saveButton = document.getElementById("finalSaveBtn");
     const originalButtonHtml = saveButton ? saveButton.innerHTML : "";
 
     if(saveButton){
