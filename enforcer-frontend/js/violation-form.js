@@ -422,7 +422,7 @@ function validateForm(){
 // SAVE VIOLATION
 // ==========================================
 
-function goToReview(){
+async function goToReview(){
 
     if(!validateForm()){
         return;
@@ -434,7 +434,9 @@ function goToReview(){
         violation = getCleanValue("otherViolation");
     }
 
-    setText("reviewPlateNumber", getCleanValue("plateNumber").toUpperCase());
+    const plateNumber = getCleanValue("plateNumber").toUpperCase();
+
+    setText("reviewPlateNumber", plateNumber);
     setText("reviewVehicleType", getCleanValue("vehicleType"));
     setText("reviewVehicleColor", getCleanValue("vehicleColor"));
     setText("reviewViolationType", violation);
@@ -459,6 +461,78 @@ function goToReview(){
     document.getElementById("reviewStep").style.display = "block";
 
     window.scrollTo({ top:0, behavior:"smooth" });
+
+    // Look up whether this plate matches a registered owner -- useful
+    // especially when the plate was typed in manually because the actual
+    // plate was dirty or partially obstructed, so the enforcer can still
+    // see (and cross-check) who the vehicle is registered to.
+    await lookupAndShowOwner(plateNumber);
+
+}
+
+async function lookupAndShowOwner(plateNumber){
+
+    const ownerSection = document.getElementById("reviewOwnerSection");
+    const notFoundSection = document.getElementById("reviewOwnerNotFound");
+
+    if(!ownerSection || !notFoundSection){
+        return;
+    }
+
+    ownerSection.style.display = "none";
+    notFoundSection.style.display = "none";
+
+    const token = getEnforcerToken();
+
+    if(!token || !plateNumber){
+        return;
+    }
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE}/enforcer/lookup-owner?plateNumber=${encodeURIComponent(plateNumber)}`,
+            {
+                method:"GET",
+                headers:{
+                    "Authorization":`Bearer ${token}`
+                }
+            }
+        );
+
+        if(!response.ok){
+            return;
+        }
+
+        const data = await response.json();
+
+        if(data.owner && data.owner.found){
+
+            setText("reviewOwnerName", data.owner.fullName);
+            setText("reviewOwnerEmail", data.owner.email);
+            setText("reviewOwnerAddress", data.owner.address);
+            setText("reviewOwnerVehicleType", data.owner.vehicleType);
+            setText("reviewOwnerVehicleColor", data.owner.vehicleColor);
+            setText("reviewOwnerOrCr", data.owner.orCrNumber);
+
+            ownerSection.style.display = "block";
+
+        }
+        else{
+
+            notFoundSection.style.display = "block";
+
+        }
+
+    }
+    catch(error){
+
+        console.error("Owner lookup failed:", error);
+        // Silent failure -- this is a helpful cross-check, not a required
+        // step, so a network hiccup here shouldn't block the enforcer
+        // from reviewing and saving the report itself.
+
+    }
 
 }
 

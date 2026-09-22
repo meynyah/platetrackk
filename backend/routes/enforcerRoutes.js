@@ -18,6 +18,8 @@ router.get("/violations/mine", enforcer.myViolations);
 
 router.post("/detect-plate", upload.single("image"), enforcer.detectPlate);
 
+router.get("/lookup-owner", enforcer.lookupOwnerByPlate);
+
 router.get("/duty-status", enforcer.getDutyStatus);
 router.patch("/duty-status", enforcer.setDutyStatus);
 

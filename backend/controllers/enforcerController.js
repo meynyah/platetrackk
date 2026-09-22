@@ -7,6 +7,90 @@ const { buildFlexiblePlateRegex } = require("../utils/normalizePlate");
 
 const SALT_ROUNDS = 10;
 
+// Shared by both automatic detection (detectPlate) and manual plate lookup
+// (lookupOwnerByPlate) -- finds the registered owner for a given plate
+// number, the same flexible way plates are matched when a violation is
+// submitted (so "NFV 3230" matches an owner registered as "NFV-3230",
+// etc.), and figures out exactly which of that owner's vehicles matched
+// (since an owner can have more than one registered vehicle).
+async function findOwnerByPlate(plateNumber) {
+  const plateRegex = buildFlexiblePlateRegex(plateNumber);
+  if (!plateRegex) {
+    return { found: false };
+  }
+
+  const owner = await Owner.findOne({
+    $or: [
+      { plateNumber: { $regex: plateRegex } },
+      { "additionalVehicles.plateNumber": { $regex: plateRegex } },
+    ],
+  });
+
+  if (!owner) {
+    return { found: false };
+  }
+
+  let matchedVehicle = null;
+  if (plateRegex.test(owner.plateNumber)) {
+    matchedVehicle = {
+      plateNumber: owner.plateNumber,
+      vehicleType: owner.vehicleType,
+      vehicleColor: owner.vehicleColor,
+      orCrNumber: owner.orCrNumber,
+    };
+  } else {
+    matchedVehicle =
+      owner.additionalVehicles.find((v) => plateRegex.test(v.plateNumber)) || null;
+  }
+
+  if (!matchedVehicle) {
+    return { found: false };
+  }
+
+  return {
+    found: true,
+    fullName: owner.fullName,
+    email: owner.email,
+    address: owner.address || "",
+    registeredPlateNumber: matchedVehicle.plateNumber,
+    vehicleType: matchedVehicle.vehicleType || "",
+    vehicleColor: matchedVehicle.vehicleColor || "",
+    orCrNumber: matchedVehicle.orCrNumber || "",
+  };
+}
+
+// GET /api/enforcer/lookup-owner?plateNumber=...
+// Lets the manual-violation form look up the registered owner for a
+// plate the enforcer typed in by hand (e.g. because the plate was dirty
+// or partially obstructed and automatic detection wasn't used/didn't
+// succeed) -- so the enforcer can still see who the vehicle is
+// registered to, and cross-check it, before saving the report.
+async function lookupOwnerByPlate(req, res) {
+  try {
+
+    const enforcer = await Enforcer.findById(req.user.id);
+
+    if (!enforcer || !enforcer.onDuty) {
+      return res.status(403).json({
+        message: "You must be on duty to look up a registered owner. Toggle your duty status on from the dashboard first.",
+      });
+    }
+
+    const plateNumber = req.query.plateNumber;
+
+    if (!plateNumber || !String(plateNumber).trim()) {
+      return res.status(400).json({ message: "A plate number is required." });
+    }
+
+    const owner = await findOwnerByPlate(plateNumber);
+    res.json({ owner });
+
+  } catch (err) {
+    console.error("Owner lookup error:", err);
+    res.status(500).json({ message: "Failed to look up the registered owner." });
+  }
+}
+
 // POST /api/enforcer/violations
 // This is how "lahat ng reports ng traffic enforcer" reach the admin — every
 // report an enforcer submits is written straight to the shared database that
@@ -202,39 +286,10 @@ async function detectPlate(req, res) {
       });
     }
 
-    // Look up the registered vehicle owner by the detected plate, the same
-    // flexible way we match plates when a violation is submitted (so
-    // "NFV 3230" matches an owner registered as "NFV-3230", etc.). If we
-    // find one, the enforcer's screen can auto-fill the owner's name,
-    // email, and registered vehicle type/color instead of leaving them to
-    // type it in blind.
-    const plateRegex = buildFlexiblePlateRegex(result.plateNumber);
-    const owner = plateRegex
-      ? await Owner.findOne({
-          $or: [
-            { plateNumber: { $regex: plateRegex } },
-            { "additionalVehicles.plateNumber": { $regex: plateRegex } },
-          ],
-        })
-      : null;
-
-    // An owner can now have more than one registered vehicle, so figure
-    // out exactly which one matched the detected plate -- not just
-    // assume it was always their original/primary vehicle.
-    let matchedVehicle = null;
-    if (owner && plateRegex) {
-      if (plateRegex.test(owner.plateNumber)) {
-        matchedVehicle = {
-          plateNumber: owner.plateNumber,
-          vehicleType: owner.vehicleType,
-          vehicleColor: owner.vehicleColor,
-          orCrNumber: owner.orCrNumber,
-        };
-      } else {
-        matchedVehicle =
-          owner.additionalVehicles.find((v) => plateRegex.test(v.plateNumber)) || null;
-      }
-    }
+    // Look up the registered vehicle owner by the detected plate -- see
+    // findOwnerByPlate above for the matching logic (also used by the
+    // manual-lookup endpoint below).
+    const ownerResult = await findOwnerByPlate(result.plateNumber);
 
     res.json({
       success: true,
@@ -243,18 +298,7 @@ async function detectPlate(req, res) {
       ocrConfidence: result.ocrConfidence,
       processingTimeMs: result.processingTimeMs,
       boundingBox: result.boundingBox,
-      owner: owner && matchedVehicle
-        ? {
-            found: true,
-            fullName: owner.fullName,
-            email: owner.email,
-            address: owner.address || "",
-            registeredPlateNumber: matchedVehicle.plateNumber,
-            vehicleType: matchedVehicle.vehicleType || "",
-            vehicleColor: matchedVehicle.vehicleColor || "",
-            orCrNumber: matchedVehicle.orCrNumber || "",
-          }
-        : { found: false },
+      owner: ownerResult,
     });
 
   } catch (err) {
@@ -430,6 +474,7 @@ module.exports = {
   myNotifications,
   markNotificationRead,
   detectPlate,
+  lookupOwnerByPlate,
   setDutyStatus,
   getDutyStatus,
   updateProfile,
