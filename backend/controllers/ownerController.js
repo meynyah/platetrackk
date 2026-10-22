@@ -237,7 +237,7 @@ async function addVehicle(req, res) {
 
     const { plateNumber, vehicleType, vehicleColor } = req.body;
 
-    if (!plateNumber || !plateNumber.trim()) {
+    if (typeof plateNumber !== "string" || !plateNumber.trim()) {
       return res.status(400).json({ message: "Plate number is required." });
     }
 
@@ -279,7 +279,7 @@ async function updateVehicle(req, res) {
     const { vehicleId } = req.params;
     const { plateNumber, vehicleType, vehicleColor } = req.body;
 
-    if (!plateNumber || !plateNumber.trim()) {
+    if (typeof plateNumber !== "string" || !plateNumber.trim()) {
       return res.status(400).json({ message: "Plate number is required." });
     }
 
