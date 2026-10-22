@@ -513,7 +513,6 @@ async function lookupAndShowOwner(plateNumber){
             setText("reviewOwnerAddress", data.owner.address);
             setText("reviewOwnerVehicleType", data.owner.vehicleType);
             setText("reviewOwnerVehicleColor", data.owner.vehicleColor);
-            setText("reviewOwnerOrCr", data.owner.orCrNumber);
 
             ownerSection.style.display = "block";
 

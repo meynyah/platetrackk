@@ -88,9 +88,6 @@ function loadDetectionData(){
         document.getElementById("ownerVehicleColor").textContent =
         storedResult.vehicleColor || "--";
 
-        document.getElementById("ownerOrCrNumber").textContent =
-        storedResult.ownerOrCrNumber || "--";
-
         ownerSection.style.display = "block";
 
         // A registered owner was found, so vehicle type/color are already

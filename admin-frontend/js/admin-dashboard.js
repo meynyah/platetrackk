@@ -3195,7 +3195,6 @@ function viewOwnerApplicationDetails(ownerId) {
       plateNumber: owner.plateNumber,
       vehicleType: owner.vehicleType,
       vehicleColor: owner.vehicleColor,
-      orCrNumber: owner.orCrNumber,
       label: "Primary Vehicle",
     },
     ...(Array.isArray(owner.additionalVehicles)
@@ -3209,10 +3208,6 @@ function viewOwnerApplicationDetails(ownerId) {
       <div class="approval-detail-row">
         <span>Plate Number</span>
         <strong><span class="plate-chip">${escapeHtml(v.plateNumber || "—")}</span></strong>
-      </div>
-      <div class="approval-detail-row">
-        <span>OR/CR Number</span>
-        <strong>${escapeHtml(v.orCrNumber || "—")}</strong>
       </div>
       <div class="approval-detail-row">
         <span>Vehicle Type</span>
@@ -3242,10 +3237,6 @@ function viewOwnerApplicationDetails(ownerId) {
     <div class="approval-detail-row">
       <span>Address</span>
       <strong>${escapeHtml(owner.address || "—")}</strong>
-    </div>
-    <div class="approval-detail-row">
-      <span>Driver's License Number</span>
-      <strong>${escapeHtml(owner.licenseNumber || "—")}</strong>
     </div>
     <div class="approval-detail-row">
       <span>Submitted</span>

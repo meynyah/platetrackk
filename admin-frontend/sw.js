@@ -12,7 +12,7 @@
 // updated files (like manifest.json) to keep serving stale cached
 // copies even after the server was updated -- network-first avoids that.
 
-const CACHE_NAME = "platetrack-shell-v2";
+const CACHE_NAME = "platetrack-shell-v3";
 
 const SHELL_ASSETS = [
     "../shared/css/dashboard.css",

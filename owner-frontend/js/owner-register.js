@@ -81,20 +81,6 @@ function createVehicleRowHTML(uniqueId){
                 </div>
 
                 <div class="input-group">
-                    <label>OR/CR Number</label>
-                    <div class="input-box">
-                        <i class="fa-solid fa-file-lines input-icon"></i>
-                        <input
-                        type="text"
-                        class="vehicleOrCr"
-                        data-row="${uniqueId}"
-                        autocomplete="off"
-                        placeholder="Official Receipt / Certificate of Registration number"
-                        required>
-                    </div>
-                </div>
-
-                <div class="input-group">
                     <label>Vehicle Type</label>
                     <div class="input-box">
                         <i class="fa-solid fa-car-side input-icon"></i>
@@ -187,15 +173,13 @@ function getVehicles(){
     rows.forEach(function(row){
 
         const plate = row.querySelector(".vehiclePlate").value.trim().toUpperCase();
-        const orCr = row.querySelector(".vehicleOrCr").value.trim();
         const type = row.querySelector(".vehicleType").value.trim();
         const color = row.querySelector(".vehicleColor").value.trim();
 
-        if(plate !== "" || orCr !== "" || type !== "" || color !== ""){
+        if(plate !== "" || type !== "" || color !== ""){
 
             vehicles.push({
                 plateNumber: plate,
-                orCrNumber: orCr,
                 vehicleType: type,
                 vehicleColor: color
             });
@@ -237,11 +221,10 @@ function saveOwners(owners){
 function nextStep(){
 
     const fullName = document.getElementById("fullName").value.trim();
-    const licenseNumber = document.getElementById("licenseNumber").value.trim();
     const mobile = document.getElementById("mobile").value.trim();
     const address = document.getElementById("address").value.trim();
 
-    if(fullName === "" || licenseNumber === "" || mobile === "" || address === ""){
+    if(fullName === "" || mobile === "" || address === ""){
 
         showError(
             "Incomplete Information",
@@ -275,11 +258,11 @@ function nextStep(){
 
     for(let i = 0; i < vehicles.length; i++){
 
-        if(vehicles[i].plateNumber === "" || vehicles[i].orCrNumber === "" || vehicles[i].vehicleType === "" || vehicles[i].vehicleColor === ""){
+        if(vehicles[i].plateNumber === "" || vehicles[i].vehicleType === "" || vehicles[i].vehicleColor === ""){
 
             showError(
                 "Incomplete Vehicle Information",
-                "Please complete the plate number, OR/CR number, vehicle type, and color for each registered vehicle."
+                "Please complete the plate number, vehicle type, and color for each registered vehicle."
             );
 
             return;
@@ -477,9 +460,6 @@ registerBtn.addEventListener("click", async function(){
     const fullName =
         document.getElementById("fullName").value.trim();
 
-    const licenseNumber =
-        document.getElementById("licenseNumber").value.trim();
-
     const mobile =
         document.getElementById("mobile").value.trim();
 
@@ -583,7 +563,6 @@ registerBtn.addEventListener("click", async function(){
 
                 body: JSON.stringify({
                     fullName: fullName,
-                    licenseNumber: licenseNumber,
                     email: email,
                     vehicles: vehicles,
                     contactNumber: mobile,

@@ -132,9 +132,9 @@ async function loginEnforcer(req, res) {
 // POST /api/auth/owner/register
 async function registerOwner(req, res) {
   try {
-    const { fullName, email, licenseNumber, vehicles, contactNumber, password } = req.body;
+    const { fullName, email, vehicles, contactNumber, password } = req.body;
 
-    if (!fullName || !email || !licenseNumber || !password) {
+    if (!fullName || !email || !password) {
       return res.status(400).json({ message: "Please fill in all required fields." });
     }
 
@@ -143,8 +143,8 @@ async function registerOwner(req, res) {
     }
 
     for (const v of vehicles) {
-      if (!v || !v.plateNumber || !String(v.plateNumber).trim() || !v.orCrNumber || !String(v.orCrNumber).trim()) {
-        return res.status(400).json({ message: "Please complete the plate number and OR/CR number for each vehicle." });
+      if (!v || !v.plateNumber || !String(v.plateNumber).trim()) {
+        return res.status(400).json({ message: "Please complete the plate number for each vehicle." });
       }
     }
 
@@ -189,16 +189,13 @@ async function registerOwner(req, res) {
     const owner = await Owner.create({
       fullName,
       email,
-      licenseNumber,
       plateNumber: primaryVehicle.plateNumber,
       vehicleType: primaryVehicle.vehicleType,
       vehicleColor: primaryVehicle.vehicleColor,
-      orCrNumber: primaryVehicle.orCrNumber,
       additionalVehicles: restVehicles.map((v) => ({
         plateNumber: v.plateNumber,
         vehicleType: v.vehicleType || "",
         vehicleColor: v.vehicleColor || "",
-        orCrNumber: v.orCrNumber,
       })),
       contactNumber,
       password: hashed,

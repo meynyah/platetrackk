@@ -355,7 +355,6 @@ function handleDetectionSuccess(data){
             ownerName: owner ? owner.fullName : "",
             ownerEmail: owner ? owner.email : "",
             ownerAddress: owner ? owner.address || "" : "",
-            ownerOrCrNumber: owner ? owner.orCrNumber || "" : "",
             source: "camera-ai"
         })
     );
