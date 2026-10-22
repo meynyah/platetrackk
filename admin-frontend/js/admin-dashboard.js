@@ -6,6 +6,14 @@ const views = document.querySelectorAll(".view");
 const navItems = document.querySelectorAll(".nav-item[data-view]");
 
 function switchView(viewName) {
+  // Safety net: if a link points at a view that does not exist (for example a
+  // page that was merged into another one), fall back to the Dashboard
+  // overview instead of showing an empty screen.
+  if (!Array.from(views).some((v) => v.id === `view-${viewName}`)) {
+    console.warn(`switchView: unknown view "${viewName}", showing the overview instead.`);
+    viewName = "overview";
+  }
+
   views.forEach((v) =>
     v.classList.toggle("active", v.id === `view-${viewName}`)
   );
@@ -3765,6 +3773,16 @@ function updateAdminNotificationCenter(stats) {
           item.dataset.notificationView;
 
         closeAdminNotifications();
+
+        // The old separate "Enforcer Applications" and "Owner Applications"
+        // pages were merged into one Account Approvals page with two tabs,
+        // so these notifications open that page on the matching tab.
+        if (target === "enforcer-approvals" || target === "owner-approvals") {
+          switchView("account-approvals");
+          setApprovalTab(target === "owner-approvals" ? "owners" : "enforcers");
+          return;
+        }
+
         switchView(target);
       });
     });
@@ -4794,36 +4812,40 @@ let pendingOwnersV2 = [];
    TAB SWITCHING
 ========================================================= */
 
+// Shows one tab ("enforcers" or "owners") of the Account Approvals page.
+// Used by the tab buttons and by the header notifications.
+function setApprovalTab(selectedTab) {
+
+  approvalTabButtons.forEach((item) => {
+
+    item.classList.toggle(
+      "active",
+      item.dataset.approvalTab === selectedTab
+    );
+  });
+
+  if (approvalPanelEnforcers) {
+
+    approvalPanelEnforcers.classList.toggle(
+      "active",
+      selectedTab === "enforcers"
+    );
+  }
+
+  if (approvalPanelOwners) {
+
+    approvalPanelOwners.classList.toggle(
+      "active",
+      selectedTab === "owners"
+    );
+  }
+}
+
 approvalTabButtons.forEach((button) => {
 
   button.addEventListener("click", () => {
 
-    const selectedTab =
-      button.dataset.approvalTab;
-
-    approvalTabButtons.forEach((item) => {
-
-      item.classList.toggle(
-        "active",
-        item === button
-      );
-    });
-
-    if (approvalPanelEnforcers) {
-
-      approvalPanelEnforcers.classList.toggle(
-        "active",
-        selectedTab === "enforcers"
-      );
-    }
-
-    if (approvalPanelOwners) {
-
-      approvalPanelOwners.classList.toggle(
-        "active",
-        selectedTab === "owners"
-      );
-    }
+    setApprovalTab(button.dataset.approvalTab);
   });
 });
 
