@@ -54,6 +54,7 @@ if (admin) {
 function loadViewData(viewName) {
   switch (viewName) {
     case "overview": return loadOverview();
+    case "enforcer-performance": return loadEnforcerPerformance();
     case "account-approvals": return loadAccountApprovalsV2();
     case "enforcer-monitor": return loadEnforcerMonitor();
     case "active-duty": return loadActiveDuty();
@@ -68,14 +69,28 @@ function statusChip(status) {
   return `<span class="status-chip status-${status}">${status.replace("_", " ")}</span>`;
 }
 
+/* --------------------------- ENFORCER PERFORMANCE ------------------------- */
+
+// The performance ranking has its own page (it used to sit at the bottom of
+// the Dashboard, which made "Dashboard" and "Enforcer Performance" in the
+// sidebar open the very same screen).
+async function loadEnforcerPerformance() {
+  try {
+    const leaderboard = await apiRequest("/admin/enforcers/leaderboard");
+    renderExecutiveLeaderboard(leaderboard);
+  } catch (err) {
+    const body = document.getElementById("leaderboardBody");
+    if (body) {
+      body.innerHTML = `<tr><td colspan="6" class="empty-state">Could not load enforcer performance: ${escapeHtml(err.message || "network error")}</td></tr>`;
+    }
+  }
+}
+
 /* --------------------------------- OVERVIEW ------------------------------ */
 
 async function loadOverview() {
   try {
-    const [stats, leaderboard] = await Promise.all([
-      apiRequest("/admin/stats"),
-      apiRequest("/admin/enforcers/leaderboard"),
-    ]);
+    const stats = await apiRequest("/admin/stats");
 
     document.getElementById("statGrid").innerHTML = `
       <article class="stat-card stat-blue">
@@ -244,8 +259,6 @@ animateStatCounters();
     updateSidebarCounts(stats);
     updateExecutiveSummary(stats);
     updateAdminNotificationCenter(stats);
-
-    renderExecutiveLeaderboard(leaderboard);
 
     await loadExecutiveDashboardData();
 

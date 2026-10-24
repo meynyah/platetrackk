@@ -47,7 +47,7 @@
 
     <link 
     rel="stylesheet"
-    href="css/admin.css?v=20260901-1">
+    href="css/admin.css?v=20261024-1">
 
 </head>
 
@@ -333,7 +333,7 @@
                 <button
                     type="button"
                     class="nav-item"
-                    data-view="overview"
+                    data-view="enforcer-performance"
                 >
 
                     <span class="nav-item-icon">
@@ -941,7 +941,7 @@
      QUICK ACTIONS + ENFORCER PERFORMANCE
 ========================================== -->
 
-<div class="quick-performance-grid">
+<div class="quick-performance-grid single-panel">
 
     <!-- QUICK ACTIONS -->
 
@@ -1086,8 +1086,46 @@
 
     </section>
 
+</div>
 
-    <!-- ENFORCER PERFORMANCE -->
+</section>
+
+
+        <!-- =========================================
+     ENFORCER PERFORMANCE (its own page)
+========================================== -->
+
+        <section
+            class="view"
+            id="view-enforcer-performance"
+        >
+
+            <div class="topbar command-topbar">
+
+                <div>
+
+                    <div class="page-label">
+
+                        <i class="fa-solid fa-chart-column"></i>
+
+                        Insights
+
+                    </div>
+
+                    <h1>
+                        Enforcer Performance
+                    </h1>
+
+                    <p class="desc">
+
+                        Ranking of approved enforcers by the number of
+                        violation reports they have filed.
+
+                    </p>
+
+                </div>
+
+            </div>
 
     <section class="panel command-panel executive-performance-panel">
 
@@ -1153,9 +1191,7 @@
 
     </section>
 
-</div>
-
-</section>
+        </section>
 
         <!-- =========================================
      ACCOUNT APPROVALS V2
@@ -3726,7 +3762,7 @@
 
 <script src="js/admin-api.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script src="js/admin-dashboard.js?v=20261022-2"></script>
+<script src="js/admin-dashboard.js?v=20261024-1"></script>
 
 
 

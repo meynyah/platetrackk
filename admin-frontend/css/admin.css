@@ -12611,3 +12611,19 @@ body.admin-dashboard-page .violation-page-numbers button.active {
     letter-spacing:.05em;
     text-transform:uppercase;
 }
+
+
+/* Quick Actions now sits alone on the Dashboard (Enforcer Performance moved to its own page) */
+body.admin-dashboard-page .quick-performance-grid.single-panel {
+    grid-template-columns: minmax(0, 1fr) !important;
+}
+
+body.admin-dashboard-page .quick-performance-grid.single-panel .executive-action-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+@media (max-width: 900px) {
+    body.admin-dashboard-page .quick-performance-grid.single-panel .executive-action-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
