@@ -566,6 +566,7 @@ registerBtn.addEventListener("click", async function(){
                     email: email,
                     vehicles: vehicles,
                     contactNumber: mobile,
+                    address: address,
                     password: password.value
                 })
             }

@@ -54,6 +54,14 @@ async function submitAppeal(req, res) {
       return res.status(403).json({ message: "You can only appeal violations linked to your own account." });
     }
 
+    // One appeal per violation. The owner page already hides the button once
+    // an appeal exists; this check makes the server enforce it too, so the
+    // administrator is never flooded with repeated appeals for one violation.
+    const alreadyAppealed = await Appeal.findOne({ violation: violationId });
+    if (alreadyAppealed) {
+      return res.status(409).json({ message: "This violation already has an appeal." });
+    }
+
     const appeal = await Appeal.create({
       violation: violationId,
       owner: req.user.id,
