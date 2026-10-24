@@ -522,6 +522,10 @@ async function saveProfile(){
         });
         localStorage.setItem("plateTrackOwnerUser", JSON.stringify(currentOwner));
 
+        // Re-draw the details on the page right away, so the new email,
+        // contact number, and address show up without a manual refresh.
+        loadProfile();
+
         closeEditModal();
         showSuccess("Profile Updated", "Your profile details have been saved.");
 
