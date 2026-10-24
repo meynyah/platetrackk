@@ -10,7 +10,6 @@ router.get("/violations/mine", owner.myViolations);
 router.patch("/profile", owner.updateProfile);
 router.patch("/password", owner.changePassword);
 
-router.post("/vehicles", owner.addVehicle);
 router.patch("/vehicles/:vehicleId", owner.updateVehicle);
 router.delete("/vehicles/:vehicleId", owner.deleteVehicle);
 

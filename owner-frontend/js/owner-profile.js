@@ -255,7 +255,9 @@ function loadVehicles(){
         </div>
     `;
 
-    // Any additional vehicles the owner has added since registering.
+    // Any additional vehicles the owner registered at sign-up. New vehicles
+    // cannot be added from this page: the administrator reviews every vehicle
+    // during account approval, and a later addition would skip that review.
     const additional = currentOwner.additionalVehicles || [];
 
     additional.forEach(function(vehicle){
@@ -284,15 +286,6 @@ function loadVehicles(){
 
     vehicleList.innerHTML = html;
 
-}
-
-function openAddVehicleModal(){
-    document.getElementById("vehicleModalTitle").textContent = "Add Vehicle";
-    document.getElementById("vehicleEditIndex").value = "-1";
-    document.getElementById("vehiclePlateInput").value = "";
-    document.getElementById("vehicleTypeInput").value = "";
-    document.getElementById("vehicleColorInput").value = "";
-    document.getElementById("vehicleModal").classList.add("show");
 }
 
 function closeVehicleModal(){
@@ -335,16 +328,19 @@ async function saveVehicle(){
     const token = localStorage.getItem("plateTrackOwnerToken");
     if(!token){ window.location.href = "owner-login.html"; return; }
 
-    const isEditing = vehicleId && vehicleId !== "-1";
+    // This form only edits a vehicle that is already registered; there is no
+    // "add vehicle" action on this page.
+    if(!vehicleId || vehicleId === "-1"){
+        showError("Not Allowed", "New vehicles can only be registered when you create your account.");
+        return;
+    }
 
     try{
 
         const response = await fetch(
-            isEditing
-                ? `${API_BASE}/owner/vehicles/${vehicleId}`
-                : `${API_BASE}/owner/vehicles`,
+            `${API_BASE}/owner/vehicles/${vehicleId}`,
             {
-                method: isEditing ? "PATCH" : "POST",
+                method: "PATCH",
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization":`Bearer ${token}`
@@ -373,8 +369,8 @@ async function saveVehicle(){
         closeVehicleModal();
         loadVehicles();
         showSuccess(
-            isEditing ? "Vehicle Updated" : "Vehicle Added",
-            isEditing ? "Your vehicle details have been updated." : "Your new vehicle has been added to your account."
+            "Vehicle Updated",
+            "Your vehicle details have been updated."
         );
 
     }
@@ -672,7 +668,6 @@ window.saveProfile = saveProfile;
 window.openPasswordModal = openPasswordModal;
 window.closePasswordModal = closePasswordModal;
 window.savePassword = savePassword;
-window.openAddVehicleModal = openAddVehicleModal;
 window.openEditVehicleModal = openEditVehicleModal;
 window.deleteVehicle = deleteVehicle;
 window.closeVehicleModal = closeVehicleModal;

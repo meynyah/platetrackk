@@ -231,46 +231,9 @@ async function isPlateTaken(plateNumber, excludeVehicleId) {
   return true;
 }
 
-// POST /api/owner/vehicles
-async function addVehicle(req, res) {
-  try {
-
-    const { plateNumber, vehicleType, vehicleColor } = req.body;
-
-    if (typeof plateNumber !== "string" || !plateNumber.trim()) {
-      return res.status(400).json({ message: "Plate number is required." });
-    }
-
-    const taken = await isPlateTaken(plateNumber);
-    if (taken) {
-      return res.status(409).json({ message: "This plate number is already registered to an account." });
-    }
-
-    const owner = await Owner.findByIdAndUpdate(
-      req.user.id,
-      {
-        $push: {
-          additionalVehicles: {
-            plateNumber: plateNumber.toUpperCase().trim(),
-            vehicleType: vehicleType || "",
-            vehicleColor: vehicleColor || "",
-          },
-        },
-      },
-      { new: true }
-    ).select("-password");
-
-    if (!owner) {
-      return res.status(404).json({ message: "Owner account not found." });
-    }
-
-    res.status(201).json({ message: "Vehicle added.", owner });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to add vehicle." });
-  }
-}
+// NOTE: there is intentionally no "add vehicle" endpoint. Vehicles can only be
+// registered at sign-up, where the administrator reviews them before the
+// account is approved. A vehicle added later would skip that review.
 
 // PATCH /api/owner/vehicles/:vehicleId
 async function updateVehicle(req, res) {
@@ -344,7 +307,6 @@ module.exports = {
   markNotificationRead,
   updateProfile,
   changePassword,
-  addVehicle,
   updateVehicle,
   deleteVehicle,
 };
