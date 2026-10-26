@@ -3216,10 +3216,10 @@ function viewOwnerApplicationDetails(ownerId) {
       plateNumber: owner.plateNumber,
       vehicleType: owner.vehicleType,
       vehicleColor: owner.vehicleColor,
-      label: "Primary Vehicle",
+      label: "Vehicle 1",
     },
     ...(Array.isArray(owner.additionalVehicles)
-      ? owner.additionalVehicles.map((v, i) => ({ ...v, label: `Additional Vehicle ${i + 1}` }))
+      ? owner.additionalVehicles.map((v, i) => ({ ...v, label: `Vehicle ${i + 2}` }))
       : []),
   ];
 

@@ -251,15 +251,24 @@ function loadRegisteredPlate(owner){
     const plateCount =
         document.getElementById("plateCount");
 
-    const plateNumber =
-        String(owner.plateNumber || "")
-            .trim()
-            .toUpperCase();
+    // Every vehicle registered at sign-up: Vehicle 1 is the first one on the
+    // form, then Vehicle 2, 3, ... in the order they were entered.
+    const vehicles = [];
+
+    if(owner && owner.plateNumber){
+        vehicles.push(owner);
+    }
+
+    ((owner && owner.additionalVehicles) || []).forEach(function(vehicle){
+        if(vehicle && vehicle.plateNumber){
+            vehicles.push(vehicle);
+        }
+    });
 
     if(plateCount){
 
         plateCount.textContent =
-            plateNumber ? "1" : "0";
+            String(vehicles.length);
         plateCount.classList.remove("is-loading");
     }
 
@@ -267,7 +276,7 @@ function loadRegisteredPlate(owner){
         return;
     }
 
-    if(!plateNumber){
+    if(!vehicles.length){
 
         plateList.innerHTML = `
             <div class="plate-chip">
@@ -279,19 +288,33 @@ function loadRegisteredPlate(owner){
         return;
     }
 
-    plateList.innerHTML = `
-        <div class="plate-chip">
+    plateList.innerHTML = vehicles.map(function(vehicle, index){
 
-            <i class="fa-solid fa-id-card"></i>
+        const plate =
+            String(vehicle.plateNumber)
+                .trim()
+                .toUpperCase();
 
-            ${escapeHtml(plateNumber)}
+        const detail =
+            [vehicle.vehicleColor, vehicle.vehicleType]
+                .filter(Boolean)
+                .join(" ");
 
-            <span class="plate-chip-detail">
-                Registered Vehicle
-            </span>
+        return `
+            <div class="plate-chip">
 
-        </div>
-    `;
+                <i class="fa-solid fa-id-card"></i>
+
+                ${escapeHtml(plate)}
+
+                <span class="plate-chip-detail">
+                    Vehicle ${index + 1}${detail ? " &middot; " + escapeHtml(detail) : ""}
+                </span>
+
+            </div>
+        `;
+
+    }).join("");
 }
 
 // ==========================================

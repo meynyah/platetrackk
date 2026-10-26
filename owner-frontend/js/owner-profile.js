@@ -241,198 +241,39 @@ function loadVehicles(){
         return;
     }
 
-    // The primary/original registered vehicle -- not deletable from here,
-    // since it's tied to the account itself.
-    let html = `
-        <div class="vehicle-item">
-            <div class="info-icon">
-                <i class="fa-solid fa-car"></i>
-            </div>
-            <div class="vehicle-item-content">
-                <span class="vehicle-item-plate">${currentOwner.plateNumber}</span>
-                <span class="vehicle-item-detail">${[currentOwner.vehicleColor, currentOwner.vehicleType].filter(Boolean).join(" ") || "Registered to your account"}</span>
-            </div>
-        </div>
-    `;
+    // Vehicles are registered at sign-up and reviewed by the administrator
+    // when the account is approved. They are read-only here: an owner cannot
+    // add, edit, or remove a vehicle afterward, so a plate number stays tied
+    // to the owner who registered it.
+    const vehicles = [currentOwner].concat(currentOwner.additionalVehicles || []);
 
-    // Any additional vehicles the owner registered at sign-up. New vehicles
-    // cannot be added from this page: the administrator reviews every vehicle
-    // during account approval, and a later addition would skip that review.
-    const additional = currentOwner.additionalVehicles || [];
+    vehicleList.innerHTML = vehicles.map(function(vehicle, index){
 
-    additional.forEach(function(vehicle){
+        const detail = [vehicle.vehicleColor, vehicle.vehicleType].filter(Boolean).join(" ");
 
-        html += `
+        return `
             <div class="vehicle-item">
                 <div class="info-icon">
                     <i class="fa-solid fa-car"></i>
                 </div>
                 <div class="vehicle-item-content">
-                    <span class="vehicle-item-plate">${vehicle.plateNumber}</span>
-                    <span class="vehicle-item-detail">${[vehicle.vehicleColor, vehicle.vehicleType].filter(Boolean).join(" ") || "Additional vehicle"}</span>
-                </div>
-                <div class="vehicle-actions">
-                    <button type="button" onclick="openEditVehicleModal('${vehicle._id}')" title="Edit">
-                        <i class="fa-solid fa-pen"></i>
-                    </button>
-                    <button type="button" onclick="deleteVehicle('${vehicle._id}')" title="Remove">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
+                    <span class="vehicle-item-plate">${escapeHtmlText(vehicle.plateNumber)}</span>
+                    <span class="vehicle-item-detail">Vehicle ${index + 1}${detail ? " &middot; " + escapeHtmlText(detail) : ""}</span>
                 </div>
             </div>
         `;
 
-    });
-
-    vehicleList.innerHTML = html;
+    }).join("");
 
 }
 
-function closeVehicleModal(){
-    const modal = document.getElementById("vehicleModal");
-    if(modal) modal.classList.remove("show");
+// Plate numbers and vehicle details are typed by the owner, so they are
+// escaped before being placed in the page.
+function escapeHtmlText(value){
+    const box = document.createElement("div");
+    box.textContent = String(value == null ? "" : value);
+    return box.innerHTML;
 }
-
-function openEditVehicleModal(vehicleId){
-
-    const vehicle = (currentOwner.additionalVehicles || []).find(function(v){
-        return v._id === vehicleId;
-    });
-
-    if(!vehicle){
-        showError("Vehicle Not Found", "This vehicle could not be found on your account.");
-        return;
-    }
-
-    document.getElementById("vehicleModalTitle").textContent = "Edit Vehicle";
-    document.getElementById("vehicleEditIndex").value = vehicleId;
-    document.getElementById("vehiclePlateInput").value = vehicle.plateNumber;
-    document.getElementById("vehicleTypeInput").value = vehicle.vehicleType || "";
-    document.getElementById("vehicleColorInput").value = vehicle.vehicleColor || "";
-    document.getElementById("vehicleModal").classList.add("show");
-
-}
-
-async function saveVehicle(){
-
-    const vehicleId = document.getElementById("vehicleEditIndex").value;
-    const plateNumber = document.getElementById("vehiclePlateInput").value.trim();
-    const vehicleType = document.getElementById("vehicleTypeInput").value.trim();
-    const vehicleColor = document.getElementById("vehicleColorInput").value.trim();
-
-    if(!plateNumber){
-        showError("Missing Plate Number", "Please enter the vehicle's plate number.");
-        return;
-    }
-
-    const token = localStorage.getItem("plateTrackOwnerToken");
-    if(!token){ window.location.href = "owner-login.html"; return; }
-
-    // This form only edits a vehicle that is already registered; there is no
-    // "add vehicle" action on this page.
-    if(!vehicleId || vehicleId === "-1"){
-        showError("Not Allowed", "New vehicles can only be registered when you create your account.");
-        return;
-    }
-
-    try{
-
-        const response = await fetch(
-            `${API_BASE}/owner/vehicles/${vehicleId}`,
-            {
-                method: "PATCH",
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization":`Bearer ${token}`
-                },
-                body: JSON.stringify({ plateNumber, vehicleType, vehicleColor })
-            }
-        );
-
-        const data = await response.json().catch(function(){ return {}; });
-
-        if(response.status === 401){
-            localStorage.removeItem("plateTrackOwnerToken");
-            localStorage.removeItem("plateTrackOwnerUser");
-            window.location.href = "owner-login.html";
-            return;
-        }
-
-        if(!response.ok){
-            showError("Unable to Save Vehicle", data.message || "Could not save this vehicle right now.");
-            return;
-        }
-
-        currentOwner = data.owner;
-        localStorage.setItem("plateTrackOwnerUser", JSON.stringify(currentOwner));
-
-        closeVehicleModal();
-        loadVehicles();
-        showSuccess(
-            "Vehicle Updated",
-            "Your vehicle details have been updated."
-        );
-
-    }
-    catch(error){
-
-        console.error("Unable to save vehicle:", error);
-        showError("Unable to Save Vehicle", "Could not reach the server. Please check your connection and try again.");
-
-    }
-
-}
-
-async function deleteVehicle(vehicleId){
-
-    const token = localStorage.getItem("plateTrackOwnerToken");
-    if(!token){ window.location.href = "owner-login.html"; return; }
-
-    try{
-
-        const response = await fetch(
-            `${API_BASE}/owner/vehicles/${vehicleId}`,
-            {
-                method:"DELETE",
-                headers:{
-                    "Authorization":`Bearer ${token}`
-                }
-            }
-        );
-
-        const data = await response.json().catch(function(){ return {}; });
-
-        if(response.status === 401){
-            localStorage.removeItem("plateTrackOwnerToken");
-            localStorage.removeItem("plateTrackOwnerUser");
-            window.location.href = "owner-login.html";
-            return;
-        }
-
-        if(!response.ok){
-            showError("Unable to Remove Vehicle", data.message || "Could not remove this vehicle right now.");
-            return;
-        }
-
-        currentOwner = data.owner;
-        localStorage.setItem("plateTrackOwnerUser", JSON.stringify(currentOwner));
-
-        loadVehicles();
-        showSuccess("Vehicle Removed", "The vehicle has been removed from your account.");
-
-    }
-    catch(error){
-
-        console.error("Unable to remove vehicle:", error);
-        showError("Unable to Remove Vehicle", "Could not reach the server. Please check your connection and try again.");
-
-    }
-
-}
-
-// ==========================================
-// EDIT PROFILE MODAL
-// ==========================================
 
 function openEditModal(){
 
@@ -646,7 +487,7 @@ async function savePassword(){
 
 window.addEventListener("click", function(event){
 
-    ["editModal","passwordModal","vehicleModal","globalModal"]
+    ["editModal","passwordModal","globalModal"]
 
     .forEach(function(id){
 
@@ -668,7 +509,3 @@ window.saveProfile = saveProfile;
 window.openPasswordModal = openPasswordModal;
 window.closePasswordModal = closePasswordModal;
 window.savePassword = savePassword;
-window.openEditVehicleModal = openEditVehicleModal;
-window.deleteVehicle = deleteVehicle;
-window.closeVehicleModal = closeVehicleModal;
-window.saveVehicle = saveVehicle;
