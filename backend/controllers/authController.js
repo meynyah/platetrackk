@@ -44,34 +44,79 @@ async function registerEnforcer(req, res) {
       });
     }
 
-    const existing = await Enforcer.findOne({
-      $or: [
-        { email: normalizedEmail },
-        { badgeNumber: normalizedBadgeNumber }
-      ]
-    });
+    const holds = [
+      { email: normalizedEmail },
+      { badgeNumber: normalizedBadgeNumber }
+    ];
 
-    if (existing) {
+    // Pending and approved accounts keep their email and badge number
+    // reserved, so two enforcers can never share one.
+    const blocking = await Enforcer.findOne({ status: { $ne: "rejected" }, $or: holds });
+
+    if (blocking) {
       return res.status(409).json({
         message: "An account with this email or badge number already exists."
       });
     }
 
+    // A REJECTED application does not keep anything reserved, so an applicant
+    // who made a typing mistake can register again. The same email replaces
+    // the rejected record; another rejected record that holds the badge number
+    // is removed (the badge number must be unique in the database, and a
+    // rejected applicant has no access to the account anyway).
+    const rejectedHolders = await Enforcer.find({ status: "rejected", $or: holds });
+    const sameEmailRecord = rejectedHolders.find((e) => e.email === normalizedEmail) || null;
+
+    for (const old of rejectedHolders) {
+      if (old !== sameEmailRecord) {
+        await Enforcer.deleteOne({ _id: old._id });
+      }
+    }
+
     const hashed = await bcrypt.hash(password, SALT_ROUNDS);
 
-    const enforcer = await Enforcer.create({
+    const details = {
       fullName: String(fullName).trim(),
-      email: normalizedEmail,
       badgeNumber: normalizedBadgeNumber,
       station: String(station || "").trim() || "Antipolo Traffic Management Office",
       mobile: mobile || undefined,
-      password: hashed,
-      status: "pending"
-    });
+      password: hashed
+    };
+
+    let enforcer;
+    let resubmitted = false;
+
+    if (sameEmailRecord) {
+      // Back to pending, so the administrator reviews it again from the start.
+      enforcer = await Enforcer.findByIdAndUpdate(
+        sameEmailRecord._id,
+        {
+          $set: {
+            ...details,
+            status: "pending",
+            rejectionReason: null,
+            reviewedBy: null,
+            reviewedAt: null,
+            onDuty: false
+          }
+        },
+        { new: true, runValidators: true }
+      );
+      resubmitted = true;
+    } else {
+      enforcer = await Enforcer.create({
+        ...details,
+        email: normalizedEmail,
+        status: "pending"
+      });
+    }
 
     return res.status(201).json({
-      message: "Registration submitted. Your registration will be reviewed by the PlateTrack Administrator. You can only sign in after your account has been approved.",
-      enforcerId: enforcer._id
+      message: resubmitted
+        ? "Your registration was submitted again. It will be reviewed by the PlateTrack Administrator. You can only sign in after your account has been approved."
+        : "Registration submitted. Your registration will be reviewed by the PlateTrack Administrator. You can only sign in after your account has been approved.",
+      enforcerId: enforcer._id,
+      resubmitted
     });
 
   } catch (err) {
