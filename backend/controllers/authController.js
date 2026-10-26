@@ -81,6 +81,13 @@ async function registerEnforcer(req, res) {
   }
 }
 
+// The rejection reason is typed by the administrator and shown on the
+// applicant's sign-in screen, so special characters are escaped first.
+function reasonText(reason) {
+  const clean = String(reason || "").trim().slice(0, 300).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return clean ? ` Reason: ${clean}${/[.!?]$/.test(clean) ? "" : "."}` : "";
+}
+
 // POST /api/auth/enforcer/login
 async function loginEnforcer(req, res) {
   try {
@@ -102,8 +109,10 @@ async function loginEnforcer(req, res) {
       });
     }
     if (enforcer.status === "rejected") {
+      // The reason is shown here because the sign-in message is how an
+      // applicant finds out that the registration was declined and why.
       return res.status(403).json({
-        message: "Your registration was not approved. Contact the PlateTrack Administrator for details.",
+        message: `Your registration was not approved.${reasonText(enforcer.rejectionReason)} Contact the PlateTrack Administrator for details.`,
       });
     }
 
@@ -232,7 +241,8 @@ async function loginOwner(req, res) {
       return res.status(403).json({ message: "Your account is still under review by the PlateTrack Administrator." });
     }
     if (owner.status === "rejected") {
-      return res.status(403).json({ message: "Your registration was not approved." });
+      // Same here: the owner's rejection reason is kept in flagReason.
+      return res.status(403).json({ message: `Your registration was not approved.${reasonText(owner.flagReason)} Contact the PlateTrack Administrator for details.` });
     }
 
     const token = generateToken(owner._id, "owner", rememberDevice);
