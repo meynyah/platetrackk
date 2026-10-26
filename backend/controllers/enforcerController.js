@@ -19,7 +19,10 @@ async function findOwnerByPlate(plateNumber) {
     return { found: false };
   }
 
+  // Rejected applications are ignored: they are not accounts, and the same
+  // plate may now belong to a different, live account.
   const owner = await Owner.findOne({
+    status: { $ne: "rejected" },
     $or: [
       { plateNumber: { $regex: plateRegex } },
       { "additionalVehicles.plateNumber": { $regex: plateRegex } },
@@ -130,6 +133,7 @@ async function submitViolation(req, res) {
     const plateRegex = buildFlexiblePlateRegex(plateNumber);
     const owner = plateRegex
       ? await Owner.findOne({
+          status: { $ne: "rejected" },
           $or: [
             { plateNumber: { $regex: plateRegex } },
             { "additionalVehicles.plateNumber": { $regex: plateRegex } },

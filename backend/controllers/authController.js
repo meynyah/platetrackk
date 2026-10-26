@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const Enforcer = require("../models/Enforcer");
 const Owner = require("../models/Owner");
+const Violation = require("../models/Violation");
 const Admin = require("../models/Admin");
 const Notification = require("../models/Notification");
 const generateToken = require("../utils/generateToken");
@@ -173,52 +174,100 @@ async function registerOwner(req, res) {
       return res.status(400).json({ message: "Each vehicle must have a different plate number." });
     }
 
-    // Check email and every submitted plate -- against both other
-    // owners' primary plate AND their additionalVehicles -- in a single
-    // query, the same comprehensive check ownerController's isPlateTaken
-    // uses for adding a vehicle after registration.
+    // Flexible patterns, so "ABC1234", "ABC 1234", and "abc-1234" count as the
+    // same plate when checking who already holds it.
     const plateRegexes = normalizedPlates
       .map((p) => buildFlexiblePlateRegex(p))
       .filter(Boolean);
 
-    const existing = await Owner.findOne({
-      $or: [
-        { email },
-        ...(plateRegexes.length
-          ? [
-              { plateNumber: { $in: plateRegexes } },
-              { "additionalVehicles.plateNumber": { $in: plateRegexes } },
-            ]
-          : []),
-      ],
-    });
-    if (existing) {
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const cleanAddress = typeof address === "string" ? address.trim().slice(0, 200) : "";
+
+    // Who already holds this email or one of these plates -- as someone's
+    // primary plate or as one of their additional vehicles?
+    const holds = [
+      { email: normalizedEmail },
+      ...(plateRegexes.length
+        ? [
+            { plateNumber: { $in: plateRegexes } },
+            { "additionalVehicles.plateNumber": { $in: plateRegexes } },
+          ]
+        : []),
+    ];
+
+    // Pending, approved, and flagged accounts keep their email and plates
+    // reserved, so two owners can never claim the same plate.
+    const blocking = await Owner.findOne({ status: { $ne: "rejected" }, $or: holds });
+    if (blocking) {
       return res.status(409).json({ message: "An account with this email or one of these plate numbers already exists." });
     }
 
-    const [primaryVehicle, ...restVehicles] = vehicles;
+    // A REJECTED application does not keep anything reserved. That lets an
+    // applicant who made a typing mistake register again, and lets the real
+    // owner of a plate register it even if someone else's rejected application
+    // used it first.
+    const rejectedHolders = await Owner.find({ status: "rejected", $or: holds });
+    const sameEmailRecord = rejectedHolders.find((o) => o.email === normalizedEmail) || null;
+    const otherRejected = rejectedHolders.filter((o) => o !== sameEmailRecord);
 
+    // Another rejected application that holds one of these plates is removed:
+    // a plate number must be unique in the database, and a rejected applicant
+    // has no access to the account anyway. Violations that pointed at the
+    // removed record are re-linked below to the new owner when the plate
+    // matches, otherwise they lose the owner link.
+    const orphanedViolations = [];
+    for (const old of otherRejected) {
+      const linked = await Violation.find({ owner: old._id }).select("plateNumber");
+      orphanedViolations.push(...linked);
+      await Owner.deleteOne({ _id: old._id });
+    }
+
+    const [primaryVehicle, ...restVehicles] = vehicles;
     const hashed = await bcrypt.hash(password, SALT_ROUNDS);
-    const owner = await Owner.create({
+
+    const details = {
       fullName,
-      email,
-      plateNumber: primaryVehicle.plateNumber,
-      vehicleType: primaryVehicle.vehicleType,
-      vehicleColor: primaryVehicle.vehicleColor,
+      plateNumber: String(primaryVehicle.plateNumber).trim().toUpperCase(),
+      vehicleType: primaryVehicle.vehicleType || "",
+      vehicleColor: primaryVehicle.vehicleColor || "",
       additionalVehicles: restVehicles.map((v) => ({
-        plateNumber: v.plateNumber,
+        plateNumber: String(v.plateNumber).trim().toUpperCase(),
         vehicleType: v.vehicleType || "",
         vehicleColor: v.vehicleColor || "",
       })),
       contactNumber,
-      address: typeof address === "string" ? address.trim().slice(0, 200) : "",
+      address: cleanAddress,
       password: hashed,
-      status: "pending",
-    });
+    };
+
+    let owner;
+    let resubmitted = false;
+
+    if (sameEmailRecord) {
+      // Same email as a rejected application: the new details replace it and
+      // the application goes back to pending, so the administrator reviews it
+      // again from the start.
+      owner = await Owner.findByIdAndUpdate(
+        sameEmailRecord._id,
+        { $set: { ...details, status: "pending", flagReason: null, reviewedBy: null, reviewedAt: null } },
+        { new: true, runValidators: true }
+      );
+      resubmitted = true;
+    } else {
+      owner = await Owner.create({ ...details, email: normalizedEmail, status: "pending" });
+    }
+
+    for (const v of orphanedViolations) {
+      const samePlate = plateRegexes.some((rx) => rx.test(v.plateNumber));
+      await Violation.updateOne({ _id: v._id }, { $set: { owner: samePlate ? owner._id : null } });
+    }
 
     return res.status(201).json({
-      message: "Registration submitted and is pending review by the PlateTrack Administrator.",
+      message: resubmitted
+        ? "Your registration was submitted again and is pending review by the PlateTrack Administrator."
+        : "Registration submitted and is pending review by the PlateTrack Administrator.",
       ownerId: owner._id,
+      resubmitted,
     });
   } catch (err) {
     console.error(err);
