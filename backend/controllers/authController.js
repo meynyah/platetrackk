@@ -82,10 +82,16 @@ async function registerEnforcer(req, res) {
 }
 
 // The rejection reason is typed by the administrator and shown on the
-// applicant's sign-in screen, so special characters are escaped first.
-function reasonText(reason) {
-  const clean = String(reason || "").trim().slice(0, 300).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  return clean ? ` Reason: ${clean}${/[.!?]$/.test(clean) ? "" : "."}` : "";
+// applicant's sign-in screen. The reply carries it twice: inside "message"
+// (plain text with line breaks, special characters escaped, for any simple
+// client) and as "reason" + "code" so the login pages can lay it out neatly.
+function rejectedReply(reason) {
+  const clean = String(reason || "").trim().slice(0, 300);
+  const safe = clean.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const lines = ["Your registration was not approved."];
+  if (safe) lines.push(`Reason: ${safe}`);
+  lines.push("Please contact the PlateTrack Administrator for details.");
+  return { message: lines.join("\n\n"), reason: clean, code: "REGISTRATION_REJECTED" };
 }
 
 // POST /api/auth/enforcer/login
@@ -111,9 +117,7 @@ async function loginEnforcer(req, res) {
     if (enforcer.status === "rejected") {
       // The reason is shown here because the sign-in message is how an
       // applicant finds out that the registration was declined and why.
-      return res.status(403).json({
-        message: `Your registration was not approved.${reasonText(enforcer.rejectionReason)} Contact the PlateTrack Administrator for details.`,
-      });
+      return res.status(403).json(rejectedReply(enforcer.rejectionReason));
     }
 
     const token = generateToken(enforcer._id, "enforcer", rememberDevice);
@@ -242,7 +246,7 @@ async function loginOwner(req, res) {
     }
     if (owner.status === "rejected") {
       // Same here: the owner's rejection reason is kept in flagReason.
-      return res.status(403).json({ message: `Your registration was not approved.${reasonText(owner.flagReason)} Contact the PlateTrack Administrator for details.` });
+      return res.status(403).json(rejectedReply(owner.flagReason));
     }
 
     const token = generateToken(owner._id, "owner", rememberDevice);

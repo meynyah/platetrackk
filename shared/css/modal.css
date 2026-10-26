@@ -157,3 +157,62 @@ body.light-mode .modal-message{
         flex-direction:column;
     }
 }
+
+
+/* "Registration not approved" dialog: intro, reason box, next step */
+.modal-lead{
+    display:block;
+    margin-bottom:12px;
+    color:#e2e8f0;
+}
+
+.modal-reason{
+    display:block;
+    margin:16px 0 14px;
+    padding:12px 16px;
+    text-align:left;
+    color:#ffffff;
+    background:rgba(248,113,113,.10);
+    border:1px solid rgba(248,113,113,.28);
+    box-shadow:inset 4px 0 0 #f87171;
+    border-radius:12px;
+    font-size:15px;
+    line-height:1.5;
+    overflow-wrap:anywhere;
+}
+
+.modal-reason-label{
+    display:block;
+    margin-bottom:4px;
+    color:#fca5a5;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
+
+.modal-hint{
+    display:block;
+    color:#94a3b8;
+    font-size:14px;
+    text-wrap:balance;
+}
+
+body.light-mode .modal-lead{
+    color:#334155;
+}
+
+body.light-mode .modal-reason{
+    color:#0f172a;
+    background:#fef2f2;
+    border-color:#fecaca;
+    box-shadow:inset 4px 0 0 #ef4444;
+}
+
+body.light-mode .modal-reason-label{
+    color:#b91c1c;
+}
+
+body.light-mode .modal-hint{
+    color:#64748b;
+}

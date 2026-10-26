@@ -240,3 +240,24 @@ document.addEventListener("keydown",function(e){
     }
 
 });
+
+/* Builds the text of the "account not approved" dialog: the administrator's
+   reason in its own box (when one was given) and what to do next.
+   The reason is escaped here, so nothing typed by an admin can become code. */
+function registrationRejectedMessage(reason){
+
+    const box = document.createElement("div");
+    box.textContent = String(reason || "").trim();
+
+    let html = "";
+
+    if(box.textContent){
+        html += "<span class=\"modal-reason\"><span class=\"modal-reason-label\">Reason</span>" + box.innerHTML + "</span>";
+    } else {
+        html += "<span class=\"modal-lead\">Your registration was reviewed and was not approved.</span>";
+    }
+
+    html += "<span class=\"modal-hint\">Please contact the PlateTrack Administrator for details.</span>";
+
+    return html;
+}

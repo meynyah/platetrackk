@@ -84,6 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 if(response.status === 401) errorTitle = "Invalid Credentials";
                 if(response.status === 403) errorTitle = "Account Not Approved";
 
+                if(data.code === "REGISTRATION_REJECTED"){
+                    showError("Account Not Approved", registrationRejectedMessage(data.reason));
+                    return;
+                }
+
                 showError(errorTitle, data.message || "Something went wrong. Please try again.");
                 return;
             }

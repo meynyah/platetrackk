@@ -102,9 +102,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(
+                    const failure = new Error(
                         data.message || "Unable to sign in."
                     );
+                    failure.code = data.code;
+                    failure.reason = data.reason;
+                    throw failure;
                 }
 
                 localStorage.setItem(
@@ -135,6 +138,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const message =
                     error.message || "Unable to sign in.";
+
+                if (error.code === "REGISTRATION_REJECTED") {
+                    showError(
+                        "Account Not Approved",
+                        registrationRejectedMessage(error.reason)
+                    );
+                    return;
+                }
 
                 if (
                     message.toLowerCase()
