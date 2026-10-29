@@ -278,7 +278,7 @@ registerBtn.addEventListener("click", async function(){
 
             showSuccess(
                 "Registration Submitted",
-                "Your registration has been submitted successfully.<br><br>Your account is now pending administrator approval.<br><br>You will receive an email once your account has been reviewed.",
+                "Your registration has been submitted successfully.<br><br>Your account is now pending administrator approval.<br><br>Please sign in later to check the status of your account.",
                 () => {
                     window.location.href = "enforcer-login.html";
                 },

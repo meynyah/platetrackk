@@ -2426,8 +2426,8 @@ async function submitAppealDecisionV2(
 
     showToast(
       decision === "approved"
-        ? "Appeal approved. The owner was notified through the portal and email."
-        : "Appeal denied. The owner was notified through the portal and email."
+        ? "Appeal approved. The owner was notified through the portal."
+        : "Appeal denied. The owner was notified through the portal."
     );
 
     await refreshAppealsAfterActionV2();
@@ -5450,7 +5450,7 @@ async function approveEnforcerApplicationV2(
     );
 
     showToast(
-      "Enforcer approved. Email notification sent."
+      "Enforcer approved."
     );
 
     await refreshApprovalDataAfterActionV2();
@@ -5475,7 +5475,7 @@ function rejectEnforcerApplicationV2(
       "Reject enforcer registration",
 
     sub:
-      "The applicant will receive the registration decision by email.",
+      "The applicant will see the decision, and the reason if you give one, when signing in.",
 
     onConfirm: async (reason) => {
 
